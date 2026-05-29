@@ -1,0 +1,2029 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PHP反序列化Payload构造工具</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #eef4f8;
+      --panel: #ffffff;
+      --text: #16202b;
+      --muted: #647386;
+      --line: #d8e1ea;
+      --accent: #0f766e;
+      --accent-strong: #0b5f59;
+      --accent-soft: #e5f6f3;
+      --ink: #243041;
+      --warn: #b45309;
+      --shadow: 0 18px 45px rgba(36, 48, 65, 0.1);
+      --mono: Consolas, "Cascadia Mono", "Microsoft YaHei UI", monospace;
+      --sans: "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+    }
+
+    [data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #000000;
+      --panel: #111827;
+      --text: #e5e7eb;
+      --muted: #b0b8c4;
+      --line: #374151;
+      --accent: #10b981;
+      --accent-strong: #059669;
+      --accent-soft: #064e3b;
+      --ink: #f3f4f6;
+      --warn: #f59e0b;
+      --shadow: 0 18px 45px rgba(0, 0, 0, 0.5);
+    }
+
+    [data-theme="dark"] body {
+      background: #000000;
+      background-image: none;
+    }
+
+    [data-theme="dark"] header {
+      background: #0a0a0a;
+      border-bottom-color: #1a1a1a;
+      box-shadow: none;
+      backdrop-filter: none;
+    }
+
+    [data-theme="dark"] h1 {
+      color: #ffffff;
+    }
+
+    [data-theme="dark"] .subtitle {
+      color: #9ca3af;
+    }
+
+    [data-theme="dark"] .badge {
+      background: var(--accent-soft);
+      color: #6ee7b7;
+      border-color: #1f2937;
+    }
+
+    [data-theme="dark"] .panel {
+      background: #111827;
+      border-color: #1f2937;
+    }
+
+    [data-theme="dark"] .panel-head {
+      background: linear-gradient(180deg, #111827, #0f1623);
+      border-bottom-color: #1f2937;
+    }
+
+    [data-theme="dark"] .panel-title {
+      color: #ffffff;
+    }
+
+    [data-theme="dark"] label {
+      color: #d1d5db;
+    }
+
+    [data-theme="dark"] .note {
+      color: #9ca3af;
+    }
+
+    [data-theme="dark"] .theme-toggle {
+      background: #1f2937;
+      border-color: #374151;
+      color: #fbbf24;
+    }
+
+    [data-theme="dark"] .theme-toggle:hover {
+      background: #374151;
+    }
+
+    [data-theme="dark"] input,
+    [data-theme="dark"] textarea,
+    [data-theme="dark"] select {
+      background: #1f2937;
+      border-color: #374151;
+      color: #e5e7eb;
+    }
+
+    [data-theme="dark"] input:focus,
+    [data-theme="dark"] textarea:focus,
+    [data-theme="dark"] select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    }
+
+    [data-theme="dark"] .tabs,
+    [data-theme="dark"] .codec-toggle,
+    [data-theme="dark"] .output-tabs {
+      background: #1f2937;
+      border-color: #374151;
+    }
+
+    [data-theme="dark"] .tab.active,
+    [data-theme="dark"] .codec-mode.active,
+    [data-theme="dark"] .output-tab.active {
+      background: #374151;
+      color: var(--accent);
+    }
+
+    [data-theme="dark"] .btn.secondary,
+    [data-theme="dark"] .mini-btn.secondary {
+      background: #1f2937;
+      border-color: #374151;
+      color: #e5e7eb;
+    }
+
+    [data-theme="dark"] .btn.secondary:hover,
+    [data-theme="dark"] .mini-btn.secondary:hover {
+      background: #374151;
+    }
+
+    [data-theme="dark"] .template-btn {
+      background: linear-gradient(180deg, #1f2937, #111827);
+      border-color: #374151;
+      color: #e5e7eb;
+    }
+
+    [data-theme="dark"] .template-btn:hover {
+      background: #374151;
+      border-color: var(--accent);
+    }
+
+    [data-theme="dark"] .template-btn small {
+      color: #9ca3af;
+    }
+
+    [data-theme="dark"] .stat {
+      background: #1f2937;
+      border-color: #374151;
+    }
+
+    [data-theme="dark"] .stat span {
+      color: #9ca3af;
+    }
+
+    [data-theme="dark"] .stat strong {
+      color: var(--accent);
+    }
+
+    [data-theme="dark"] .manual-url {
+      background: #1f2937;
+      border-color: #374151;
+    }
+
+    [data-theme="dark"] .encode-option {
+      background: #1f2937;
+      border-color: #374151;
+      color: #e5e7eb;
+    }
+
+    [data-theme="dark"] .encode-option:hover {
+      background: #374151;
+      border-color: var(--accent);
+    }
+
+    [data-theme="dark"] .payload {
+      background: #1f2937;
+      border-color: #374151;
+      color: #e5e7eb;
+    }
+
+    [data-theme="dark"] .query-value {
+      background: #1f2937;
+      border-color: #374151;
+      color: #e5e7eb;
+    }
+
+    [data-theme="dark"] .query-row {
+      color: #e5e7eb;
+    }
+
+    [data-theme="dark"] .item-row {
+      color: #e5e7eb;
+    }
+
+    [data-theme="dark"] footer {
+      color: #9ca3af;
+    }
+
+    [data-theme="dark"] .powered {
+      background: rgba(17, 24, 39, 0.9);
+      border-color: #374151;
+    }
+
+    [data-theme="dark"] .powered strong {
+      color: #ffffff;
+    }
+
+    [data-theme="dark"] .powered span {
+      color: #9ca3af;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(135deg, rgba(15, 118, 110, 0.08), transparent 34%),
+        linear-gradient(225deg, rgba(180, 83, 9, 0.08), transparent 36%),
+        repeating-linear-gradient(0deg, rgba(36, 48, 65, 0.035) 0 1px, transparent 1px 28px),
+        var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+    }
+
+    header {
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.86);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) inset;
+    }
+
+    .wrap {
+      width: min(1600px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 88px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      display: grid;
+      flex: 0 0 auto;
+      width: 48px;
+      height: 48px;
+      place-items: center;
+      border-radius: 8px;
+      color: #fff;
+      font: 800 14px var(--mono);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(22px, 3vw, 34px);
+      font-weight: 750;
+      letter-spacing: 0;
+      line-height: 1.16;
+    }
+
+    .subtitle {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: #31524f;
+      background: var(--accent-soft);
+      font-size: 15px;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .theme-toggle {
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      background: var(--panel);
+      color: var(--text);
+      font-size: 20px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.1);
+      background: var(--accent-soft);
+    }
+
+    main {
+      padding: 28px 0 18px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(420px, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, #fbfdff, #f7fafc);
+    }
+
+    .panel-title {
+      margin: 0;
+      font-size: 19px;
+      font-weight: 700;
+    }
+
+    .panel-body {
+      padding: 16px;
+    }
+
+    .tabs {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #eef3f8;
+      box-shadow: inset 0 1px 2px rgba(36, 48, 65, 0.05);
+    }
+
+    .tab {
+      border: 0;
+      border-radius: 6px;
+      padding: 10px 14px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font: 600 16px var(--sans);
+      transition: background 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .tab.active {
+      background: #fff;
+      color: var(--accent-strong);
+      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.1);
+    }
+
+    .form {
+      display: grid;
+      gap: 14px;
+    }
+
+    label {
+      display: grid;
+      gap: 7px;
+      color: #2b3440;
+      font-size: 16px;
+      font-weight: 650;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 7px;
+      padding: 12px 14px;
+      background: #fff;
+      color: var(--text);
+      font: 16px var(--sans);
+      outline: none;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+    }
+
+    textarea {
+      min-height: 98px;
+      resize: vertical;
+      font-family: var(--mono);
+      line-height: 1.5;
+      background: #fbfdff;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.14);
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .triple {
+      display: grid;
+      grid-template-columns: 0.8fr 1fr 1.5fr;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .repeat-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .item-row {
+      display: grid;
+      grid-template-columns: minmax(128px, 0.9fr) minmax(92px, 1fr) minmax(112px, 0.95fr) minmax(110px, 1.35fr) 46px;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .mini-btn,
+    .btn {
+      border: 1px solid var(--accent);
+      border-radius: 7px;
+      background: var(--accent);
+      color: #fff;
+      cursor: pointer;
+      font: 700 14px var(--sans);
+      box-shadow: 0 8px 18px rgba(15, 118, 110, 0.16);
+      transition: transform 0.16s ease, filter 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .btn {
+      min-height: 40px;
+      padding: 8px 12px;
+      font-size: 15px;
+      white-space: nowrap;
+    }
+
+    .mini-btn {
+      height: 38px;
+      padding: 0 10px;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .btn.secondary,
+    .mini-btn.secondary {
+      border-color: #cbd5e1;
+      background: #fff;
+      color: #334155;
+      box-shadow: 0 6px 14px rgba(36, 48, 65, 0.06);
+    }
+
+    .btn:hover,
+    .mini-btn:hover {
+      filter: brightness(0.96);
+      transform: translateY(-1px);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .codec-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .codec-toggle {
+      display: inline-grid;
+      grid-template-columns: repeat(2, minmax(62px, 1fr));
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #eef3f8;
+      box-shadow: inset 0 1px 2px rgba(36, 48, 65, 0.05);
+    }
+
+    .codec-mode {
+      border: 0;
+      border-radius: 6px;
+      padding: 10px 14px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font: 700 15px var(--sans);
+      transition: background 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .codec-mode.active {
+      background: #fff;
+      color: var(--accent-strong);
+      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.1);
+    }
+
+    .left-stack {
+      display: grid;
+      gap: 18px;
+    }
+
+    .output-tabs {
+      display: inline-flex;
+      gap: 4px;
+      width: fit-content;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #eef3f8;
+      box-shadow: inset 0 1px 2px rgba(36, 48, 65, 0.05);
+    }
+
+    .output-tab {
+      border: 0;
+      border-radius: 6px;
+      padding: 10px 16px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font: 700 15px var(--sans);
+      transition: background 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .output-tab.active {
+      background: #fff;
+      color: var(--accent-strong);
+      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.1);
+    }
+
+    .query-builder {
+      display: grid;
+      gap: 12px;
+    }
+
+    .query-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .query-title {
+      margin: 0 0 5px;
+      color: var(--ink);
+      font-size: 17px;
+      font-weight: 750;
+    }
+
+    .query-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .query-row {
+      display: grid;
+      grid-template-columns: minmax(120px, 0.8fr) minmax(180px, 1.4fr) 46px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .query-value {
+      min-height: 52px;
+      font-family: var(--mono);
+    }
+
+    .output-box {
+      display: grid;
+      gap: 12px;
+    }
+
+    .payload {
+      min-height: 190px;
+      white-space: pre-wrap;
+      word-break: break-all;
+      border-color: #b7c8d8;
+      background:
+        linear-gradient(180deg, rgba(15, 118, 110, 0.045), transparent 34%),
+        #fbfdff;
+      color: #15212e;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: linear-gradient(180deg, #fbfdff, #f6faf9);
+    }
+
+    .stat span {
+      display: block;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .stat strong {
+      display: block;
+      margin-top: 4px;
+      color: var(--accent-strong);
+      font: 800 19px var(--mono);
+    }
+
+    .note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    .warn {
+      color: var(--warn);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .manual-url {
+      margin-top: 12px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: linear-gradient(180deg, #fbfdff, #f7fafc);
+    }
+
+    .encode-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .encode-title {
+      font-size: 15px;
+      font-weight: 650;
+      color: var(--ink);
+    }
+
+    .encode-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .encode-option {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      cursor: pointer;
+      font: 14px var(--mono);
+      color: var(--ink);
+      transition: border-color 0.15s, background 0.15s;
+      user-select: none;
+    }
+
+    .encode-option:hover {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .encode-option input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      margin: 0;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .encode-option code {
+      background: transparent;
+      padding: 0;
+      font-size: 14px;
+    }
+
+    .encode-arrow {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .templates {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .template-btn {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: linear-gradient(180deg, #fff, #fbfdff);
+      padding: 16px;
+      color: #253244;
+      text-align: left;
+      cursor: pointer;
+      font: 650 16px var(--sans);
+      box-shadow: 0 8px 18px rgba(36, 48, 65, 0.05);
+      transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+    }
+
+    .template-btn small {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font: 14px var(--mono);
+      word-break: break-all;
+    }
+
+    .template-btn:hover {
+      border-color: var(--accent);
+      background: #f4fbfa;
+      transform: translateY(-1px);
+    }
+
+    footer {
+      padding: 10px 0 30px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 15px;
+    }
+
+    .powered {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 9px 13px;
+      border: 1px solid rgba(216, 225, 234, 0.9);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+      box-shadow: 0 10px 24px rgba(36, 48, 65, 0.07);
+      backdrop-filter: blur(10px);
+    }
+
+    .powered strong {
+      color: var(--ink);
+      font-weight: 750;
+    }
+
+    .powered span {
+      color: var(--muted);
+    }
+
+    @media (max-width: 1080px) {
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 16px 0;
+      }
+
+      .brand {
+        align-items: flex-start;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .wrap {
+        width: min(100% - 20px, 1180px);
+      }
+
+      .panel-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .row,
+      .triple,
+      .stats,
+      .templates,
+      .query-head {
+        grid-template-columns: 1fr;
+      }
+
+      .query-head {
+        display: grid;
+      }
+
+      .query-row {
+        grid-template-columns: 1fr;
+      }
+
+      .item-row {
+        grid-template-columns: 1fr;
+      }
+
+      .tabs {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap topbar">
+      <div class="brand">
+        <img class="brand-mark" src="data:image/png;base64,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" alt="PHP" aria-hidden="true">
+        <div>
+          <h1>PHP反序列化Payload构造工具</h1>
+          <p class="subtitle">快速构造、修正和编码PHP序列化Payload</p>
+        </div>
+      </div>
+      <div class="badge">本地离线工具 · 自动计算字符串字节长度</div>
+      <button class="theme-toggle" id="theme-toggle" type="button" title="切换暗色模式">🌙</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="grid">
+      <div class="left-stack">
+        <div class="panel">
+          <div class="panel-head">
+            <h2 class="panel-title">构造区</h2>
+            <div class="tabs" role="tablist">
+              <button class="tab active" data-mode="string" type="button">字符串</button>
+              <button class="tab" data-mode="array" type="button">数组</button>
+              <button class="tab" data-mode="object" type="button">对象</button>
+              <button class="tab" data-mode="manual" type="button">修正</button>
+              <button class="tab" data-mode="oneclick" type="button">一键</button>
+            </div>
+          </div>
+
+          <div class="panel-body">
+            <div id="mode-string" class="form mode-panel">
+              <div class="row">
+                <label>
+                  类型
+                  <select id="single-type">
+                    <option value="string">string</option>
+                    <option value="int">int</option>
+                    <option value="bool">bool</option>
+                    <option value="null">null</option>
+                    <option value="raw">raw</option>
+                  </select>
+                </label>
+                <label>
+                  值
+                  <input id="single-value" value="whoami" placeholder="输入值">
+                </label>
+              </div>
+              <div class="actions">
+                <button class="btn" id="build-single" type="button">生成</button>
+                <button class="btn secondary" id="load-demo-string" type="button">示例</button>
+                <button class="btn secondary" id="send-string-to-query" type="button">发送为URL查询新参数</button>
+              </div>
+            </div>
+
+            <div id="mode-array" class="form mode-panel hidden">
+              <div id="array-items" class="repeat-list"></div>
+              <div class="actions">
+                <button class="btn secondary" id="add-array-item" type="button">添加键值</button>
+                <button class="btn" id="build-array" type="button">生成数组</button>
+                <button class="btn secondary" id="send-array-to-query" type="button">发送为URL查询新参数</button>
+              </div>
+              <p class="note">键支持 string/int；值支持 string/int/bool/null/raw。</p>
+            </div>
+
+            <div id="mode-object" class="form mode-panel hidden">
+              <label>
+                类名
+                <input id="class-name" value="User" placeholder="例如 User">
+              </label>
+              <div id="object-items" class="repeat-list"></div>
+              <div class="actions">
+                <button class="btn secondary" id="add-object-item" type="button">添加属性</button>
+                <button class="btn" id="build-object" type="button">生成对象</button>
+                <button class="btn secondary" id="send-to-query" type="button">发送为URL查询新参数</button>
+              </div>
+              <p class="note">选择private或protected时，工具会自动按PHP序列化规则处理属性名；界面里只需要填写普通属性名。</p>
+            </div>
+
+            <div id="mode-manual" class="form mode-panel hidden">
+              <label>
+                粘贴Payload
+                <textarea id="manual-input" spellcheck="false">O:4:"User":1:{s:4:"name";s:5:"admin";}</textarea>
+              </label>
+              <div class="actions">
+                <button class="btn" id="fix-lengths" type="button">修正 s 长度</button>
+                <button class="btn secondary" id="parse-serialized" type="button">反向解析</button>
+                <button class="btn secondary" id="copy-as-php-class" type="button">复制为PHP类</button>
+                <button class="btn secondary" id="decode-url-input" type="button">URL解码</button>
+                <button class="btn secondary" id="decode-base64-input" type="button">Base64解码</button>
+                <button class="btn secondary" id="send-manual-to-query" type="button">发送为URL查询新参数</button>
+              </div>
+              <p class="note">修正功能会扫描 <span class="warn">s:数字:"内容";</span> 和 <span class="warn">O:数字:"类名":</span> 的长度，按 UTF-8 字节数重新计算。</p>
+            </div>
+
+            <div id="mode-oneclick" class="form mode-panel hidden">
+              <label>
+                粘贴PHP类代码
+                <textarea id="php-class-input" spellcheck="false" style="min-height:150px;">class FLAG{
+    public $flag_command = "echo 'Hello CTF!';";
+
+    function backdoor(){
+        eval($this->flag_command);
+    }
+}</textarea>
+              </label>
+              <div class="actions">
+                <button class="btn" id="serialize-php-class" type="button">一键序列化</button>
+                <button class="btn secondary" id="copy-serialize-wrapper" type="button">复制 serialize(...)</button>
+                <button class="btn secondary" id="load-php-class-demo" type="button">加载示例</button>
+                <button class="btn secondary" id="send-oneclick-to-query" type="button">发送为URL查询新参数</button>
+              </div>
+              <p class="note">支持解析 class 中的 public/protected/private 属性及其默认值，自动生成反序列化 Payload。</p>
+              <label class="encode-option" style="margin-top:8px;">
+                <input type="checkbox" id="old-syntax-toggle" checked>
+                <span>旧语法兼容</span>
+                <span class="encode-arrow">→</span>
+                <code style="font-size:12px;">var/省略 = public</code>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h2 class="panel-title">URL查询参数</h2>
+              <p class="note">每行一个参数名和一个手动编辑的值；右侧查询串输出自动更新。</p>
+            </div>
+            <div class="actions">
+              <button class="btn secondary" id="add-query-param" type="button">添加参数</button>
+              <button class="btn secondary" id="toggle-url-generator" type="button">生成URL</button>
+            </div>
+          </div>
+          <div class="panel-body query-builder">
+            <div id="query-param-list" class="query-list"></div>
+            <div id="url-generator-panel" class="hidden" style="margin-top:12px;">
+              <div class="manual-url">
+                <div class="encode-header">
+                  <span class="encode-title">生成完整URL</span>
+                  <button class="mini-btn" id="copy-generated-url" type="button">复制</button>
+                </div>
+                <label>
+                  基础URL
+                  <input id="base-url-input" value="http://www.example.com:80/xxx/yyy" placeholder="例如 http://example.com/path">
+                </label>
+                <label style="margin-top:10px;">
+                  完整URL
+                  <textarea id="generated-url-output" class="query-value" readonly spellcheck="false" style="min-height:60px;"></textarea>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h2 class="panel-title">输出区</h2>
+          <div class="output-tabs" role="tablist" aria-label="输出类型">
+            <button class="output-tab active" data-output-target="construct" type="button">构造输出</button>
+            <button class="output-tab" data-output-target="query" type="button">查询串输出</button>
+          </div>
+          <div class="actions">
+            <button class="mini-btn secondary" id="copy-output" type="button">复制</button>
+            <button class="mini-btn secondary" id="copy-unserialize-wrapper" type="button">复制 unserialize(...)</button>
+            <button class="mini-btn secondary" id="refresh-query-string" type="button">刷新查询串</button>
+            <button class="mini-btn secondary" id="clear-output" type="button">清空</button>
+          </div>
+        </div>
+        <div class="panel-body output-box">
+          <textarea id="output" class="payload" spellcheck="false"></textarea>
+          <div class="codec-bar">
+            <div class="codec-toggle" role="group" aria-label="编解码模式">
+              <button class="codec-mode active" data-codec-mode="encode" type="button">编码</button>
+              <button class="codec-mode" data-codec-mode="decode" type="button">解码</button>
+            </div>
+            <div class="actions">
+              <button class="btn secondary" id="url-codec" type="button">URL编码</button>
+              <button class="btn secondary" id="url-all-codec" type="button">URL全编码</button>
+              <button class="btn secondary" id="base64-codec" type="button">Base64编码</button>
+              <button class="btn secondary" id="toggle-manual-url" type="button">手动URL编码</button>
+            </div>
+          </div>
+          <div class="manual-url hidden" id="manual-url-panel">
+            <div class="encode-header">
+              <span class="encode-title">勾选需要编码的字符</span>
+              <div class="actions">
+                <button class="mini-btn secondary" id="select-all-url" type="button">全选</button>
+                <button class="mini-btn secondary" id="deselect-all-url" type="button">全不选</button>
+                <button class="mini-btn" id="apply-manual-url" type="button">应用</button>
+              </div>
+            </div>
+            <div class="encode-options" id="manual-url-options"></div>
+          </div>
+          <div class="stats">
+            <div class="stat">
+              <span>字符数</span>
+              <strong id="char-count">0</strong>
+            </div>
+            <div class="stat">
+              <span>UTF-8字节</span>
+              <strong id="byte-count">0</strong>
+            </div>
+            <div class="stat">
+              <span>s 段数量</span>
+              <strong id="string-count">0</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" style="margin-top:18px;">
+      <div class="panel-head">
+        <h2 class="panel-title">常用模板</h2>
+      </div>
+      <div class="panel-body">
+        <div class="templates">
+          <button class="template-btn" type="button" data-template='O:4:"User":1:{s:4:"name";s:5:"admin";}'>
+            普通对象
+            <small>O:4:"User":1:{s:4:"name";s:5:"admin";}</small>
+          </button>
+          <button class="template-btn" type="button" data-template='a:2:{s:4:"user";s:5:"admin";s:4:"pass";s:6:"123456";}'>
+            关联数组
+            <small>a:2:{s:4:"user";s:5:"admin";s:4:"pass";s:6:"123456";}</small>
+          </button>
+          <button class="template-btn" type="button" data-template='O:4:"User":1:{s:10:"\0User\0cmd";s:6:"whoami";}'>
+            Private属性
+            <small>User的private属性cmd=whoami</small>
+          </button>
+          <button class="template-btn" type="button" data-template='O:4:"User":1:{s:6:"\0*\0cmd";s:2:"id";}'>
+            Protected属性
+            <small>protected属性cmd=id</small>
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="powered">Powered By <strong>Zekon</strong><span>QQ群:312455004</span></div>
+  </footer>
+
+  <script>
+    const $ = (selector) => document.querySelector(selector);
+    const $$ = (selector) => Array.from(document.querySelectorAll(selector));
+    const encoder = new TextEncoder();
+
+    function byteLen(value) {
+      return encoder.encode(value).length;
+    }
+
+    function phpString(value) {
+      return `s:${byteLen(value)}:"${value}";`;
+    }
+
+    function phpInt(value) {
+      const num = Number.parseInt(value, 10);
+      return `i:${Number.isNaN(num) ? 0 : num};`;
+    }
+
+    function phpBool(value) {
+      const normalized = String(value).trim().toLowerCase();
+      return `b:${["1", "true", "yes", "on", "是"].includes(normalized) ? 1 : 0};`;
+    }
+
+    function phpValue(type, value) {
+      if (type === "string") return phpString(value);
+      if (type === "int") return phpInt(value);
+      if (type === "bool") return phpBool(value);
+      if (type === "null") return "N;";
+      return value;
+    }
+
+    function propertyName(scope, className, name) {
+      if (scope === "private") return `\u0000${className}\u0000${name}`;
+      if (scope === "protected") return `\u0000*\u0000${name}`;
+      return name;
+    }
+
+    function visibleNulls(value) {
+      return value.replaceAll("\u0000", "\\0");
+    }
+
+    function realNulls(value) {
+      return value.replaceAll("\\0", "\u0000");
+    }
+
+    const outputs = {
+      construct: "",
+      query: ""
+    };
+    let activeOutput = "construct";
+
+    function commitActiveOutput() {
+      outputs[activeOutput] = realNulls($("#output").value);
+    }
+
+    function renderOutput() {
+      $("#output").value = visibleNulls(outputs[activeOutput] || "");
+      updateStats();
+    }
+
+    function setOutput(value, target = activeOutput) {
+      outputs[target] = String(value ?? "");
+      if (target === activeOutput) renderOutput();
+    }
+
+    function setConstructOutput(value) {
+      setOutput(value, "construct");
+      if (activeOutput !== "construct") switchOutput("construct");
+    }
+
+    function getOutputReal() {
+      commitActiveOutput();
+      return outputs[activeOutput];
+    }
+
+    function updateStats() {
+      const visibleValue = $("#output").value;
+      const value = realNulls(visibleValue);
+      $("#char-count").textContent = String(visibleValue.length);
+      $("#byte-count").textContent = String(byteLen(value));
+      $("#string-count").textContent = String((value.match(/s:\d+:"/g) || []).length);
+    }
+
+    function switchOutput(target) {
+      if (!Object.prototype.hasOwnProperty.call(outputs, target)) return;
+      commitActiveOutput();
+      activeOutput = target;
+      $$(".output-tab").forEach((button) => {
+        button.classList.toggle("active", button.dataset.outputTarget === target);
+      });
+      renderOutput();
+    }
+
+    function makeQueryParamRow(name = "", value = "") {
+      const row = document.createElement("div");
+      const nameInput = document.createElement("input");
+      const valueInput = document.createElement("textarea");
+      const remove = document.createElement("button");
+
+      row.className = "query-row";
+      nameInput.dataset.field = "query-name";
+      nameInput.placeholder = "参数名，如 code";
+      nameInput.value = name;
+      valueInput.className = "query-value";
+      valueInput.dataset.field = "query-value";
+      valueInput.placeholder = "参数值，如 new FLAG();";
+      valueInput.spellcheck = false;
+      valueInput.value = value;
+      remove.className = "mini-btn secondary";
+      remove.type = "button";
+      remove.textContent = "X";
+
+      nameInput.addEventListener("input", updateQueryOutput);
+      valueInput.addEventListener("input", updateQueryOutput);
+      remove.addEventListener("click", () => {
+        row.remove();
+        updateQueryOutput();
+      });
+
+      row.append(nameInput, valueInput, remove);
+      return row;
+    }
+
+    function addQueryParamRow(name = "", value = "") {
+      $("#query-param-list").appendChild(makeQueryParamRow(name, value));
+      updateQueryOutput();
+    }
+
+    function getQueryParams() {
+      return Array.from(document.querySelectorAll("#query-param-list .query-row"))
+        .map((row) => ({
+          name: row.querySelector('[data-field="query-name"]').value.trim(),
+          value: row.querySelector('[data-field="query-value"]').value
+        }))
+        .filter((item) => item.name);
+    }
+
+    function buildQueryString(valueTransform = (value) => value) {
+      const params = getQueryParams();
+      if (params.length === 0) return "";
+      return params.map((item) => `${item.name}=${valueTransform(item.value)}`).join("&");
+    }
+
+    function updateQueryOutput() {
+      setOutput(buildQueryString(), "query");
+      updateGeneratedUrl();
+    }
+
+    function updateGeneratedUrl() {
+      const baseUrl = $("#base-url-input").value.trim();
+      const queryString = buildQueryString(encodeURIComponent);
+      const output = $("#generated-url-output");
+      if (!baseUrl) {
+        output.value = "";
+        return;
+      }
+      output.value = queryString ? `${baseUrl}?${queryString}` : baseUrl;
+    }
+
+    function transformCurrentQueryValues(transform) {
+      const source = getOutputReal();
+      if (!source) return buildQueryString(transform);
+      return source.split("&").map((part) => {
+        const equalsAt = part.indexOf("=");
+        if (equalsAt < 0) return part;
+        return `${part.slice(0, equalsAt + 1)}${transform(part.slice(equalsAt + 1))}`;
+      }).join("&");
+    }
+
+    async function copyText(value, fallbackSelector) {
+      try {
+        await navigator.clipboard.writeText(value);
+      } catch (error) {
+        const target = $(fallbackSelector);
+        target.select();
+        document.execCommand("copy");
+      }
+    }
+
+    function makeValueControls(prefix, showScope) {
+      const row = document.createElement("div");
+      row.className = "item-row";
+      row.innerHTML = `
+        ${showScope ? `
+          <select data-field="scope" title="属性范围">
+            <option value="public">public</option>
+            <option value="private">private</option>
+            <option value="protected">protected</option>
+          </select>
+        ` : `
+          <select data-field="key-type" title="键类型">
+            <option value="string">s key</option>
+            <option value="int">i key</option>
+          </select>
+        `}
+        <input data-field="key" placeholder="${showScope ? "属性名" : "键"}" value="${prefix}">
+        <select data-field="value-type" title="值类型">
+          <option value="string">string</option>
+          <option value="int">int</option>
+          <option value="bool">bool</option>
+          <option value="null">null</option>
+          <option value="raw">raw</option>
+        </select>
+        <input data-field="value" placeholder="值" value="">
+        <button class="mini-btn secondary" data-action="remove" type="button">X</button>
+      `;
+      row.querySelector('[data-action="remove"]').addEventListener("click", () => row.remove());
+      return row;
+    }
+
+    function readRows(container, isObject) {
+      return Array.from(container.querySelectorAll(".item-row")).map((row) => {
+        const key = row.querySelector('[data-field="key"]').value;
+        const valueType = row.querySelector('[data-field="value-type"]').value;
+        const value = row.querySelector('[data-field="value"]').value;
+        if (isObject) {
+          return {
+            scope: row.querySelector('[data-field="scope"]').value,
+            key,
+            value: phpValue(valueType, value)
+          };
+        }
+        const keyType = row.querySelector('[data-field="key-type"]').value;
+        return {
+          key: keyType === "int" ? phpInt(key) : phpString(key),
+          value: phpValue(valueType, value)
+        };
+      });
+    }
+
+    function buildArray() {
+      const rows = readRows($("#array-items"), false);
+      const body = rows.map((item) => `${item.key}${item.value}`).join("");
+      setConstructOutput(`a:${rows.length}:{${body}}`);
+    }
+
+    function buildObject() {
+      const className = $("#class-name").value || "User";
+      const rows = readRows($("#object-items"), true);
+      const body = rows.map((item) => {
+        const prop = propertyName(item.scope, className, item.key);
+        return `${phpString(prop)}${item.value}`;
+      }).join("");
+      setConstructOutput(`O:${byteLen(className)}:"${className}":${rows.length}:{${body}}`);
+    }
+
+    function fixSerializedLengths(input) {
+      let text = realNulls(input);
+      // 使用 [^"\\0] 而不是 [^"\\]，因为 realNulls 已将 \0 转为真正的 null 字节
+      // null 字符 (\0) 是字符串的分隔符，不应被匹配
+      text = text.replace(/O:\d+:"((?:\\.|[^"\\0])*)":/g, (match, className) => {
+        return `O:${byteLen(className)}:"${className}":`;
+      });
+      text = text.replace(/s:\d+:"((?:\\.|[^"\\0])*)";/g, (match, content) => {
+        return phpString(content);
+      });
+      return text;
+    }
+
+    function codePointByteLen(codePoint) {
+      if (codePoint <= 0x7F) return 1;
+      if (codePoint <= 0x7FF) return 2;
+      if (codePoint <= 0xFFFF) return 3;
+      return 4;
+    }
+
+    class SerializedReader {
+      constructor(input) {
+        this.text = realNulls(input).trim();
+        this.pos = 0;
+      }
+
+      error(message) {
+        throw new Error(`${message}（位置 ${this.pos + 1}）`);
+      }
+
+      skipSpace() {
+        while (/\s/.test(this.text[this.pos] || "")) this.pos += 1;
+      }
+
+      consume(expected) {
+        if (!this.text.startsWith(expected, this.pos)) {
+          this.error(`需要 ${expected}`);
+        }
+        this.pos += expected.length;
+      }
+
+      readUntil(delimiter) {
+        const end = this.text.indexOf(delimiter, this.pos);
+        if (end < 0) this.error(`找不到 ${delimiter}`);
+        const value = this.text.slice(this.pos, end);
+        this.pos = end + delimiter.length;
+        return value;
+      }
+
+      readNumber(delimiter) {
+        const raw = this.readUntil(delimiter);
+        if (!/^-?\d+(?:\.\d+)?(?:[Ee][+-]?\d+)?$/.test(raw)) {
+          this.error(`数字不合法：${raw}`);
+        }
+        return Number(raw);
+      }
+
+      readInteger(delimiter) {
+        const value = this.readNumber(delimiter);
+        if (!Number.isInteger(value)) this.error(`整数不合法：${value}`);
+        return value;
+      }
+
+      readByteString(length) {
+        const start = this.pos;
+        let bytes = 0;
+        while (this.pos < this.text.length && bytes < length) {
+          const codePoint = this.text.codePointAt(this.pos);
+          const size = codePointByteLen(codePoint);
+          if (bytes + size > length) {
+            this.error("字符串字节长度落在半个字符上");
+          }
+          bytes += size;
+          this.pos += codePoint > 0xFFFF ? 2 : 1;
+        }
+        if (bytes !== length) this.error(`字符串长度不足，期望 ${length} 字节`);
+        return this.text.slice(start, this.pos);
+      }
+
+      readQuotedByteString(afterQuote) {
+        const length = this.readInteger(":");
+        this.consume('"');
+        const value = this.readByteString(length);
+        this.consume('"');
+        this.consume(afterQuote);
+        return value;
+      }
+
+      readValue() {
+        this.skipSpace();
+        const type = this.text[this.pos];
+        if (!type) this.error("没有可解析的内容");
+
+        if (type === "N") {
+          this.consume("N;");
+          return { type: "null", value: null };
+        }
+
+        if (type === "b") {
+          this.consume("b:");
+          const value = this.readInteger(";");
+          return { type: "bool", value: value === 1 };
+        }
+
+        if (type === "i") {
+          this.consume("i:");
+          return { type: "int", value: this.readInteger(";") };
+        }
+
+        if (type === "d") {
+          this.consume("d:");
+          return { type: "float", value: this.readNumber(";") };
+        }
+
+        if (type === "s") {
+          this.consume("s:");
+          return { type: "string", value: this.readQuotedByteString(";") };
+        }
+
+        if (type === "a") {
+          this.consume("a:");
+          const count = this.readInteger(":");
+          this.consume("{");
+          const items = [];
+          for (let index = 0; index < count; index += 1) {
+            const key = this.readValue();
+            const value = this.readValue();
+            items.push({ key, value });
+          }
+          this.consume("}");
+          return { type: "array", items };
+        }
+
+        if (type === "O") {
+          this.consume("O:");
+          const className = this.readQuotedByteString(":");
+          const count = this.readInteger(":");
+          this.consume("{");
+          const props = [];
+          for (let index = 0; index < count; index += 1) {
+            const key = this.readValue();
+            const value = this.readValue();
+            props.push({ key, value });
+          }
+          this.consume("}");
+          return { type: "object", className, props };
+        }
+
+        if (type === "R" || type === "r") {
+          this.pos += 2;
+          return { type: "reference", value: this.readInteger(";") };
+        }
+
+        this.error(`暂不支持的类型：${type}`);
+      }
+    }
+
+    function parseSerialized(input) {
+      const reader = new SerializedReader(input);
+      const value = reader.readValue();
+      reader.skipSpace();
+      if (reader.pos < reader.text.length) reader.error("后面还有未解析内容");
+      return value;
+    }
+
+    function quoteHumanString(value) {
+      return `"${value
+        .replaceAll("\\", "\\\\")
+        .replaceAll("\u0000", "\\0")
+        .replaceAll("\r", "\\r")
+        .replaceAll("\n", "\\n")
+        .replaceAll("\t", "\\t")
+        .replaceAll('"', '\\"')}"`;
+    }
+
+    function formatSerializedKey(node) {
+      if (node.type === "string") return quoteHumanString(node.value);
+      if (node.type === "int" || node.type === "float") return String(node.value);
+      if (node.type === "bool") return node.value ? "true" : "false";
+      if (node.type === "null") return "null";
+      return formatSerializedValue(node);
+    }
+
+    function propertyLabel(keyNode, currentClass) {
+      if (keyNode.type !== "string") return `[${formatSerializedKey(keyNode)}]`;
+      const raw = keyNode.value;
+      if (raw.startsWith("\u0000*\u0000")) {
+        return `protected ${raw.slice(3)}`;
+      }
+      if (raw.startsWith("\u0000")) {
+        const classEnd = raw.indexOf("\u0000", 1);
+        if (classEnd > 0) {
+          const owner = raw.slice(1, classEnd);
+          const name = raw.slice(classEnd + 1);
+          return owner && owner !== currentClass ? `private ${name} (${owner})` : `private ${name}`;
+        }
+      }
+      return `public ${raw}`;
+    }
+
+    function formatSerializedValue(node, level = 0) {
+      const pad = "  ".repeat(level);
+      const childPad = "  ".repeat(level + 1);
+
+      if (node.type === "string") return quoteHumanString(node.value);
+      if (node.type === "int" || node.type === "float") return String(node.value);
+      if (node.type === "bool") return node.value ? "true" : "false";
+      if (node.type === "null") return "null";
+      if (node.type === "reference") return `&ref(${node.value})`;
+
+      if (node.type === "array") {
+        if (node.items.length === 0) return "[]";
+        const lines = node.items.map((item) => {
+          return `${childPad}${formatSerializedKey(item.key)} => ${formatSerializedValue(item.value, level + 1)}`;
+        });
+        return `[\n${lines.join(",\n")}\n${pad}]`;
+      }
+
+      if (node.type === "object") {
+        if (node.props.length === 0) return `${node.className} {}`;
+        const lines = node.props.map((prop) => {
+          return `${childPad}${propertyLabel(prop.key, node.className)} = ${formatSerializedValue(prop.value, level + 1)};`;
+        });
+        return `${node.className} {\n${lines.join("\n")}\n${pad}}`;
+      }
+
+      return String(node.value ?? "");
+    }
+
+    function fullUrlEncode(value) {
+      return Array.from(encoder.encode(value))
+        .map((byte) => `%${byte.toString(16).toUpperCase().padStart(2, "0")}`)
+        .join("");
+    }
+
+    function fullUrlDecode(value) {
+      return decodeURIComponent(value);
+    }
+
+    function base64Utf8(value) {
+      const bytes = encoder.encode(value);
+      let binary = "";
+      bytes.forEach((byte) => binary += String.fromCharCode(byte));
+      return btoa(binary);
+    }
+
+    function base64DecodeUtf8(value) {
+      const clean = value
+        .replace(/\s+/g, "")
+        .replaceAll("-", "+")
+        .replaceAll("_", "/");
+      const padded = clean.padEnd(clean.length + ((4 - clean.length % 4) % 4), "=");
+      const binary = atob(padded);
+      const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+      return new TextDecoder().decode(bytes);
+    }
+
+    let codecMode = "encode";
+
+    function updateCodecMode(mode) {
+      codecMode = mode;
+      $$(".codec-mode").forEach((button) => {
+        button.classList.toggle("active", button.dataset.codecMode === mode);
+      });
+      $("#url-codec").textContent = mode === "encode" ? "URL编码" : "URL解码";
+      $("#url-all-codec").textContent = mode === "encode" ? "URL全编码" : "URL全解码";
+      $("#base64-codec").textContent = mode === "encode" ? "Base64编码" : "Base64解码";
+    }
+
+    function runCodec(kind) {
+      const value = getOutputReal();
+      try {
+        if (activeOutput === "query" && (kind === "url" || kind === "url-all")) {
+          if (codecMode === "encode") {
+            const encodeValue = kind === "url" ? encodeURIComponent : fullUrlEncode;
+            setOutput(buildQueryString(encodeValue), "query");
+            return;
+          }
+          setOutput(transformCurrentQueryValues(decodeURIComponent), "query");
+          return;
+        }
+        if (codecMode === "encode") {
+          if (kind === "url") setOutput(encodeURIComponent(value));
+          if (kind === "url-all") setOutput(fullUrlEncode(value));
+          if (kind === "base64") setOutput(base64Utf8(value));
+          return;
+        }
+        if (kind === "url") setOutput(decodeURIComponent(value));
+        if (kind === "url-all") setOutput(fullUrlDecode(value));
+        if (kind === "base64") setOutput(base64DecodeUtf8(value));
+      } catch (error) {
+        const names = {
+          url: "URL",
+          "url-all": "URL全量",
+          base64: "Base64"
+        };
+        alert(`${names[kind]}解码失败：当前内容不是合法的${names[kind]}编码。`);
+      }
+    }
+
+    $$(".tab").forEach((button) => {
+      button.addEventListener("click", () => {
+        $$(".tab").forEach((tab) => tab.classList.remove("active"));
+        $$(".mode-panel").forEach((panel) => panel.classList.add("hidden"));
+        button.classList.add("active");
+        $(`#mode-${button.dataset.mode}`).classList.remove("hidden");
+      });
+    });
+
+    $$(".output-tab").forEach((button) => {
+      button.addEventListener("click", () => switchOutput(button.dataset.outputTarget));
+    });
+
+    $("#build-single").addEventListener("click", () => {
+      setConstructOutput(phpValue($("#single-type").value, $("#single-value").value));
+    });
+
+    $("#send-string-to-query").addEventListener("click", () => {
+      const serialized = phpValue($("#single-type").value, $("#single-value").value);
+      addQueryParamRow("NeedEdit", serialized);
+      if (activeOutput !== "query") switchOutput("query");
+    });
+
+    $("#load-demo-string").addEventListener("click", () => {
+      $("#single-type").value = "string";
+      $("#single-value").value = "system";
+      setConstructOutput(phpString("system"));
+    });
+
+    $("#add-array-item").addEventListener("click", () => {
+      $("#array-items").appendChild(makeValueControls("key", false));
+    });
+
+    $("#build-array").addEventListener("click", buildArray);
+
+    $("#send-array-to-query").addEventListener("click", () => {
+      const rows = readRows($("#array-items"), false);
+      const body = rows.map((item) => item.key + item.value).join("");
+      const serialized = "a:" + rows.length + ":{" + body + "}";
+      addQueryParamRow("NeedEdit", serialized);
+      if (activeOutput !== "query") switchOutput("query");
+    });
+
+    $("#add-object-item").addEventListener("click", () => {
+      $("#object-items").appendChild(makeValueControls("cmd", true));
+    });
+
+    $("#build-object").addEventListener("click", buildObject);
+
+    $("#send-to-query").addEventListener("click", () => {
+      const className = $("#class-name").value || "User";
+      const rows = readRows($("#object-items"), true);
+      const body = rows.map((item) => {
+        const prop = propertyName(item.scope, className, item.key);
+        return phpString(prop) + item.value;
+      }).join("");
+      const serialized = "O:" + byteLen(className) + ":\"" + className + "\":" + rows.length + ":{" + body + "}";
+      addQueryParamRow("NeedEdit", serialized);
+      if (activeOutput !== "query") switchOutput("query");
+    });
+
+    // 一键序列化PHP类代码
+    function parsePhpClass(code) {
+      const result = { className: "", properties: [] };
+
+      // 提取类名
+      const classMatch = code.match(/class\s+(\w+)/);
+      if (!classMatch) return null;
+      result.className = classMatch[1];
+
+      // 根据旧语法兼容开关决定正则
+      const oldSyntaxEnabled = $("#old-syntax-toggle").checked;
+
+      // 提取属性：匹配 [public|protected|private|var] $var = value;
+      // 使用捕获组来正确获取访问修饰符
+      const visibilityGroup = oldSyntaxEnabled
+        ? "(public|protected|private|var)?"
+        : "(public|protected|private)?";
+
+      const propRegex = new RegExp(String.raw`${visibilityGroup}\s*\$(\w+)\s*=\s*(?:"((?:[^"\\]|\\.)*)"|'((?:[^'\\]|\\.)*)'|(\d+)|(.+?));`, "g");
+      let match;
+      while ((match = propRegex.exec(code)) !== null) {
+        let visibility = match[1] || "public";
+        if (visibility === "var") visibility = "public";
+        const name = match[2];
+        // 检查哪个捕获组匹配了值
+        let value;
+        if (match[3] !== undefined) {
+          value = match[3]; // 双引号字符串
+        } else if (match[4] !== undefined) {
+          value = match[4]; // 单引号字符串
+        } else if (match[5] !== undefined) {
+          value = match[5]; // 数字
+        } else {
+          value = match[6]; // 其他值
+        }
+
+        result.properties.push({ visibility, name, value });
+      }
+
+      return result;
+    }
+
+    function serializePhpClass(parsed) {
+      if (!parsed || !parsed.className) return "";
+
+      const className = parsed.className;
+      const props = parsed.properties;
+
+      let body = "";
+      props.forEach((prop) => {
+        const propName = propertyName(prop.visibility, className, prop.name);
+        body += phpString(propName) + phpString(prop.value);
+      });
+
+      return "O:" + byteLen(className) + ":\"" + className + "\":" + props.length + ":{" + body + "}";
+    }
+
+    $("#serialize-php-class").addEventListener("click", () => {
+      const code = $("#php-class-input").value;
+      const parsed = parsePhpClass(code);
+      if (!parsed) {
+        alert("无法解析类代码，请检查格式");
+        return;
+      }
+      const serialized = serializePhpClass(parsed);
+      setConstructOutput(serialized);
+    });
+
+    $("#load-php-class-demo").addEventListener("click", () => {
+      $("#php-class-input").value = 'class FLAG{\n    public $flag_command = "echo \'Hello CTF!\';";\n\n    function backdoor(){\n        eval($this->flag_command);\n    }\n}';
+    });
+
+    $("#send-oneclick-to-query").addEventListener("click", () => {
+      const code = $("#php-class-input").value;
+      const parsed = parsePhpClass(code);
+      if (!parsed) {
+        alert("无法解析类代码，请检查格式");
+        return;
+      }
+      const serialized = serializePhpClass(parsed);
+      addQueryParamRow("NeedEdit", serialized);
+      if (activeOutput !== "query") switchOutput("query");
+    });
+
+    $("#copy-serialize-wrapper").addEventListener("click", async () => {
+      const code = $("#php-class-input").value.trim();
+      if (!code) {
+        alert("请先输入PHP类代码");
+        return;
+      }
+      const wrapped = `serialize(${code})`;
+      await copyText(wrapped, "#php-class-input");
+    });
+
+    $("#fix-lengths").addEventListener("click", () => {
+      setConstructOutput(fixSerializedLengths($("#manual-input").value));
+    });
+
+    $("#parse-serialized").addEventListener("click", () => {
+      try {
+        const parsed = parseSerialized($("#manual-input").value);
+        setConstructOutput(formatSerializedValue(parsed));
+      } catch (error) {
+        alert(`反向解析失败：${error.message}`);
+      }
+    });
+
+    function parsedObjectToPhpClass(node) {
+      if (node.type !== "object") return null;
+      let php = `class ${node.className}{\n`;
+      node.props.forEach((prop) => {
+        const keyNode = prop.key;
+        let visibility = "public";
+        let propName = keyNode.value;
+        if (keyNode.type === "string") {
+          const raw = keyNode.value;
+          if (raw.startsWith("\0*\0")) {
+            visibility = "protected";
+            propName = raw.slice(3);
+          } else if (raw.startsWith("\0")) {
+            visibility = "private";
+            const classEnd = raw.indexOf("\0", 1);
+            if (classEnd > 0) propName = raw.slice(classEnd + 1);
+          }
+        }
+        let valueStr = "";
+        if (prop.value.type === "string") {
+          valueStr = `"${prop.value.value.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
+        } else if (prop.value.type === "int" || prop.value.type === "float") {
+          valueStr = String(prop.value.value);
+        } else if (prop.value.type === "bool") {
+          valueStr = prop.value.value ? "true" : "false";
+        } else if (prop.value.type === "null") {
+          valueStr = "null";
+        } else {
+          valueStr = formatSerializedValue(prop.value);
+        }
+        php += `    ${visibility} $${propName} = ${valueStr};\n`;
+      });
+      php += "}";
+      return php;
+    }
+
+    $("#copy-as-php-class").addEventListener("click", async () => {
+      try {
+        const parsed = parseSerialized($("#manual-input").value);
+        const phpCode = parsedObjectToPhpClass(parsed);
+        if (!phpCode) {
+          alert("只能将对象类型转换为PHP类代码");
+          return;
+        }
+        await copyText(phpCode, "#manual-input");
+      } catch (error) {
+        alert(`转换失败：${error.message}`);
+      }
+    });
+
+    $("#decode-url-input").addEventListener("click", () => {
+      try {
+        $("#manual-input").value = decodeURIComponent($("#manual-input").value);
+      } catch (error) {
+        alert("URL解码失败：输入内容不是合法的百分号编码。");
+      }
+    });
+
+    $("#decode-base64-input").addEventListener("click", () => {
+      try {
+        $("#manual-input").value = base64DecodeUtf8($("#manual-input").value);
+      } catch (error) {
+        alert("Base64解码失败：输入内容不是合法的Base64。");
+      }
+    });
+
+    $("#send-manual-to-query").addEventListener("click", () => {
+      const serialized = fixSerializedLengths($("#manual-input").value);
+      addQueryParamRow("NeedEdit", serialized);
+      if (activeOutput !== "query") switchOutput("query");
+    });
+
+    $("#copy-output").addEventListener("click", async () => {
+      await copyText(getOutputReal(), "#output");
+    });
+
+    $("#copy-unserialize-wrapper").addEventListener("click", async () => {
+      const output = getOutputReal();
+      if (!output) {
+        alert("输出区为空，请先生成序列化字符串");
+        return;
+      }
+      const wrapped = `unserialize('${output.replace(/'/g, "\\'")}')`;
+      await copyText(wrapped, "#output");
+    });
+
+    $("#clear-output").addEventListener("click", () => setOutput("", activeOutput));
+    $("#refresh-query-string").addEventListener("click", () => {
+      updateQueryOutput();
+      updateGeneratedUrl();
+    });
+    $("#add-query-param").addEventListener("click", () => addQueryParamRow(""));
+    $("#toggle-url-generator").addEventListener("click", () => {
+      const panel = $("#url-generator-panel");
+      panel.classList.toggle("hidden");
+      if (!panel.classList.contains("hidden")) updateGeneratedUrl();
+    });
+    $("#base-url-input").addEventListener("input", updateGeneratedUrl);
+    $("#copy-generated-url").addEventListener("click", async () => {
+      await copyText($("#generated-url-output").value, "#generated-url-output");
+    });
+    $$(".codec-mode").forEach((button) => {
+      button.addEventListener("click", () => updateCodecMode(button.dataset.codecMode));
+    });
+    $("#url-codec").addEventListener("click", () => runCodec("url"));
+    $("#url-all-codec").addEventListener("click", () => runCodec("url-all"));
+    $("#base64-codec").addEventListener("click", () => runCodec("base64"));
+
+    // 手动URL编码
+    const manualUrlChars = [
+      { char: "\0",  encoded: "%00", label: String.raw`\0`,  desc: "空字节",  checked: true },
+      { char: " ",   encoded: "%20", label: "Space",         desc: "空格",    checked: false },
+      { char: "@",   encoded: "%40", label: "@",             desc: "At符号",  checked: false },
+      { char: "&",   encoded: "%26", label: "&",             desc: "和号",    checked: false },
+      { char: "=",   encoded: "%3D", label: "=",             desc: "等号",    checked: false },
+      { char: "+",   encoded: "%2B", label: "+",             desc: "加号",    checked: false },
+      { char: "#",   encoded: "%23", label: "#",             desc: "井号",    checked: false },
+      { char: "%",   encoded: "%25", label: "%",             desc: "百分号",  checked: false },
+      { char: "?",   encoded: "%3F", label: "?",             desc: "问号",    checked: false },
+      { char: "/",   encoded: "%2F", label: "/",             desc: "斜杠",    checked: false },
+      { char: ":",   encoded: "%3A", label: ":",             desc: "冒号",    checked: false },
+      { char: ";",   encoded: "%3B", label: ";",             desc: "分号",    checked: false },
+      { char: "{",   encoded: "%7B", label: "{",             desc: "左花括号", checked: false },
+      { char: "}",   encoded: "%7D", label: "}",             desc: "右花括号", checked: false },
+      { char: "[",   encoded: "%5B", label: "[",             desc: "左方括号", checked: false },
+      { char: "]",   encoded: "%5D", label: "]",             desc: "右方括号", checked: false },
+      { char: "\"",  encoded: "%22", label: '"',             desc: "双引号",  checked: false },
+      { char: "'",   encoded: "%27", label: "'",             desc: "单引号",  checked: false },
+      { char: "<",   encoded: "%3C", label: "<",             desc: "左尖括号", checked: false },
+      { char: ">",   encoded: "%3E", label: ">",             desc: "右尖括号", checked: false },
+      { char: "\\",  encoded: "%5C", label: "\\",             desc: "反斜杠",  checked: false },
+      { char: "^",   encoded: "%5E", label: "^",             desc: "脱字符",  checked: false },
+      { char: "|",   encoded: "%7C", label: "|",             desc: "竖线",    checked: false },
+      { char: "~",   encoded: "%7E", label: "~",             desc: "波浪号",  checked: false },
+    ];
+
+    function renderManualUrlOptions() {
+      const container = $("#manual-url-options");
+      container.innerHTML = "";
+      manualUrlChars.forEach((item, index) => {
+        const label = document.createElement("label");
+        label.className = "encode-option";
+        const checkedAttr = item.checked ? "checked" : "";
+        label.innerHTML = '<input type="checkbox" data-index="' + index + '" ' + checkedAttr + '>' +
+          '<code>' + item.label + '</code>' +
+          '<span class="encode-arrow">→</span>' +
+          '<code>' + item.encoded + '</code>' +
+          '<span style="color:var(--muted);font-size:11px;">' + item.desc + '</span>';
+        container.appendChild(label);
+      });
+    }
+
+    renderManualUrlOptions();
+
+    $("#toggle-manual-url").addEventListener("click", () => {
+      const panel = $("#manual-url-panel");
+      panel.classList.toggle("hidden");
+    });
+
+    $("#select-all-url").addEventListener("click", () => {
+      $$('#manual-url-options input[type="checkbox"]').forEach(cb => cb.checked = true);
+    });
+
+    $("#deselect-all-url").addEventListener("click", () => {
+      $$('#manual-url-options input[type="checkbox"]').forEach(cb => cb.checked = false);
+    });
+
+    $("#apply-manual-url").addEventListener("click", () => {
+      let text = getOutputReal();
+      $$('#manual-url-options input[type="checkbox"]:checked').forEach(cb => {
+        const idx = Number(cb.dataset.index);
+        const opt = manualUrlChars[idx];
+        if (codecMode === "decode") {
+          text = text.split(opt.encoded).join(opt.char);
+        } else {
+          text = text.split(opt.char).join(opt.encoded);
+        }
+      });
+      setOutput(text);
+    });
+    $("#output").addEventListener("input", () => {
+      commitActiveOutput();
+      updateStats();
+    });
+
+    $$(".template-btn").forEach((button) => {
+      button.addEventListener("click", () => setConstructOutput(realNulls(button.dataset.template)));
+    });
+
+    const arrayDefaults = [
+      ["user", "admin"],
+      ["pass", "123456"]
+    ];
+    arrayDefaults.forEach(([key, value]) => {
+      const row = makeValueControls(key, false);
+      row.querySelector('[data-field="value"]').value = value;
+      $("#array-items").appendChild(row);
+    });
+
+    const objectRow = makeValueControls("name", true);
+    objectRow.querySelector('[data-field="value"]').value = "admin";
+    $("#object-items").appendChild(objectRow);
+
+    addQueryParamRow("code", "new FLAG();");
+    setConstructOutput('O:4:"User":1:{s:4:"name";s:5:"admin";}');
+
+    // 暗色模式切换
+    const themeToggle = $("#theme-toggle");
+    const savedTheme = localStorage.getItem("theme") || "light";
+
+    function applyTheme(theme) {
+      document.documentElement.dataset.theme = theme;
+      themeToggle.textContent = theme === "dark" ? "☀️" : "🌙";
+      localStorage.setItem("theme", theme);
+    }
+
+    applyTheme(savedTheme);
+
+    themeToggle.addEventListener("click", () => {
+      const current = document.documentElement.dataset.theme;
+      applyTheme(current === "dark" ? "light" : "dark");
+    });
+  </script>
+</body>
+</html>
