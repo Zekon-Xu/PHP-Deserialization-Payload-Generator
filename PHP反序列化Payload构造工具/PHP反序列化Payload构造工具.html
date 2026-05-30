@@ -1270,6 +1270,15 @@
           </div>
           <div class="manual-url hidden" id="manual-url-panel">
             <div class="encode-header">
+              <span class="encode-title">选取编码区域</span>
+              <div class="actions">
+                <button class="mini-btn secondary" id="add-section-mark" type="button">Add §</button>
+                <button class="mini-btn secondary" id="clear-section-marks" type="button">Clear §</button>
+                <button class="mini-btn" id="encode-selected-section" type="button">仅编码选中部分</button>
+              </div>
+            </div>
+            <p class="note" style="margin-bottom:8px;">在输出区选中文本，点击「Add §」插入标记，标记之间的内容会被全量URL编码。支持多段选取。</p>
+            <div class="encode-header" style="margin-top:12px;">
               <span class="encode-title">勾选需要编码的字符</span>
               <div class="actions">
                 <button class="mini-btn secondary" id="select-all-url" type="button">全选</button>
@@ -1856,6 +1865,20 @@
       $("#url-codec").textContent = mode === "encode" ? "URL编码" : "URL解码";
       $("#url-all-codec").textContent = mode === "encode" ? "URL全编码" : "URL全解码";
       $("#base64-codec").textContent = mode === "encode" ? "Base64编码" : "Base64解码";
+      $("#toggle-manual-url").textContent = mode === "encode" ? "手动URL编码" : "手动URL解码";
+      // 解码模式下URL全编码/解码与普通解码效果相同，隐藏避免混淆
+      $("#url-all-codec").classList.toggle("hidden", mode === "decode");
+      $("#encode-selected-section").textContent = mode === "encode" ? "仅编码选中部分" : "仅解码选中部分";
+    }
+
+    // 智能URL编码：如果内容是 query string 格式，只编码值部分，保留 = 和 &
+    function smartUrlEncode(str) {
+      if (!str.includes("=")) return encodeURIComponent(str);
+      return str.split("&").map(pair => {
+        const eq = pair.indexOf("=");
+        if (eq < 0) return encodeURIComponent(pair);
+        return encodeURIComponent(pair.substring(0, eq + 1)) + encodeURIComponent(pair.substring(eq + 1));
+      }).join("&");
     }
 
     function runCodec(kind) {
@@ -1871,13 +1894,13 @@
           return;
         }
         if (codecMode === "encode") {
-          if (kind === "url") setOutput(encodeURIComponent(value));
+          if (kind === "url") setOutput(smartUrlEncode(value));
           if (kind === "url-all") setOutput(fullUrlEncode(value));
           if (kind === "base64") setOutput(base64Utf8(value));
           return;
         }
-        if (kind === "url") setOutput(decodeURIComponent(value));
-        if (kind === "url-all") setOutput(fullUrlDecode(value));
+        // 解码统一用 decodeURIComponent，不需要智能拆分
+        if (kind === "url" || kind === "url-all") setOutput(decodeURIComponent(value));
         if (kind === "base64") setOutput(base64DecodeUtf8(value));
       } catch (error) {
         const names = {
@@ -2605,6 +2628,8 @@
       { char: "}", encoded: "%7D", label: "}", desc: "右花括号", checked: false },
       { char: "[", encoded: "%5B", label: "[", desc: "左方括号", checked: false },
       { char: "]", encoded: "%5D", label: "]", desc: "右方括号", checked: false },
+      { char: "(", encoded: "%28", label: "(", desc: "左圆括号", checked: false },
+      { char: ")", encoded: "%29", label: ")", desc: "右圆括号", checked: false },
       { char: "\"", encoded: "%22", label: '"', desc: "双引号", checked: false },
       { char: "'", encoded: "%27", label: "'", desc: "单引号", checked: false },
       { char: "<", encoded: "%3C", label: "<", desc: "左尖括号", checked: false },
@@ -2659,6 +2684,52 @@
       });
       setOutput(text);
     });
+
+    // § 选区标记功能
+    const SECTION_MARK = "§";
+
+    $("#add-section-mark").addEventListener("click", () => {
+      const output = $("#output");
+      const start = output.selectionStart;
+      const end = output.selectionEnd;
+      if (start === end) {
+        alert("请先在输出区选中要编码的文本");
+        return;
+      }
+      const value = getOutputReal();
+      const before = value.substring(0, start);
+      const selected = value.substring(start, end);
+      const after = value.substring(end);
+      // 用 § 包裹选中内容
+      const newValue = before + SECTION_MARK + selected + SECTION_MARK + after;
+      setOutput(newValue);
+    });
+
+    $("#clear-section-marks").addEventListener("click", () => {
+      const value = getOutputReal();
+      if (!value.includes(SECTION_MARK)) return;
+      setOutput(value.split(SECTION_MARK).join(""));
+    });
+
+    $("#encode-selected-section").addEventListener("click", () => {
+      const value = getOutputReal();
+      if (!value.includes(SECTION_MARK)) {
+        alert("没有找到 § 标记，请先用「Add §」标记要处理的区域");
+        return;
+      }
+      const transform = codecMode === "encode" ? fullUrlEncode : decodeURIComponent;
+      const parts = value.split(SECTION_MARK);
+      const result = [];
+      for (let i = 0; i < parts.length; i++) {
+        if (i % 2 === 0) {
+          result.push(parts[i]);
+        } else {
+          result.push(transform(parts[i]));
+        }
+      }
+      setOutput(result.join(""));
+    });
+
     $("#output").addEventListener("input", () => {
       commitActiveOutput();
       updateStats();
