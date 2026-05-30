@@ -580,6 +580,16 @@
       gap: 18px;
     }
 
+    .right-stack {
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+
+    .grid {
+      align-items: stretch;
+    }
+
     .output-tabs {
       display: inline-flex;
       gap: 4px;
@@ -1094,6 +1104,7 @@
                 <button class="btn" id="fix-lengths" type="button">修正 s 长度</button>
                 <button class="btn secondary" id="parse-serialized" type="button">反向解析</button>
                 <button class="btn secondary" id="copy-as-php-class" type="button">复制为PHP类</button>
+                <button class="btn secondary" id="pseudo-to-php" type="button">伪代码→PHP</button>
                 <button class="btn secondary" id="decode-url-input" type="button">URL解码</button>
                 <button class="btn secondary" id="decode-base64-input" type="button">Base64解码</button>
                 <button class="btn secondary" id="send-manual-to-query" type="button">发送为URL查询新参数</button>
@@ -1105,7 +1116,7 @@
             <div id="mode-oneclick" class="form mode-panel hidden">
               <label>
                 粘贴PHP类代码
-                <textarea id="php-class-input" spellcheck="false" style="min-height:150px;">class DemoByzekon{
+                <textarea id="php-class-input" spellcheck="false" style="min-height:150px;">class DemoByZekon{
     public $a = "admin";
     public $b = "whoami";
     public $c = 1;
@@ -1136,11 +1147,14 @@
                     <span class="exploit-tag">可用于 CVE-2016-7124 一键绕过</span>
                     <span class="exploit-tag">PHP &lt; 5.6.25 / &lt; 7.0.10</span>
                   </div>
-                  <p class="note">扫描当前 Payload 中所有 <code>O:N:"类名":</code>，显示每个对象的属性计数并可单独修改。将属性计数改为大于实际属性数即可跳过 <code>__wakeup()</code>。</p>
+                  <p class="note">扫描当前 Payload 中所有 <code>O:N:"类名":</code>，显示每个对象的属性计数并可单独修改。将属性计数改为大于实际属性数即可跳过
+                    <code>__wakeup()</code>。
+                  </p>
                   <div id="count-editor-list" class="repeat-list"></div>
                   <div class="actions" style="margin-top:10px;">
                     <button class="btn" id="count-editor-apply" type="button">应用修改</button>
                     <button class="btn secondary" id="count-editor-scan" type="button">重新扫描</button>
+                    <button class="btn secondary" id="count-editor-to-query" type="button">发送为URL查询新参数</button>
                   </div>
                 </div>
 
@@ -1149,24 +1163,33 @@
                     <h3 class="exploit-title">字符串逃逸辅助</h3>
                     <span class="exploit-tag">str_replace / preg_replace 替换逃逸</span>
                   </div>
-                  <p class="note">输入源串和替换规则，计算逃逸差值和所需 padding，辅助构造字符串逃逸攻击。</p>
+                  <p class="note">输入源串和替换规则，自动计算替换后完整串、字节差值。</p>
                   <label>
                     源序列化串
-                    <textarea id="escape-source" spellcheck="false" placeholder="O:3:"
-                      Foo":2:{s:1:"a";s:3:"aaa";s:1:"b";s:3:"bbb";}">O:3:"Foo":2:{s:1:"a";s:3:"aaa";s:1:"b";s:3:"bbb";}</textarea>
+                    <textarea id="escape-source" spellcheck="false"
+                      placeholder='粘贴原始序列化串，或点击「套用输出区」'></textarea>
                   </label>
-                  <div class="triple">
+                  <div class="actions" style="margin-bottom:12px;">
+                    <button class="btn secondary" id="escape-load-output" type="button">套用输出区当前内容</button>
+                  </div>
+                  <div class="row">
                     <label>
                       查找 (被替换)
-                      <input id="escape-find" value="aaa" placeholder="被替换的字符">
+                      <input id="escape-find" value="" placeholder="被替换的内容">
                     </label>
                     <label>
                       替换为
-                      <input id="escape-replace" value="b" placeholder="替换成的字符">
+                      <input id="escape-replace" value="" placeholder="替换成的内容">
+                    </label>
+                  </div>
+                  <div class="row">
+                    <label>
+                      替换次数 (-1 = 全部)
+                      <input id="escape-count" type="number" value="-1" min="-1" max="9999" placeholder="-1">
                     </label>
                     <label>
-                      插入目标位置
-                      <input id="escape-target" value="" placeholder="如 s:1:&quot;b&quot;;  为空则自动追加">
+                      递归层数 (-1 = 完全递归)
+                      <input id="escape-depth" type="number" value="1" min="-1" max="99" placeholder="1">
                     </label>
                   </div>
                   <div class="actions">
@@ -1175,28 +1198,54 @@
                   <div class="exploit-diff hidden" id="escape-diff-box">
                     <pre id="escape-diff"></pre>
                   </div>
+
+                  <div class="exploit-header" style="margin-top:16px;">
+                    <h3 class="exploit-title">替换对比</h3>
+                  </div>
+                  <div class="actions">
+                    <button class="btn secondary" id="escape-copy-before" type="button">复制替换前串</button>
+                    <button class="btn" id="escape-compare" type="button">直观对比</button>
+                    <button class="btn secondary" id="escape-copy-after" type="button">复制替换后串</button>
+                    <button class="btn secondary" id="escape-to-query" type="button">发送为URL查询新参数</button>
+                  </div>
+                  <div class="exploit-diff hidden" id="escape-compare-box" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div>
+                      <div style="font-weight:700;margin-bottom:6px;color:var(--accent-strong);">替换前</div>
+                      <pre id="escape-compare-before" style="margin:0;min-height:100px;"></pre>
+                    </div>
+                    <div>
+                      <div style="font-weight:700;margin-bottom:6px;color:var(--accent-strong);">替换后</div>
+                      <pre id="escape-compare-after" style="margin:0;min-height:100px;"></pre>
+                    </div>
+                  </div>
                 </div>
 
                 <div class="exploit-section">
                   <div class="exploit-header">
                     <h3 class="exploit-title">引用链 (R:reference)</h3>
+                    <span class="exploit-tag">R:N = 第N个被反序列化的元素</span>
                   </div>
-                  <p class="note">在序列化字符串中插入引用段 <code>R:N;</code>，让多个属性指向同一内存地址。R 值从 1 开始编号。</p>
-                  <div class="row">
-                    <label>
-                      引用目标 R 值
-                      <input id="ref-target" type="number" value="1" min="1" placeholder="引用第几个对象">
-                    </label>
-                    <label>
-                      插入位置 (字节偏移)
-                      <input id="ref-pos" type="number" value="0" min="0" placeholder="0=末尾">
-                    </label>
+                  <p class="note">PHP 按反序列化顺序给每个元素（对象/数组/字符串等）编号。R:1 = 第1个被创建的元素。</p>
+                  <label>
+                    序列化串
+                    <textarea id="ref-source" spellcheck="false" style="min-height:60px;" placeholder='粘贴序列化串，或点击「读取输出区」'></textarea>
+                  </label>
+                  <div class="actions" style="margin-bottom:8px;">
+                    <button class="btn secondary" id="ref-load-output" type="button">读取输出区</button>
+                    <button class="btn secondary" id="ref-parse" type="button">解析属性</button>
                   </div>
-                  <div class="actions">
-                    <button class="btn" id="insert-ref" type="button">插入 R:reference</button>
+                  <div id="ref-prop-list" class="repeat-list"></div>
+                  <div id="ref-targets" class="repeat-list" style="margin-top:8px;"></div>
+                  <div class="actions" style="margin-top:8px;">
+                    <button class="btn" id="insert-ref" type="button">替换为 R:reference</button>
                   </div>
-                  <div class="exploit-diff hidden" id="ref-diff-box">
-                    <pre id="ref-diff"></pre>
+                  <div class="exploit-diff hidden" id="ref-diff-box" style="margin-top:8px;">
+                    <textarea id="ref-output" spellcheck="false" style="min-height:60px;width:100%;font:13px var(--mono);"></textarea>
+                  </div>
+                  <div class="actions" style="margin-top:6px;">
+                    <button class="btn secondary" id="ref-copy" type="button">复制</button>
+                    <button class="btn secondary" id="ref-reinput" type="button">放回</button>
+                    <button class="btn secondary" id="ref-to-query" type="button">发送为URL查询新参数</button>
                   </div>
                 </div>
 
@@ -1205,7 +1254,7 @@
           </div>
         </div>
 
-        <div class="panel">
+        <div class="panel" style="margin-top:12px;">
           <div class="panel-head">
             <div>
               <h2 class="panel-title">URL查询参数</h2>
@@ -1240,66 +1289,68 @@
         </div>
       </div>
 
-      <div class="panel">
-        <div class="panel-head">
-          <h2 class="panel-title">输出区</h2>
-          <div class="output-tabs" role="tablist" aria-label="输出类型">
-            <button class="output-tab active" data-output-target="construct" type="button">构造输出</button>
-            <button class="output-tab" data-output-target="query" type="button">查询串输出</button>
-          </div>
-          <div class="actions">
-            <button class="mini-btn secondary" id="copy-output" type="button">复制</button>
-            <button class="mini-btn secondary" id="copy-unserialize-wrapper" type="button">复制 unserialize(...)</button>
-            <button class="mini-btn secondary" id="refresh-query-string" type="button">刷新查询串</button>
-            <button class="mini-btn secondary" id="clear-output" type="button">清空</button>
-          </div>
-        </div>
-        <div class="panel-body output-box">
-          <textarea id="output" class="payload" spellcheck="false"></textarea>
-          <div class="codec-bar">
-            <div class="codec-toggle" role="group" aria-label="编解码模式">
-              <button class="codec-mode active" data-codec-mode="encode" type="button">编码</button>
-              <button class="codec-mode" data-codec-mode="decode" type="button">解码</button>
+      <div class="right-stack">
+        <div class="panel">
+          <div class="panel-head">
+            <h2 class="panel-title">输出区</h2>
+            <div class="output-tabs" role="tablist" aria-label="输出类型">
+              <button class="output-tab active" data-output-target="construct" type="button">构造输出</button>
+              <button class="output-tab" data-output-target="query" type="button">查询串输出</button>
             </div>
             <div class="actions">
-              <button class="btn secondary" id="url-codec" type="button">URL编码</button>
-              <button class="btn secondary" id="url-all-codec" type="button">URL全编码</button>
-              <button class="btn secondary" id="base64-codec" type="button">Base64编码</button>
-              <button class="btn secondary" id="toggle-manual-url" type="button">手动URL编码</button>
+              <button class="mini-btn secondary" id="copy-output" type="button">复制</button>
+              <button class="mini-btn secondary" id="copy-unserialize-wrapper" type="button">复制 unserialize(...)</button>
+              <button class="mini-btn secondary" id="refresh-query-string" type="button">刷新查询串</button>
+              <button class="mini-btn secondary" id="clear-output" type="button">清空</button>
             </div>
           </div>
-          <div class="manual-url hidden" id="manual-url-panel">
-            <div class="encode-header">
-              <span class="encode-title">选取编码区域</span>
+          <div class="panel-body output-box">
+            <textarea id="output" class="payload" spellcheck="false"></textarea>
+            <div class="codec-bar">
+              <div class="codec-toggle" role="group" aria-label="编解码模式">
+                <button class="codec-mode active" data-codec-mode="encode" type="button">编码</button>
+                <button class="codec-mode" data-codec-mode="decode" type="button">解码</button>
+              </div>
               <div class="actions">
-                <button class="mini-btn secondary" id="add-section-mark" type="button">Add §</button>
-                <button class="mini-btn secondary" id="clear-section-marks" type="button">Clear §</button>
-                <button class="mini-btn" id="encode-selected-section" type="button">仅编码选中部分</button>
+                <button class="btn secondary" id="url-codec" type="button">URL编码</button>
+                <button class="btn secondary" id="url-all-codec" type="button">URL全编码</button>
+                <button class="btn secondary" id="base64-codec" type="button">Base64编码</button>
+                <button class="btn secondary" id="toggle-manual-url" type="button">手动URL编码</button>
               </div>
             </div>
-            <p class="note" style="margin-bottom:8px;">在输出区选中文本，点击「Add §」插入标记，标记之间的内容会被全量URL编码。支持多段选取。</p>
-            <div class="encode-header" style="margin-top:12px;">
-              <span class="encode-title">勾选需要编码的字符</span>
-              <div class="actions">
-                <button class="mini-btn secondary" id="select-all-url" type="button">全选</button>
-                <button class="mini-btn secondary" id="deselect-all-url" type="button">全不选</button>
-                <button class="mini-btn" id="apply-manual-url" type="button">应用</button>
+            <div class="manual-url hidden" id="manual-url-panel">
+              <div class="encode-header">
+                <span class="encode-title">选取编/解码区域</span>
+                <div class="actions">
+                  <button class="mini-btn secondary" id="add-section-mark" type="button">Add §</button>
+                  <button class="mini-btn secondary" id="clear-section-marks" type="button">Clear §</button>
+                  <button class="mini-btn" id="encode-selected-section" type="button">仅编码选中部分</button>
+                </div>
               </div>
+              <p class="note" style="margin-bottom:8px;">在输出区选中文本，点击「Add §」插入标记，标记之间的内容会被全量编/解码。支持多段选取。</p>
+              <div class="encode-header" style="margin-top:12px;">
+                <span class="encode-title">勾选需要编/解码的字符</span>
+                <div class="actions">
+                  <button class="mini-btn secondary" id="select-all-url" type="button">全选</button>
+                  <button class="mini-btn secondary" id="deselect-all-url" type="button">全不选</button>
+                  <button class="mini-btn" id="apply-manual-url" type="button">应用编码</button>
+                </div>
+              </div>
+              <div class="encode-options" id="manual-url-options"></div>
             </div>
-            <div class="encode-options" id="manual-url-options"></div>
-          </div>
-          <div class="stats">
-            <div class="stat">
-              <span>字符数</span>
-              <strong id="char-count">0</strong>
-            </div>
-            <div class="stat">
-              <span>UTF-8字节</span>
-              <strong id="byte-count">0</strong>
-            </div>
-            <div class="stat">
-              <span>s 段数量</span>
-              <strong id="string-count">0</strong>
+            <div class="stats">
+              <div class="stat">
+                <span>字符数</span>
+                <strong id="char-count">0</strong>
+              </div>
+              <div class="stat">
+                <span>UTF-8字节</span>
+                <strong id="byte-count">0</strong>
+              </div>
+              <div class="stat">
+                <span>s 段数量</span>
+                <strong id="string-count">0</strong>
+              </div>
             </div>
           </div>
         </div>
@@ -1680,7 +1731,21 @@
       readQuotedByteString(afterQuote) {
         const length = this.readInteger(":");
         this.consume('"');
-        const value = this.readByteString(length);
+        const start = this.pos;
+        // 严格按字节数读取（正确处理转义）
+        let bytes = 0;
+        while (this.pos < this.text.length && bytes < length) {
+          const ch = this.text[this.pos];
+          if (ch === '\\' && this.pos + 1 < this.text.length) {
+            this.pos += 2; bytes += 1;
+          } else if (ch.charCodeAt(0) === 0) {
+            this.pos += 1; bytes += 1;
+          } else {
+            this.pos += 1; bytes += 1;
+          }
+        }
+        const value = this.text.slice(start, this.pos);
+        // 严格检查闭合
         this.consume('"');
         this.consume(afterQuote);
         return value;
@@ -1869,6 +1934,7 @@
       // 解码模式下URL全编码/解码与普通解码效果相同，隐藏避免混淆
       $("#url-all-codec").classList.toggle("hidden", mode === "decode");
       $("#encode-selected-section").textContent = mode === "encode" ? "仅编码选中部分" : "仅解码选中部分";
+      $("#apply-manual-url").textContent = mode === "encode" ? "应用编码" : "应用解码";
     }
 
     // 智能URL编码：如果内容是 query string 格式，只编码值部分，保留 = 和 &
@@ -1918,6 +1984,17 @@
         $$(".mode-panel").forEach((panel) => panel.classList.add("hidden"));
         button.classList.add("active");
         $(`#mode-${button.dataset.mode}`).classList.remove("hidden");
+        // 实战tab时把URL查询参数移到右边，其他tab时放左边
+        const queryPanel = $(".panel:has(#query-param-list)");
+        const rightStack = $(".right-stack");
+        const leftStack = $(".left-stack");
+        if (queryPanel && rightStack && leftStack) {
+          if (button.dataset.mode === "exploit") {
+            rightStack.appendChild(queryPanel);
+          } else {
+            leftStack.appendChild(queryPanel);
+          }
+        }
       });
     });
 
@@ -2429,11 +2506,11 @@
     });
 
     $("#load-flat-demo").addEventListener("click", () => {
-      $("#php-class-input").value = 'class DemoByzekon{\n    public $a = "admin";\n    public $b = "whoami";\n    public $c = 1;\n}';
+      $("#php-class-input").value = 'class DemoByZekon{\n    public $a = "admin";\n    public $b = "whoami";\n    public $c = 1;\n}';
     });
 
     $("#load-recursive-demo").addEventListener("click", () => {
-      $("#php-class-input").value = 'class DemoByzekon{\n    public $a = A {\n        public $b = B {\n            public $c = C {\n                public $d = "flag.php";\n            };\n        };\n    };\n}';
+      $("#php-class-input").value = 'class DemoByZekon{\n    public $a = A {\n        public $b = B {\n            public $c = C {\n                public $d = D {\n                    public $e = "include \'flag.php\';echo $flag;";\n                };\n            };\n        };\n    };\n}';
     });
 
     $("#send-oneclick-to-query").addEventListener("click", () => {
@@ -2552,6 +2629,95 @@
       }
     });
 
+    // 伪代码 → PHP类（保留嵌套对象结构）
+    function pseudoToPhp(str) {
+      const lines = str.split('\n');
+      const classes = [];
+      let currentClass = null;
+      let indent = 0;
+
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith('//')) continue;
+
+        // class ClassName { 或 ClassName {
+        const classMatch = trimmed.match(/^(?:class\s+)?(\w+)\s*\{?\s*$/);
+        if (classMatch && !trimmed.includes('=')) {
+          if (currentClass) classes.push(currentClass);
+          currentClass = { name: classMatch[1], props: [] };
+          indent = line.search(/\S/);
+          continue;
+        }
+
+        // public $prop = value; 或 public $prop = new ClassName();
+        const propMatch = trimmed.match(/^(?:public|protected|private|var)?\s*\$?(\w+)\s*=\s*(.+);?\s*$/);
+        if (propMatch && currentClass) {
+          let visibility = 'public';
+          if (trimmed.startsWith('protected')) visibility = 'protected';
+          else if (trimmed.startsWith('private')) visibility = 'private';
+
+          let value = propMatch[2].trim();
+          // 检查值是否是嵌套对象（以类名开头后跟 {）
+          const nestedMatch = value.match(/^(\w+)\s*\{/);
+          if (nestedMatch) {
+            // 递归处理嵌套对象
+            const nestedName = nestedMatch[1];
+            // 找到对应的嵌套代码块
+            value = `new ${nestedName}()`;
+          }
+          currentClass.props.push({ visibility, name: propMatch[1], value });
+        }
+
+        // } 关闭类
+        if (trimmed === '}') {
+          if (currentClass) {
+            classes.push(currentClass);
+            currentClass = null;
+          }
+        }
+      }
+      if (currentClass) classes.push(currentClass);
+
+      // 生成PHP代码
+      return classes.map(cls => {
+        let php = `class ${cls.name}{\n`;
+        cls.props.forEach(p => {
+          php += `    ${p.visibility} $${p.name} = ${p.value};\n`;
+        });
+        php += '}';
+        return php;
+      }).join('\n\n');
+    }
+
+    $("#pseudo-to-php").addEventListener("click", async () => {
+      const input = $("#manual-input").value;
+      if (!input.trim()) { alert("请先粘贴伪代码或序列化串"); return; }
+
+      // 先尝试作为序列化串解析
+      try {
+        const parsed = parseSerialized(input);
+        if (parsed.type === "object") {
+          const result = parsedObjectToPhpClass(parsed);
+          if (result) {
+            const phpCode = Array.isArray(result) ? result.join("\n\n") : result;
+            await copyText(phpCode, "#manual-input");
+            return;
+          }
+        }
+      } catch (e) {}
+
+      // 尝试作为伪代码解析
+      try {
+        const phpCode = pseudoToPhp(input);
+        if (phpCode) {
+          await copyText(phpCode, "#manual-input");
+          return;
+        }
+      } catch (e) {}
+
+      alert("无法解析输入内容");
+    });
+
     $("#decode-url-input").addEventListener("click", () => {
       try {
         $("#manual-input").value = decodeURIComponent($("#manual-input").value);
@@ -2638,6 +2804,7 @@
       { char: "^", encoded: "%5E", label: "^", desc: "脱字符", checked: false },
       { char: "|", encoded: "%7C", label: "|", desc: "竖线", checked: false },
       { char: "~", encoded: "%7E", label: "~", desc: "波浪号", checked: false },
+      { char: "_", encoded: "%5F", label: "_", desc: "下划线", checked: false },
     ];
 
     function renderManualUrlOptions() {
@@ -2873,101 +3040,597 @@
     });
 
     // --- 字符串逃逸辅助 ---
+    // 套用输出区当前内容到源序列化串（保留真实字节，不用 visibleNulls）
+    $("#escape-load-output").addEventListener("click", () => {
+      const payload = getOutputReal();
+      if (!payload) { alert("输出区为空"); return; }
+      $("#escape-source").value = payload;
+    });
+
+    function replaceLimited(str, find, repl, maxCount) {
+      // 单层替换，返回 { result, matchCount }
+      if (maxCount < 0) {
+        const count = (str.split(find).length - 1);
+        return { result: str.split(find).join(repl), matchCount: count };
+      }
+      let result = "";
+      let count = 0;
+      let pos = 0;
+      while (pos < str.length) {
+        const idx = str.indexOf(find, pos);
+        if (idx < 0 || count >= maxCount) { result += str.slice(pos); break; }
+        result += str.slice(pos, idx) + repl;
+        pos = idx + find.length;
+        count++;
+      }
+      return { result, matchCount: count };
+    }
+
     $("#escape-calc").addEventListener("click", () => {
       const source = $("#escape-source").value;
       const find = $("#escape-find").value;
-      const replace = $("#escape-replace").value;
-      const target = $("#escape-target").value;
+      const repl = $("#escape-replace").value;
+      const maxCount = parseInt($("#escape-count").value, 10);
+      const maxDepth = parseInt($("#escape-depth").value, 10);
       const box = $("#escape-diff-box");
       const diff = $("#escape-diff");
 
       if (!source || !find) { alert("请填写源串和查找内容"); return; }
 
-      const count = (source.split(find).length - 1);
-      if (count === 0) { alert(`源串中未找到 "${find}"`); return; }
-
       const findByteLen = byteLen(find);
-      const replaceByteLen = byteLen(replace);
-      const diffPer = replaceByteLen - findByteLen; // 每次替换的字节差
-      const totalDiff = diffPer * count;             // 总字节差
+      const replaceByteLen = byteLen(repl);
+      const diffPer = replaceByteLen - findByteLen;
 
       let lines = [];
-      lines.push(`查找: "${find}" (${findByteLen} 字节/次)`);
-      lines.push(`替换: "${replace}" (${replaceByteLen} 字节/次)`);
-      lines.push(`匹配次数: ${count}`);
-      lines.push(`每次替换字节差: ${diffPer > 0 ? "+" : ""}${diffPer}`);
-      lines.push(`总字节差: ${totalDiff > 0 ? "+" : ""}${totalDiff}`);
-      lines.push("");
+      lines.push(`════════════════════════════════`);
+      lines.push(`  查找 (被替换)`);
+      lines.push(`════════════════════════════════`);
+      lines.push(find);
+      lines.push(`  (${findByteLen} 字节)`);
+      lines.push(``);
+      lines.push(`════════════════════════════════`);
+      lines.push(`  替换为`);
+      lines.push(`════════════════════════════════`);
+      lines.push(repl);
+      lines.push(`  (${replaceByteLen} 字节)`);
+      lines.push(``);
+      lines.push(`──────────────────────────────────`);
+      lines.push(`  每次字节差: ${diffPer > 0 ? "+" : ""}${diffPer}`);
+      lines.push(`  递归层数: ${maxDepth < 0 ? "完全递归" : maxDepth}`);
+      lines.push(`──────────────────────────────────`);
 
-      if (totalDiff < 0) {
-        lines.push(`⚠️ 字符串缩短了 ${Math.abs(totalDiff)} 字节`);
-        lines.push(`  → 需要额外填充 ${Math.abs(totalDiff)} 字节使 s:长度 匹配`);
-        lines.push(`  → 填充内容追加到 payload 末尾或指定位置`);
-      } else if (totalDiff > 0) {
-        lines.push(`⚠️ 字符串增长了 ${totalDiff} 字节`);
-        lines.push(`  → s:长度 会溢出，可以吃掉后续字节`);
-        lines.push(`  → 溢出长度 = ${totalDiff} 字节`);
-      } else {
-        lines.push(`✅ 字节差为 0，替换前后长度一致`);
+      // 替换次数或递归层数为 0 时不执行替换
+      if (maxCount === 0 || maxDepth === 0) {
+        let reason;
+        if (maxCount === 0 && maxDepth === 0) reason = "替换次数和递归层数均为: 0";
+        else if (maxCount === 0) reason = "替换次数: 0";
+        else reason = "递归层数: 0";
+        lines.push(``);
+        lines.push(`${reason}    不执行替换`);
+        lines.push(`──────────────────────────────────`);
+        lines.push(`  共替换 0 处`);
+        lines.push(`──────────────────────────────────`);
+        escapeLastBefore = source;
+        escapeLastAfter = source;
+        box.classList.remove("hidden");
+        diff.innerHTML = lines.join("\n");
+        return;
       }
 
-      // 生成替换后的结果
-      let result = source;
-      const resultParts = [];
-      let pos = 0;
-      let matchCount = 0;
-      while (pos < result.length) {
-        const idx = result.indexOf(find, pos);
-        if (idx < 0) { resultParts.push(result.slice(pos)); break; }
-        resultParts.push(result.slice(pos, idx));
-        resultParts.push(`<span class="diff-add">${replace}</span>`);
-        pos = idx + find.length;
-        matchCount++;
-      }
-      lines.push("");
-      lines.push(`替换后 Payload:`);
-      lines.push(resultParts.join(""));
+      // 递归替换
+      let current = source;
+      let depth = 0;
+      let grandTotalReplaced = 0;
+      const maxIter = maxDepth <= 0 ? 999 : maxDepth;
 
-      if (target) {
-        lines.push("");
-        lines.push(`📌 插入位置 "${target}" 前`);
-        const insertPos = source.indexOf(target);
-        if (insertPos < 0) {
-          lines.push(`  ⚠️ 未在源串中找到 "${target}"`);
-        } else {
-          if (totalDiff < 0) {
-            const padding = "A".repeat(Math.abs(totalDiff));
-            lines.push(`  在 "${target}" 前插入填充: "${padding}" (${Math.abs(totalDiff)} 字节)`);
-            lines.push(`  修正后: ...${source.slice(0, insertPos)}<span class="diff-add">${padding}</span>${target}${source.slice(insertPos + target.length)}...`);
-          }
-        }
+      while (depth < maxIter) {
+        const { result, matchCount } = replaceLimited(current, find, repl, maxCount);
+        if (matchCount === 0) break;
+        depth++;
+        grandTotalReplaced += matchCount;
+
+        lines.push(``);
+        lines.push(`── 第 ${depth} 层替换 (${matchCount} 处) ──`);
+        lines.push(result);
+
+        current = result;
+        // 完全递归模式下，如果替换后没有新的匹配就停止
+        if (maxDepth <= 0 && current.indexOf(find) < 0) break;
       }
+
+      lines.push(``);
+      lines.push(`──────────────────────────────────`);
+      lines.push(`  共替换 ${grandTotalReplaced} 处`);
+      lines.push(`──────────────────────────────────`);
+
+      // 记录结果供对比和复制使用
+      escapeLastBefore = source;
+      escapeLastAfter = current;
 
       box.classList.remove("hidden");
       diff.innerHTML = lines.join("\n");
     });
 
-    // --- R:reference 插入 ---
-    $("#insert-ref").addEventListener("click", () => {
+    let escapeLastBefore = "";
+    let escapeLastAfter = "";
+
+    $("#escape-copy-before").addEventListener("click", () => {
+      if (!escapeLastBefore) { alert("请先点击「计算逃逸」"); return; }
+      copyText(escapeLastBefore, "#escape-source");
+    });
+
+    $("#escape-copy-after").addEventListener("click", () => {
+      if (!escapeLastAfter) { alert("请先点击「计算逃逸」"); return; }
+      copyText(escapeLastAfter, "#escape-source");
+    });
+
+    // --- 替换对比：自动解析属性变化 ---
+    function normalizeEscapes(str) {
+      // 将用户输入的转义序列还原为真实字节
+      // 优先处理 \\0 (已转义的) → \0 (显示格式)，然后再处理 \0 → 真实 null
+      return str.replace(/\\\\0/g, '\x00')
+                .replace(/\\0/g, '\x00')
+                .replace(/\\n/g, '\n')
+                .replace(/\\t/g, '\t')
+                .replace(/\\r/g, '\r')
+                .replace(/\\"/g, '"')
+                .replace(/\\\\/g, '\\');
+    }
+
+    function readSerializedString(str, startPos) {
+      // 从 startPos 开始读取 s:N:"..."; 返回 { value, endPos, valueBytes }
+      // 按 PHP 字节规则处理转义: \0=1字节, \\=1字节, \n=1字节, 真实null=1字节, 其他=1字节
+      const m = str.slice(startPos).match(/^s:(\d+):"/);
+      if (!m) return null;
+      const valueBytes = parseInt(m[1], 10);
+      const contentStart = startPos + m[0].length;
+      let pos = contentStart;
+      let bytesRead = 0;
+      while (pos < str.length && bytesRead < valueBytes) {
+        const ch = str[pos];
+        if (ch === '\\' && pos + 1 < str.length) {
+          // 转义序列: \0, \n, \\, \", 等 — PHP 按 1 字节计
+          pos += 2; bytesRead += 1;
+        } else if (ch.charCodeAt(0) === 0) {
+          // 真实 null 字节
+          pos += 1; bytesRead += 1;
+        } else {
+          pos += 1; bytesRead += 1;
+        }
+      }
+      const rawValue = str.slice(contentStart, pos);
+      // 将显示格式 \0 还原为真实 null 字节
+      const value = rawValue.replace(/\\0/g, '\0');
+      // 跳过 ";
+      if (str[pos] === '"' && str[pos + 1] === ';') pos += 2;
+      return { value, endPos: pos, valueBytes };
+    }
+
+    function skipSerializedValue(str, startPos) {
+      const type = str[startPos];
+      if (type === 's') {
+        const r = readSerializedString(str, startPos);
+        return r ? r.endPos : startPos + 1;
+      }
+      if (type === 'i') {
+        const m = str.slice(startPos).match(/^i:-?\d+;/);
+        return m ? startPos + m[0].length : startPos + 1;
+      }
+      if (type === 'b') {
+        const m = str.slice(startPos).match(/^b:[01];/);
+        return m ? startPos + m[0].length : startPos + 1;
+      }
+      if (type === 'N') return startPos + 2;
+      if (type === 'R' || type === 'r') {
+        const m = str.slice(startPos).match(/^[Rr]:\d+;/);
+        return m ? startPos + m[0].length : startPos + 1;
+      }
+      if (type === 'd') {
+        const m = str.slice(startPos).match(/^d:[^;]+;/);
+        return m ? startPos + m[0].length : startPos + 1;
+      }
+      if (type === 'O') {
+        const m = str.slice(startPos).match(/^O:\d+:"[^"]+":\d+:\{/);
+        if (!m) return startPos + 1;
+        let pos = startPos + m[0].length;
+        let depth = 1;
+        while (pos < str.length && depth > 0) {
+          if (str[pos] === '{') depth++;
+          else if (str[pos] === '}') depth--;
+          pos++;
+        }
+        return pos;
+      }
+      if (type === 'a') {
+        const m = str.slice(startPos).match(/^a:\d+:\{/);
+        if (!m) return startPos + 1;
+        let pos = startPos + m[0].length;
+        let depth = 1;
+        while (pos < str.length && depth > 0) {
+          if (str[pos] === '{') depth++;
+          else if (str[pos] === '}') depth--;
+          pos++;
+        }
+        return pos;
+      }
+      return startPos + 1;
+    }
+
+    function analyzeSerializedProps(str) {
+      // 先将所有转义序列还原为真实字节，让解析器按真实字节计数
+      str = normalizeEscapes(str);
+      const headerMatch = str.match(/O:(\d+):"([^"]+)":(\d+):/);
+      const header = headerMatch ? {
+        byteLen: parseInt(headerMatch[1], 10),
+        className: headerMatch[2],
+        propCount: parseInt(headerMatch[3], 10)
+      } : null;
+
+      const props = [];
+      let pos = headerMatch ? headerMatch.index + headerMatch[0].length : 0;
+      const maxProps = header ? header.propCount : 99;
+
+      for (let i = 0; i < maxProps && pos < str.length; i++) {
+        // 读取属性名 s:N:"name";
+        const nameInfo = readSerializedString(str, pos);
+        if (!nameInfo) break;
+        const rawName = nameInfo.value;
+        pos = nameInfo.endPos;
+
+        // 读取属性值
+        const valStart = pos;
+        pos = skipSerializedValue(str, pos);
+        const valStr = str.slice(valStart, pos);
+
+        // 解析值字节数
+        let valueBytes = 0;
+        const vm = valStr.match(/^s:(\d+):/);
+        if (vm) valueBytes = parseInt(vm[1], 10);
+        else if (valStr.startsWith('i:')) valueBytes = valStr.length;
+        else if (valStr.startsWith('b:')) valueBytes = valStr.length;
+        else if (valStr.startsWith('N;')) valueBytes = 0;
+        else valueBytes = valStr.length;
+
+        // 属性名显示
+        const nameDisplay = rawName.includes("\0")
+          ? rawName.replace(/\0\*\0/g, "(protected)").replace(/\0([^\0]+)\0/g, "(private:$1)").replace(/\0/g, "\\0")
+          : rawName;
+
+        props.push({
+          name: rawName,
+          nameDisplay,
+          nameBytes: nameInfo.valueBytes,
+          valueBytes,
+          valueStr: valStr,
+          totalBytes: nameInfo.valueBytes + valueBytes
+        });
+      }
+      return { header, props };
+    }
+
+    function toPhpClass(str) {
+      try {
+        const parsed = parseSerialized(str);
+        const result = parsedObjectToPhpClass(parsed);
+        if (!result) return "(解析失败)";
+        return Array.isArray(result) ? result.join("\n\n") : result;
+      } catch (e) {
+        return `(解析出错: ${e.message})`;
+      }
+    }
+
+    $("#escape-compare").addEventListener("click", () => {
+      const beforeStr = (escapeLastBefore || $("#escape-source").value).trim();
+      const afterStr = (escapeLastAfter || "").trim();
+      const box = $("#escape-compare-box");
+
+      if (!beforeStr || !afterStr) { alert("请先点击「计算逃逸」生成替换结果"); return; }
+
+      box.classList.remove("hidden");
+      $("#escape-compare-before").textContent = toPhpClass(beforeStr);
+      $("#escape-compare-after").textContent = toPhpClass(afterStr);
+    });
+
+    // --- R:reference ---
+    // PHP 反序列化排号规则：每个对象(O)、数组(a)、字符串(s)都按顺序编号
+    // int(i)、bool(b)、null(N)、引用(R) 不占编号
+    function parseRefPropsRobust(str) {
+      const header = str.match(/O:\d+:"([^"]+)":(\d+):\{/);
+      if (!header) return { flatProps: [], header: null };
+
+      const className = header[1];
+      const declaredCount = parseInt(header[2], 10);
+      const flatProps = [];
+      let globalIdx = 0;
+      let rNumber = 0; // PHP 反序列化 R 编号
+
+      function findMatchingBrace(start) {
+        let depth = 1;
+        let p = start;
+        while (p < str.length && depth > 0) {
+          if (str[p] === '{') depth++;
+          else if (str[p] === '}') depth--;
+          p++;
+        }
+        return p;
+      }
+
+      // 跳过一个值，返回结束位置
+      function skipValue(start) {
+        const ch = str[start];
+        if (ch === 'O') {
+          const m = str.slice(start).match(/^O:\d+:"[^"]+":\d+:\{/);
+          if (m) return findMatchingBrace(start + m[0].length - 1);
+          return start + 1;
+        }
+        if (ch === 'a') {
+          const m = str.slice(start).match(/^a:\d+:\{/);
+          if (m) return findMatchingBrace(start + m[0].length - 1);
+          return start + 1;
+        }
+        if (ch === 's') {
+          const m = str.slice(start).match(/^s:(\d+):"/);
+          if (m) {
+            const byteCount = parseInt(m[1], 10);
+            let p = start + m[0].length;
+            let bytes = 0;
+            while (p < str.length && bytes < byteCount) {
+              if (str[p] === '\\' && p + 1 < str.length) { p += 2; bytes += 1; }
+              else { p += 1; bytes += 1; }
+            }
+            if (str[p] === '"' && str[p + 1] === ';') return p + 2;
+            const sc = str.indexOf('";', p);
+            return sc >= 0 ? sc + 2 : str.length;
+          }
+        }
+        if (ch === 'i') { const m = str.slice(start).match(/^i:-?\d+;/); return m ? start + m[0].length : str.length; }
+        if (ch === 'b') { const m = str.slice(start).match(/^b:[01];/); return m ? start + m[0].length : str.length; }
+        if (ch === 'N') return start + 2;
+        if (ch === 'R' || ch === 'r') { const m = str.slice(start).match(/^[Rr]:\d+;/); return m ? start + m[0].length : str.length; }
+        if (ch === 'd') { const m = str.slice(start).match(/^d:[^;]+;/); return m ? start + m[0].length : str.length; }
+        return str.length;
+      }
+
+      // 解析属性名 s:N:"name"; 并分配 R 编号
+      function readPropName(start) {
+        const m = str.slice(start).match(/^s:(\d+):"((?:\\.|[^"\\])*)";/);
+        if (!m) return null;
+        rNumber++; // 字符串占一个编号
+        return {
+          rawName: m[2].replace(/\\0/g, '\0'),
+          endPos: start + m[0].length,
+          nameR: rNumber
+        };
+      }
+
+      function parseProps(startPos, maxProps, depth) {
+        let pos = startPos;
+        const props = [];
+        for (let i = 0; i < maxProps && pos < str.length; i++) {
+          while (pos < str.length && /\s/.test(str[pos])) pos++;
+          if (str[pos] === '}' || pos >= str.length) break;
+
+          // 读取属性名（字符串，占一个 R 编号）
+          const nameInfo = readPropName(pos);
+          if (!nameInfo) break;
+          pos = nameInfo.endPos;
+
+          // 读取属性值
+          const valStart = pos;
+          const valEnd = skipValue(pos);
+          const valStr = str.slice(valStart, valEnd);
+          pos = valEnd;
+
+          // 值如果是字符串(O/a/s)也占一个 R 编号
+          let valR = 0;
+          if (valStr[0] === 'O' || valStr[0] === 'a' || valStr[0] === 's') {
+            rNumber++;
+            valR = rNumber;
+          }
+
+          // 解析属性名显示
+          let nameDisplay = nameInfo.rawName;
+          let visibility = "public";
+          if (nameInfo.rawName.startsWith("\0*\0")) { visibility = "protected"; nameDisplay = nameInfo.rawName.slice(3); }
+          else if (nameInfo.rawName.startsWith("\0")) {
+            visibility = "private";
+            const end = nameInfo.rawName.indexOf("\0", 1);
+            if (end > 0) nameDisplay = nameInfo.rawName.slice(end + 1);
+          }
+
+          const prop = {
+            globalIndex: globalIdx++,
+            name: nameInfo.rawName,
+            nameDisplay: `${visibility} $${nameDisplay}`,
+            nameR: nameInfo.nameR,
+            valStr,
+            valR,
+            depth
+          };
+
+          // 嵌套对象 - 递归解析子属性
+          if (str[valStart] === 'O') {
+            const subHeader = valStr.match(/O:\d+:"([^"]+)":\d+:\{/);
+            if (subHeader) {
+              const innerStart = valStart + subHeader[0].length;
+              const propCount = parseInt(str.slice(valStart).match(/O:\d+:"[^"]+":(\d+):/)[1], 10);
+              prop.children = parseProps(innerStart, propCount, depth + 1);
+              prop.valStr = `O:"${subHeader[1]}" (${prop.children.length} props)`;
+            }
+          }
+
+          props.push(prop);
+        }
+        return props;
+      }
+
+      // 根对象本身占一个 R 编号
+      rNumber++;
+      const rootR = rNumber;
+
+      const props = parseProps(header.index + header[0].length, declaredCount, 0);
+      return { flatProps: props, header: { className, propCount: declaredCount, totalR: rNumber, rootR } };
+    }
+
+    function renderRefProps(flatProps, totalR) {
+      const container = $("#ref-prop-list");
+      container.innerHTML = "";
+      if (flatProps.length === 0) {
+        container.innerHTML = '<p class="note">未能解析出属性</p>';
+        return;
+      }
+      if (totalR > 0) {
+        const hint = document.createElement("p");
+        hint.className = "note";
+        hint.style.marginBottom = "8px";
+        hint.innerHTML = `R编号: <strong>R:1</strong> ~ <strong>R:${totalR}</strong>（按反序列化顺序），勾选属性后选择引用目标`;
+        container.appendChild(hint);
+      }
+      flatProps.forEach(p => {
+        const indent = "  ".repeat(p.depth);
+        const hasChildren = p.children && p.children.length > 0;
+        const row = document.createElement("div");
+        row.className = "count-row";
+        row.style.gridTemplateColumns = "auto auto 1fr auto";
+        const rTag = p.valR ? `<span style="font:11px var(--mono);color:var(--accent-strong);background:var(--accent-soft);padding:1px 5px;border-radius:3px;margin-left:4px;">R:${p.valR}</span>` : "";
+        row.innerHTML =
+          `<input type="checkbox" name="ref-prop" value="${p.globalIndex}" class="ref-check" data-name="${p.nameDisplay}" data-r="${p.valR || 0}" style="accent-color:var(--accent);">` +
+          `<span class="count-class" title="${p.valStr}">${indent}${hasChildren ? "[+]" : "  "} ${p.nameDisplay}</span>` +
+          `${rTag}` +
+          `<span style="font:12px var(--mono);color:var(--muted);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${p.valStr}">${visibleNulls(p.valStr)}</span>`;
+        container.appendChild(row);
+      });
+    }
+
+    function renderRefTargets(flatProps, totalR) {
+      const container = $("#ref-targets");
+      container.innerHTML = "";
+      const checked = $$('.ref-check:checked');
+      if (checked.length === 0) {
+        container.innerHTML = '<p class="note">勾选属性后自动生成引用目标</p>';
+        return;
+      }
+      checked.forEach(cb => {
+        const idx = parseInt(cb.value, 10);
+        const name = cb.dataset.name;
+        const row = document.createElement("div");
+        row.className = "count-row";
+        row.style.gridTemplateColumns = "1fr auto";
+        const maxR = totalR || 99;
+        row.innerHTML =
+          `<span style="font:13px var(--sans);color:var(--ink);">${name} -> R:</span>` +
+          `<input type="number" class="ref-r-value" data-idx="${idx}" value="1" min="1" max="${maxR}" style="width:80px;">`;
+        container.appendChild(row);
+      });
+    }
+
+    let refLastFlatProps = [];
+    let refLastTotalR = 0;
+
+    $("#ref-load-output").addEventListener("click", () => {
       const payload = getOutputReal();
       if (!payload) { alert("输出区为空"); return; }
-      const refVal = parseInt($("#ref-target").value, 10) || 1;
-      const pos = parseInt($("#ref-pos").value, 10) || 0;
-      const refStr = `R:${refVal};`;
-      let newPayload;
-      if (pos >= payload.length) {
-        newPayload = payload + refStr;
-      } else {
-        newPayload = payload.slice(0, pos) + refStr + payload.slice(pos);
+      $("#ref-source").value = visibleNulls(payload);
+      const result = parseRefPropsRobust(payload);
+      refLastFlatProps = result.flatProps;
+      refLastTotalR = result.header ? result.header.totalR : 0;
+      renderRefProps(result.flatProps, refLastTotalR);
+      renderRefTargets(result.flatProps, refLastTotalR);
+    });
+
+    $("#ref-parse").addEventListener("click", () => {
+      const str = $("#ref-source").value;
+      if (!str.trim()) { alert("请先粘贴序列化串"); return; }
+      const result = parseRefPropsRobust(str);
+      refLastFlatProps = result.flatProps;
+      refLastTotalR = result.header ? result.header.totalR : 0;
+      renderRefProps(result.flatProps, refLastTotalR);
+      renderRefTargets(result.flatProps, refLastTotalR);
+    });
+
+    // 勾选变化时更新引用目标
+    document.addEventListener("change", (e) => {
+      if (e.target.classList.contains("ref-check")) {
+        renderRefTargets(refLastFlatProps, refLastTotalR);
       }
+    });
+
+    // 执行替换
+    $("#insert-ref").addEventListener("click", () => {
+      const str = $("#ref-source").value.trim();
+      if (!str) { alert("请先输入序列化串"); return; }
+
+      const checked = $$('.ref-check:checked');
+      if (checked.length === 0) { alert("请勾选要替换的属性"); return; }
+
+      // 收集所有替换
+      const replacements = [];
+      checked.forEach(cb => {
+        const idx = parseInt(cb.value, 10);
+        const rInput = $(`.ref-r-value[data-idx="${idx}"]`);
+        const rVal = rInput ? parseInt(rInput.value, 10) || 1 : 1;
+        const prop = refLastFlatProps.find(p => p.globalIndex === idx);
+        if (!prop) return;
+        replacements.push({ prop, rVal, refStr: `R:${rVal};` });
+      });
+
+      // 从后往前替换（避免索引偏移）
+      let result = str;
+      const details = [];
+      for (let i = replacements.length - 1; i >= 0; i--) {
+        const { prop, refStr } = replacements[i];
+        const oldVal = prop.valStr;
+        if (oldVal.startsWith('R:') && oldVal === refStr) { details.push(`${prop.nameDisplay}: 已是 ${refStr}，跳过`); continue; }
+        const pos = result.lastIndexOf(oldVal);
+        if (pos < 0) { details.push(`${prop.nameDisplay}: 未找到 ${oldVal}`); continue; }
+        result = result.slice(0, pos) + refStr + result.slice(pos + oldVal.length);
+        details.push(`${prop.nameDisplay}: ${oldVal} -> ${refStr}`);
+      }
+
       const box = $("#ref-diff-box");
-      const diff = $("#ref-diff");
       box.classList.remove("hidden");
-      diff.innerHTML =
-        `<span class="diff-del">${visibleNulls(payload)}</span>\n` +
-        `<span class="diff-arrow">↓ 在偏移 ${pos} 插入 ${refStr} ↓</span>\n` +
-        `<span class="diff-add">${visibleNulls(newPayload)}</span>`;
-      setConstructOutput(newPayload);
+      $("#ref-output").value = result;
+      setConstructOutput(result);
+    });
+
+    $("#ref-copy").addEventListener("click", () => {
+      const val = $("#ref-output").value;
+      if (!val) { alert("没有可复制的内容"); return; }
+      copyText(val, "#ref-output");
+    });
+
+    $("#ref-reinput").addEventListener("click", () => {
+      const val = $("#ref-output").value;
+      if (!val) { alert("没有内容可放回"); return; }
+      $("#ref-source").value = val;
+      const result = parseRefPropsRobust(val);
+      refLastFlatProps = result.flatProps;
+      refLastTotalR = result.header ? result.header.totalR : 0;
+      renderRefProps(result.flatProps, refLastTotalR);
+      renderRefTargets(result.flatProps, refLastTotalR);
+    });
+
+    // --- 发送为URL查询新参数 ---
+    function sendToQueryParam(value) {
+      if (!value) { alert("没有内容可发送"); return; }
+      addQueryParamRow("NeedEdit", visibleNulls(value));
+      if (activeOutput !== "query") switchOutput("query");
+    }
+
+    $("#count-editor-to-query").addEventListener("click", () => {
+      // 直接读构造输出区的 textarea 内容（最可靠）
+      const payload = $("#output").value;
+      sendToQueryParam(payload);
+    });
+
+    $("#escape-to-query").addEventListener("click", () => {
+      const val = escapeLastAfter || escapeLastBefore || "";
+      sendToQueryParam(val);
+    });
+
+    $("#ref-to-query").addEventListener("click", () => {
+      const val = $("#ref-output").value;
+      sendToQueryParam(val);
     });
 
     // 首次扫描数量
