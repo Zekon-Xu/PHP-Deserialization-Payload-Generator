@@ -1,5 +1,6 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="zh-CN">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -215,6 +216,44 @@
 
     [data-theme="dark"] .powered span {
       color: #9ca3af;
+    }
+
+    [data-theme="dark"] .exploit-section {
+      background: linear-gradient(180deg, #111827, #0f1623);
+      border-color: #1f2937;
+    }
+
+    [data-theme="dark"] .exploit-title {
+      color: #ffffff;
+    }
+
+    [data-theme="dark"] .exploit-diff {
+      background: #1f2937;
+      border-color: #374151;
+    }
+
+    [data-theme="dark"] .exploit-diff pre {
+      color: #e5e7eb;
+    }
+
+    [data-theme="dark"] .count-row {
+      background: #1f2937;
+      border-color: #374151;
+    }
+
+    [data-theme="dark"] .count-class {
+      color: #e5e7eb;
+    }
+
+    [data-theme="dark"] .count-btn {
+      background: #1f2937;
+      border-color: #374151;
+      color: #e5e7eb;
+    }
+
+    [data-theme="dark"] .count-btn:hover {
+      background: #374151;
+      border-color: var(--accent);
     }
 
     * {
@@ -662,6 +701,125 @@
       display: none;
     }
 
+    .exploit-section {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: linear-gradient(180deg, #fbfdff, #f7fafc);
+    }
+
+    .exploit-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+
+    .exploit-title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .exploit-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border: 1px solid var(--accent);
+      border-radius: 4px;
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+      font-size: 12px;
+      font-weight: 600;
+      font-family: var(--mono);
+      white-space: nowrap;
+    }
+
+    .exploit-diff {
+      margin-top: 12px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--panel);
+      overflow-x: auto;
+    }
+
+    .exploit-diff pre {
+      margin: 0;
+      font: 13px var(--mono);
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .diff-add {
+      color: #059669;
+      font-weight: 700;
+    }
+
+    .diff-del {
+      color: #dc2626;
+      text-decoration: line-through;
+    }
+
+    .diff-arrow {
+      color: var(--muted);
+      margin: 0 4px;
+    }
+
+    .count-row {
+      display: grid;
+      grid-template-columns: 1fr auto 100px auto;
+      gap: 10px;
+      align-items: center;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--panel);
+    }
+
+    .count-class {
+      font: 600 14px var(--mono);
+      color: var(--ink);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .count-arrow {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .count-input {
+      width: 100%;
+      text-align: center;
+      font: 700 15px var(--mono);
+    }
+
+    .count-btn {
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--panel);
+      color: var(--ink);
+      font: 700 16px var(--sans);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+    }
+
+    .count-btn:hover {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+    }
+
     .manual-url {
       margin-top: 12px;
       padding: 14px;
@@ -844,11 +1002,14 @@
     }
   </style>
 </head>
+
 <body>
   <header>
     <div class="wrap topbar">
       <div class="brand">
-        <img class="brand-mark" src="data:image/png;base64,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" alt="PHP" aria-hidden="true">
+        <img class="brand-mark"
+          src="data:image/png;base64,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"
+          alt="PHP" aria-hidden="true">
         <div>
           <h1>PHP反序列化Payload构造工具</h1>
           <p class="subtitle">快速构造、修正和编码PHP序列化Payload</p>
@@ -871,6 +1032,7 @@
               <button class="tab" data-mode="object" type="button">对象</button>
               <button class="tab" data-mode="manual" type="button">修正</button>
               <button class="tab" data-mode="oneclick" type="button">一键</button>
+              <button class="tab" data-mode="exploit" type="button">实战</button>
             </div>
           </div>
 
@@ -936,24 +1098,24 @@
                 <button class="btn secondary" id="decode-base64-input" type="button">Base64解码</button>
                 <button class="btn secondary" id="send-manual-to-query" type="button">发送为URL查询新参数</button>
               </div>
-              <p class="note">修正功能会扫描 <span class="warn">s:数字:"内容";</span> 和 <span class="warn">O:数字:"类名":</span> 的长度，按 UTF-8 字节数重新计算。</p>
+              <p class="note">修正功能会扫描 <span class="warn">s:数字:"内容";</span> 和 <span class="warn">O:数字:"类名":</span> 的长度，按
+                UTF-8 字节数重新计算。</p>
             </div>
 
             <div id="mode-oneclick" class="form mode-panel hidden">
               <label>
                 粘贴PHP类代码
-                <textarea id="php-class-input" spellcheck="false" style="min-height:150px;">class FLAG{
-    public $flag_command = "echo 'Hello CTF!';";
-
-    function backdoor(){
-        eval($this->flag_command);
-    }
+                <textarea id="php-class-input" spellcheck="false" style="min-height:150px;">class DemoByzekon{
+    public $a = "admin";
+    public $b = "whoami";
+    public $c = 1;
 }</textarea>
               </label>
               <div class="actions">
                 <button class="btn" id="serialize-php-class" type="button">一键序列化</button>
                 <button class="btn secondary" id="copy-serialize-wrapper" type="button">复制 serialize(...)</button>
-                <button class="btn secondary" id="load-php-class-demo" type="button">加载示例</button>
+                <button class="btn secondary" id="load-flat-demo" type="button">平面示例</button>
+                <button class="btn secondary" id="load-recursive-demo" type="button">递归示例</button>
                 <button class="btn secondary" id="send-oneclick-to-query" type="button">发送为URL查询新参数</button>
               </div>
               <p class="note">支持解析 class 中的 public/protected/private 属性及其默认值，自动生成反序列化 Payload。</p>
@@ -963,6 +1125,82 @@
                 <span class="encode-arrow">→</span>
                 <code style="font-size:12px;">var/省略 = public</code>
               </label>
+            </div>
+
+            <div id="mode-exploit" class="form mode-panel hidden">
+              <div style="display:grid;gap:18px;">
+
+                <div class="exploit-section">
+                  <div class="exploit-header">
+                    <h3 class="exploit-title">属性数量篡改</h3>
+                    <span class="exploit-tag">可用于 CVE-2016-7124 一键绕过</span>
+                    <span class="exploit-tag">PHP &lt; 5.6.25 / &lt; 7.0.10</span>
+                  </div>
+                  <p class="note">扫描当前 Payload 中所有 <code>O:N:"类名":</code>，显示每个对象的属性计数并可单独修改。将属性计数改为大于实际属性数即可跳过 <code>__wakeup()</code>。</p>
+                  <div id="count-editor-list" class="repeat-list"></div>
+                  <div class="actions" style="margin-top:10px;">
+                    <button class="btn" id="count-editor-apply" type="button">应用修改</button>
+                    <button class="btn secondary" id="count-editor-scan" type="button">重新扫描</button>
+                  </div>
+                </div>
+
+                <div class="exploit-section">
+                  <div class="exploit-header">
+                    <h3 class="exploit-title">字符串逃逸辅助</h3>
+                    <span class="exploit-tag">str_replace / preg_replace 替换逃逸</span>
+                  </div>
+                  <p class="note">输入源串和替换规则，计算逃逸差值和所需 padding，辅助构造字符串逃逸攻击。</p>
+                  <label>
+                    源序列化串
+                    <textarea id="escape-source" spellcheck="false" placeholder="O:3:"
+                      Foo":2:{s:1:"a";s:3:"aaa";s:1:"b";s:3:"bbb";}">O:3:"Foo":2:{s:1:"a";s:3:"aaa";s:1:"b";s:3:"bbb";}</textarea>
+                  </label>
+                  <div class="triple">
+                    <label>
+                      查找 (被替换)
+                      <input id="escape-find" value="aaa" placeholder="被替换的字符">
+                    </label>
+                    <label>
+                      替换为
+                      <input id="escape-replace" value="b" placeholder="替换成的字符">
+                    </label>
+                    <label>
+                      插入目标位置
+                      <input id="escape-target" value="" placeholder="如 s:1:&quot;b&quot;;  为空则自动追加">
+                    </label>
+                  </div>
+                  <div class="actions">
+                    <button class="btn" id="escape-calc" type="button">计算逃逸</button>
+                  </div>
+                  <div class="exploit-diff hidden" id="escape-diff-box">
+                    <pre id="escape-diff"></pre>
+                  </div>
+                </div>
+
+                <div class="exploit-section">
+                  <div class="exploit-header">
+                    <h3 class="exploit-title">引用链 (R:reference)</h3>
+                  </div>
+                  <p class="note">在序列化字符串中插入引用段 <code>R:N;</code>，让多个属性指向同一内存地址。R 值从 1 开始编号。</p>
+                  <div class="row">
+                    <label>
+                      引用目标 R 值
+                      <input id="ref-target" type="number" value="1" min="1" placeholder="引用第几个对象">
+                    </label>
+                    <label>
+                      插入位置 (字节偏移)
+                      <input id="ref-pos" type="number" value="0" min="0" placeholder="0=末尾">
+                    </label>
+                  </div>
+                  <div class="actions">
+                    <button class="btn" id="insert-ref" type="button">插入 R:reference</button>
+                  </div>
+                  <div class="exploit-diff hidden" id="ref-diff-box">
+                    <pre id="ref-diff"></pre>
+                  </div>
+                </div>
+
+              </div>
             </div>
           </div>
         </div>
@@ -988,11 +1226,13 @@
                 </div>
                 <label>
                   基础URL
-                  <input id="base-url-input" value="http://www.example.com:80/xxx/yyy" placeholder="例如 http://example.com/path">
+                  <input id="base-url-input" value="http://www.example.com:80/xxx/yyy"
+                    placeholder="例如 http://example.com/path">
                 </label>
                 <label style="margin-top:10px;">
                   完整URL
-                  <textarea id="generated-url-output" class="query-value" readonly spellcheck="false" style="min-height:60px;"></textarea>
+                  <textarea id="generated-url-output" class="query-value" readonly spellcheck="false"
+                    style="min-height:60px;"></textarea>
                 </label>
               </div>
             </div>
@@ -1067,7 +1307,8 @@
             普通对象
             <small>O:4:"User":1:{s:4:"name";s:5:"admin";}</small>
           </button>
-          <button class="template-btn" type="button" data-template='a:2:{s:4:"user";s:5:"admin";s:4:"pass";s:6:"123456";}'>
+          <button class="template-btn" type="button"
+            data-template='a:2:{s:4:"user";s:5:"admin";s:4:"pass";s:6:"123456";}'>
             关联数组
             <small>a:2:{s:4:"user";s:5:"admin";s:4:"pass";s:6:"123456";}</small>
           </button>
@@ -1119,10 +1360,24 @@
       return value;
     }
 
+    function parsePropertyDescriptor(input) {
+      const raw = String(input ?? "").trim();
+      const match = /^(.*?)(?:\s*\(([^()]+)\))?$/.exec(raw);
+      return {
+        name: (match?.[1] || raw).trim(),
+        ownerClass: (match?.[2] || "").trim()
+      };
+    }
+
     function propertyName(scope, className, name) {
-      if (scope === "private") return `\u0000${className}\u0000${name}`;
-      if (scope === "protected") return `\u0000*\u0000${name}`;
-      return name;
+      const descriptor = typeof name === "object" && name !== null
+        ? name
+        : parsePropertyDescriptor(name);
+      const propName = descriptor.name || "";
+      const ownerClass = descriptor.ownerClass || className;
+      if (scope === "private") return `\u0000${ownerClass}\u0000${propName}`;
+      if (scope === "protected") return `\u0000*\u0000${propName}`;
+      return propName;
     }
 
     function visibleNulls(value) {
@@ -1695,83 +1950,474 @@
       if (activeOutput !== "query") switchOutput("query");
     });
 
-    // 一键序列化PHP类代码
-    function parsePhpClass(code) {
-      const result = { className: "", properties: [] };
-
-      // 提取类名
-      const classMatch = code.match(/class\s+(\w+)/);
-      if (!classMatch) return null;
-      result.className = classMatch[1];
-
-      // 根据旧语法兼容开关决定正则
-      const oldSyntaxEnabled = $("#old-syntax-toggle").checked;
-
-      // 提取属性：匹配 [public|protected|private|var] $var = value;
-      // 使用捕获组来正确获取访问修饰符
-      const visibilityGroup = oldSyntaxEnabled
-        ? "(public|protected|private|var)?"
-        : "(public|protected|private)?";
-
-      const propRegex = new RegExp(String.raw`${visibilityGroup}\s*\$(\w+)\s*=\s*(?:"((?:[^"\\]|\\.)*)"|'((?:[^'\\]|\\.)*)'|(\d+)|(.+?));`, "g");
-      let match;
-      while ((match = propRegex.exec(code)) !== null) {
-        let visibility = match[1] || "public";
-        if (visibility === "var") visibility = "public";
-        const name = match[2];
-        // 检查哪个捕获组匹配了值
-        let value;
-        if (match[3] !== undefined) {
-          value = match[3]; // 双引号字符串
-        } else if (match[4] !== undefined) {
-          value = match[4]; // 单引号字符串
-        } else if (match[5] !== undefined) {
-          value = match[5]; // 数字
-        } else {
-          value = match[6]; // 其他值
-        }
-
-        result.properties.push({ visibility, name, value });
+    // 一键序列化：支持 class、对象字面量、嵌套对象、嵌套数组
+    class PhpLiteralParser {
+      constructor(input, options = {}) {
+        this.text = String(input ?? "");
+        this.pos = 0;
+        this.oldSyntaxEnabled = !!options.oldSyntaxEnabled;
       }
 
-      return result;
+      error(message) {
+        throw new Error(`${message}（位置 ${this.pos + 1}）`);
+      }
+
+      peek(offset = 0) {
+        return this.text[this.pos + offset] || "";
+      }
+
+      startsWith(value) {
+        return this.text.startsWith(value, this.pos);
+      }
+
+      skipWhitespace() {
+        while (this.pos < this.text.length) {
+          const char = this.peek();
+          if (/\s/.test(char)) {
+            this.pos += 1;
+            continue;
+          }
+          if (this.startsWith("//")) {
+            this.pos += 2;
+            while (this.pos < this.text.length && this.peek() !== "\n") this.pos += 1;
+            continue;
+          }
+          if (char === "#") {
+            while (this.pos < this.text.length && this.peek() !== "\n") this.pos += 1;
+            continue;
+          }
+          if (this.startsWith("/*")) {
+            const end = this.text.indexOf("*/", this.pos + 2);
+            if (end < 0) this.error("块注释未闭合");
+            this.pos = end + 2;
+            continue;
+          }
+          break;
+        }
+      }
+
+      consume(value) {
+        this.skipWhitespace();
+        if (!this.startsWith(value)) this.error(`需要 ${value}`);
+        this.pos += value.length;
+      }
+
+      tryConsume(value) {
+        this.skipWhitespace();
+        if (!this.startsWith(value)) return false;
+        this.pos += value.length;
+        return true;
+      }
+
+      readIdentifier() {
+        this.skipWhitespace();
+        const match = /^[A-Za-z_\u0080-\uFFFF][A-Za-z0-9_\u0080-\uFFFF]*/.exec(this.text.slice(this.pos));
+        if (!match) this.error("需要标识符");
+        this.pos += match[0].length;
+        return match[0];
+      }
+
+      readClassName() {
+        this.skipWhitespace();
+        const match = /^\\?[A-Za-z_\u0080-\uFFFF][A-Za-z0-9_\\\u0080-\uFFFF]*/.exec(this.text.slice(this.pos));
+        if (!match) this.error("需要类名");
+        this.pos += match[0].length;
+        return match[0];
+      }
+
+      readQuotedString() {
+        this.skipWhitespace();
+        const quote = this.peek();
+        if (quote !== '"' && quote !== "'") this.error("需要字符串");
+        this.pos += 1;
+        let result = "";
+        while (this.pos < this.text.length) {
+          const char = this.peek();
+          if (char === "\\") {
+            const next = this.peek(1);
+            if (!next) this.error("字符串转义不完整");
+            const escapes = {
+              "n": "\n",
+              "r": "\r",
+              "t": "\t",
+              "\\": "\\",
+              "\"": "\"",
+              "'": "'",
+              "0": "\0"
+            };
+            result += Object.prototype.hasOwnProperty.call(escapes, next) ? escapes[next] : next;
+            this.pos += 2;
+            continue;
+          }
+          if (char === quote) {
+            this.pos += 1;
+            return result;
+          }
+          result += char;
+          this.pos += 1;
+        }
+        this.error("字符串未闭合");
+      }
+
+      readNumberToken() {
+        this.skipWhitespace();
+        const match = /^-?\d+(?:\.\d+)?/.exec(this.text.slice(this.pos));
+        if (!match) this.error("需要数字");
+        this.pos += match[0].length;
+        return match[0];
+      }
+
+      looksLikeObjectLiteral() {
+        this.skipWhitespace();
+        const rest = this.text.slice(this.pos);
+        return /^(\\?[A-Za-z_\u0080-\uFFFF][A-Za-z0-9_\\\u0080-\uFFFF]*)\s*\{/.test(rest);
+      }
+
+      startsClassDefinition() {
+        this.skipWhitespace();
+        return /^(?:(?:final|abstract)\s+)*class\b/.test(this.text.slice(this.pos));
+      }
+
+      parseTopLevel() {
+        this.skipWhitespace();
+        if (this.startsClassDefinition()) return this.parseClassDefinition();
+        return this.parseValue();
+      }
+
+      parseClassDefinition() {
+        this.skipWhitespace();
+        while (true) {
+          if (this.startsWith("final")) {
+            this.pos += "final".length;
+            this.skipWhitespace();
+            continue;
+          }
+          if (this.startsWith("abstract")) {
+            this.pos += "abstract".length;
+            this.skipWhitespace();
+            continue;
+          }
+          break;
+        }
+        this.consume("class");
+        const className = this.readClassName();
+        this.skipWhitespace();
+        while (this.peek() && this.peek() !== "{") this.pos += 1;
+        return this.parseObjectBody(className);
+      }
+
+      parseObjectLiteral() {
+        const className = this.readClassName();
+        return this.parseObjectBody(className);
+      }
+
+      parseObjectBody(className) {
+        this.consume("{");
+        const props = [];
+        while (true) {
+          this.skipWhitespace();
+          if (this.tryConsume("}")) break;
+          if (this.startsWith("const") || this.startsWith("public const") || this.startsWith("protected const") || this.startsWith("private const")) {
+            this.skipStatement();
+            continue;
+          }
+          if (this.startsWith("function") || this.startsWith("public function") || this.startsWith("protected function") || this.startsWith("private function")) {
+            this.skipMethodLikeBlock();
+            continue;
+          }
+          props.push(...this.parsePropertyDeclarations(className));
+        }
+        return { type: "object", className, props };
+      }
+
+      skipStatement() {
+        this.skipWhitespace();
+        let inString = false;
+        let quote = "";
+        while (this.pos < this.text.length) {
+          const char = this.peek();
+          if (inString) {
+            if (char === "\\") {
+              this.pos += 2;
+              continue;
+            }
+            if (char === quote) {
+              inString = false;
+              quote = "";
+            }
+            this.pos += 1;
+            continue;
+          }
+          if (char === '"' || char === "'") {
+            inString = true;
+            quote = char;
+            this.pos += 1;
+            continue;
+          }
+          this.pos += 1;
+          if (char === ";") return;
+        }
+      }
+
+      skipMethodLikeBlock() {
+        this.skipWhitespace();
+        if (this.startsWith("public function")) this.pos += "public function".length;
+        else if (this.startsWith("protected function")) this.pos += "protected function".length;
+        else if (this.startsWith("private function")) this.pos += "private function".length;
+        else if (this.startsWith("function")) this.pos += "function".length;
+        else this.error("无法识别的方法定义");
+
+        let braceDepth = 0;
+        let parenDepth = 0;
+        let inString = false;
+        let quote = "";
+
+        while (this.pos < this.text.length) {
+          const char = this.peek();
+          const next = this.peek(1);
+          if (inString) {
+            if (char === "\\") {
+              this.pos += 2;
+              continue;
+            }
+            if (char === quote) {
+              inString = false;
+              quote = "";
+            }
+            this.pos += 1;
+            continue;
+          }
+          if (char === '"' || char === "'") {
+            inString = true;
+            quote = char;
+            this.pos += 1;
+            continue;
+          }
+          if (char === "(") parenDepth += 1;
+          if (char === ")") parenDepth -= 1;
+          if (char === "{") braceDepth += 1;
+          if (char === "}") {
+            if (braceDepth === 0) return;
+            braceDepth -= 1;
+            if (braceDepth === 0) {
+              this.pos += 1;
+              return;
+            }
+          }
+          if (char === ";" && braceDepth === 0 && parenDepth === 0) {
+            this.pos += 1;
+            return;
+          }
+          if (char === "/" && next === "/") {
+            while (this.pos < this.text.length && this.peek() !== "\n") this.pos += 1;
+            continue;
+          }
+          if (char === "/" && next === "*") {
+            const end = this.text.indexOf("*/", this.pos + 2);
+            if (end < 0) this.error("块注释未闭合");
+            this.pos = end + 2;
+            continue;
+          }
+          this.pos += 1;
+        }
+      }
+
+      parseVisibility() {
+        this.skipWhitespace();
+        const match = /^(public|protected|private|var)\b/.exec(this.text.slice(this.pos));
+        if (!match) {
+          if (this.oldSyntaxEnabled) return "public";
+          this.error("属性缺少可见性修饰符");
+        }
+        this.pos += match[0].length;
+        return match[1] === "var" ? "public" : match[1];
+      }
+
+      parsePropertyDeclarations(currentClass) {
+        const visibility = this.parseVisibility();
+        this.skipWhitespace();
+        if (this.startsWith("static")) {
+          this.pos += "static".length;
+          this.skipWhitespace();
+        }
+
+        const props = [];
+        while (true) {
+          let ownerClass = currentClass;
+          if (this.peek() === "$") {
+            this.pos += 1;
+          } else if (!this.oldSyntaxEnabled) {
+            this.error("属性名缺少 $");
+          }
+          const name = this.readIdentifier();
+          this.skipWhitespace();
+          if (visibility === "private" && this.tryConsume("(")) {
+            ownerClass = this.readClassName();
+            this.consume(")");
+          }
+          this.skipWhitespace();
+          let value = { type: "null", value: null };
+          if (this.tryConsume("=")) {
+            value = this.parseValue();
+          }
+          props.push({ visibility, name, ownerClass, value });
+          this.skipWhitespace();
+          if (this.tryConsume(",")) continue;
+          this.consume(";");
+          break;
+        }
+
+        return props;
+      }
+
+      parseArrayLiteral(closeChar = "]") {
+        const items = [];
+        while (true) {
+          this.skipWhitespace();
+          if (this.tryConsume(closeChar)) break;
+
+          const start = this.pos;
+          let key = null;
+          try {
+            const possibleKey = this.parseValue();
+            this.skipWhitespace();
+            if (this.startsWith("=>")) {
+              this.pos += 2;
+              key = possibleKey;
+            } else {
+              this.pos = start;
+            }
+          } catch (error) {
+            this.pos = start;
+          }
+
+          const value = this.parseValue();
+          items.push({ key: key || { type: "auto-index" }, value });
+          this.skipWhitespace();
+          if (this.tryConsume(",")) continue;
+          this.consume(closeChar);
+          break;
+        }
+        return { type: "array", items };
+      }
+
+      parseArrayBracketLiteral() {
+        this.consume("[");
+        return this.parseArrayLiteral("]");
+      }
+
+      parseArrayFunctionLiteral() {
+        this.consume("array");
+        this.consume("(");
+        return this.parseArrayLiteral(")");
+      }
+
+      parseBarewordValue() {
+        const word = this.readIdentifier();
+        const lower = word.toLowerCase();
+        if (lower === "true") return { type: "bool", value: true };
+        if (lower === "false") return { type: "bool", value: false };
+        if (lower === "null") return { type: "null", value: null };
+        return { type: "string", value: word };
+      }
+
+      parseValue() {
+        this.skipWhitespace();
+        const char = this.peek();
+        if (!char) this.error("缺少属性值");
+        if (char === '"' || char === "'") {
+          return { type: "string", value: this.readQuotedString() };
+        }
+        if (char === "[") return this.parseArrayBracketLiteral();
+        if (this.startsWith("array")) return this.parseArrayFunctionLiteral();
+        if (char === "-" || /\d/.test(char)) {
+          const raw = this.readNumberToken();
+          return raw.includes(".")
+            ? { type: "float", value: Number(raw) }
+            : { type: "int", value: Number.parseInt(raw, 10) };
+        }
+        if (this.looksLikeObjectLiteral()) return this.parseObjectLiteral();
+        return this.parseBarewordValue();
+      }
+    }
+
+    function parsePhpClass(code) {
+      try {
+        const parser = new PhpLiteralParser(code, {
+          oldSyntaxEnabled: $("#old-syntax-toggle").checked
+        });
+        const parsed = parser.parseTopLevel();
+        parser.skipWhitespace();
+        if (parser.pos < parser.text.length) {
+          const rest = parser.text.slice(parser.pos).trim();
+          if (rest) throw new Error(`存在未解析内容：${rest.slice(0, 40)}`);
+        }
+        parsePhpClass.lastError = "";
+        return parsed;
+      } catch (error) {
+        parsePhpClass.lastError = error.message;
+        return null;
+      }
+    }
+
+    function serializePhpNode(node, currentClass = "") {
+      if (!node) return "";
+      if (node.type === "string") return phpString(node.value);
+      if (node.type === "int") return `i:${node.value};`;
+      if (node.type === "float") return `d:${node.value};`;
+      if (node.type === "bool") return `b:${node.value ? 1 : 0};`;
+      if (node.type === "null") return "N;";
+      if (node.type === "array") {
+        let autoIndex = 0;
+        const body = node.items.map((item) => {
+          const keyNode = item.key.type === "auto-index"
+            ? { type: "int", value: autoIndex++ }
+            : item.key;
+          return serializePhpNode(keyNode, currentClass) + serializePhpNode(item.value, currentClass);
+        }).join("");
+        return `a:${node.items.length}:{${body}}`;
+      }
+      if (node.type === "object") {
+        const body = node.props.map((prop) => {
+          const propName = propertyName(prop.visibility, node.className, {
+            name: prop.name,
+            ownerClass: prop.ownerClass
+          });
+          return phpString(propName) + serializePhpNode(prop.value, node.className);
+        }).join("");
+        return `O:${byteLen(node.className)}:"${node.className}":${node.props.length}:{${body}}`;
+      }
+      return phpString(String(node.value ?? ""));
     }
 
     function serializePhpClass(parsed) {
-      if (!parsed || !parsed.className) return "";
-
-      const className = parsed.className;
-      const props = parsed.properties;
-
-      let body = "";
-      props.forEach((prop) => {
-        const propName = propertyName(prop.visibility, className, prop.name);
-        body += phpString(propName) + phpString(prop.value);
-      });
-
-      return "O:" + byteLen(className) + ":\"" + className + "\":" + props.length + ":{" + body + "}";
+      return serializePhpNode(parsed);
     }
 
     $("#serialize-php-class").addEventListener("click", () => {
       const code = $("#php-class-input").value;
       const parsed = parsePhpClass(code);
       if (!parsed) {
-        alert("无法解析类代码，请检查格式");
+        alert(`无法解析类代码，请检查格式：${parsePhpClass.lastError || "未知错误"}`);
         return;
       }
       const serialized = serializePhpClass(parsed);
       setConstructOutput(serialized);
     });
 
-    $("#load-php-class-demo").addEventListener("click", () => {
-      $("#php-class-input").value = 'class FLAG{\n    public $flag_command = "echo \'Hello CTF!\';";\n\n    function backdoor(){\n        eval($this->flag_command);\n    }\n}';
+    $("#load-flat-demo").addEventListener("click", () => {
+      $("#php-class-input").value = 'class DemoByzekon{\n    public $a = "admin";\n    public $b = "whoami";\n    public $c = 1;\n}';
+    });
+
+    $("#load-recursive-demo").addEventListener("click", () => {
+      $("#php-class-input").value = 'class DemoByzekon{\n    public $a = A {\n        public $b = B {\n            public $c = C {\n                public $d = "flag.php";\n            };\n        };\n    };\n}';
     });
 
     $("#send-oneclick-to-query").addEventListener("click", () => {
       const code = $("#php-class-input").value;
       const parsed = parsePhpClass(code);
       if (!parsed) {
-        alert("无法解析类代码，请检查格式");
+        alert(`无法解析类代码，请检查格式：${parsePhpClass.lastError || "未知错误"}`);
         return;
       }
       const serialized = serializePhpClass(parsed);
@@ -1802,8 +2448,9 @@
       }
     });
 
-    function parsedObjectToPhpClass(node) {
+    function parsedObjectToPhpClass(node, collected) {
       if (node.type !== "object") return null;
+      collected = collected || [];
       let php = `class ${node.className}{\n`;
       node.props.forEach((prop) => {
         const keyNode = prop.key;
@@ -1829,23 +2476,53 @@
           valueStr = prop.value.value ? "true" : "false";
         } else if (prop.value.type === "null") {
           valueStr = "null";
+        } else if (prop.value.type === "object") {
+          const nestedClass = parsedObjectToPhpClass(prop.value, collected);
+          if (nestedClass) {
+            collected.push(nestedClass);
+            valueStr = `new ${prop.value.className}()`;
+          } else {
+            valueStr = "null";
+          }
+        } else if (prop.value.type === "array") {
+          const arrItems = prop.value.items.map((item) => {
+            const k = item.key.type === "string"
+              ? `"${item.key.value.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`
+              : String(item.key.value ?? 0);
+            if (item.value.type === "string") {
+              return `${k} => "${item.value.value.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
+            }
+            if (item.value.type === "int" || item.value.type === "float") {
+              return `${k} => ${item.value.value}`;
+            }
+            if (item.value.type === "bool") {
+              return `${k} => ${item.value.value ? "true" : "false"}`;
+            }
+            if (item.value.type === "null") {
+              return `${k} => null`;
+            }
+            return `${k} => ${formatSerializedValue(item.value)}`;
+          });
+          valueStr = `[${arrItems.join(", ")}]`;
         } else {
           valueStr = formatSerializedValue(prop.value);
         }
         php += `    ${visibility} $${propName} = ${valueStr};\n`;
       });
       php += "}";
-      return php;
+      collected.unshift(php);
+      return collected;
     }
 
     $("#copy-as-php-class").addEventListener("click", async () => {
       try {
         const parsed = parseSerialized($("#manual-input").value);
-        const phpCode = parsedObjectToPhpClass(parsed);
-        if (!phpCode) {
+        const result = parsedObjectToPhpClass(parsed);
+        if (!result) {
           alert("只能将对象类型转换为PHP类代码");
           return;
         }
+        const phpCode = Array.isArray(result) ? result.join("\n\n") : result;
         await copyText(phpCode, "#manual-input");
       } catch (error) {
         alert(`转换失败：${error.message}`);
@@ -1912,30 +2589,30 @@
 
     // 手动URL编码
     const manualUrlChars = [
-      { char: "\0",  encoded: "%00", label: String.raw`\0`,  desc: "空字节",  checked: true },
-      { char: " ",   encoded: "%20", label: "Space",         desc: "空格",    checked: false },
-      { char: "@",   encoded: "%40", label: "@",             desc: "At符号",  checked: false },
-      { char: "&",   encoded: "%26", label: "&",             desc: "和号",    checked: false },
-      { char: "=",   encoded: "%3D", label: "=",             desc: "等号",    checked: false },
-      { char: "+",   encoded: "%2B", label: "+",             desc: "加号",    checked: false },
-      { char: "#",   encoded: "%23", label: "#",             desc: "井号",    checked: false },
-      { char: "%",   encoded: "%25", label: "%",             desc: "百分号",  checked: false },
-      { char: "?",   encoded: "%3F", label: "?",             desc: "问号",    checked: false },
-      { char: "/",   encoded: "%2F", label: "/",             desc: "斜杠",    checked: false },
-      { char: ":",   encoded: "%3A", label: ":",             desc: "冒号",    checked: false },
-      { char: ";",   encoded: "%3B", label: ";",             desc: "分号",    checked: false },
-      { char: "{",   encoded: "%7B", label: "{",             desc: "左花括号", checked: false },
-      { char: "}",   encoded: "%7D", label: "}",             desc: "右花括号", checked: false },
-      { char: "[",   encoded: "%5B", label: "[",             desc: "左方括号", checked: false },
-      { char: "]",   encoded: "%5D", label: "]",             desc: "右方括号", checked: false },
-      { char: "\"",  encoded: "%22", label: '"',             desc: "双引号",  checked: false },
-      { char: "'",   encoded: "%27", label: "'",             desc: "单引号",  checked: false },
-      { char: "<",   encoded: "%3C", label: "<",             desc: "左尖括号", checked: false },
-      { char: ">",   encoded: "%3E", label: ">",             desc: "右尖括号", checked: false },
-      { char: "\\",  encoded: "%5C", label: "\\",             desc: "反斜杠",  checked: false },
-      { char: "^",   encoded: "%5E", label: "^",             desc: "脱字符",  checked: false },
-      { char: "|",   encoded: "%7C", label: "|",             desc: "竖线",    checked: false },
-      { char: "~",   encoded: "%7E", label: "~",             desc: "波浪号",  checked: false },
+      { char: "\0", encoded: "%00", label: String.raw`\0`, desc: "空字节", checked: true },
+      { char: " ", encoded: "%20", label: "Space", desc: "空格", checked: false },
+      { char: "@", encoded: "%40", label: "@", desc: "At符号", checked: false },
+      { char: "&", encoded: "%26", label: "&", desc: "和号", checked: false },
+      { char: "=", encoded: "%3D", label: "=", desc: "等号", checked: false },
+      { char: "+", encoded: "%2B", label: "+", desc: "加号", checked: false },
+      { char: "#", encoded: "%23", label: "#", desc: "井号", checked: false },
+      { char: "%", encoded: "%25", label: "%", desc: "百分号", checked: false },
+      { char: "?", encoded: "%3F", label: "?", desc: "问号", checked: false },
+      { char: "/", encoded: "%2F", label: "/", desc: "斜杠", checked: false },
+      { char: ":", encoded: "%3A", label: ":", desc: "冒号", checked: false },
+      { char: ";", encoded: "%3B", label: ";", desc: "分号", checked: false },
+      { char: "{", encoded: "%7B", label: "{", desc: "左花括号", checked: false },
+      { char: "}", encoded: "%7D", label: "}", desc: "右花括号", checked: false },
+      { char: "[", encoded: "%5B", label: "[", desc: "左方括号", checked: false },
+      { char: "]", encoded: "%5D", label: "]", desc: "右方括号", checked: false },
+      { char: "\"", encoded: "%22", label: '"', desc: "双引号", checked: false },
+      { char: "'", encoded: "%27", label: "'", desc: "单引号", checked: false },
+      { char: "<", encoded: "%3C", label: "<", desc: "左尖括号", checked: false },
+      { char: ">", encoded: "%3E", label: ">", desc: "右尖括号", checked: false },
+      { char: "\\", encoded: "%5C", label: "\\", desc: "反斜杠", checked: false },
+      { char: "^", encoded: "%5E", label: "^", desc: "脱字符", checked: false },
+      { char: "|", encoded: "%7C", label: "|", desc: "竖线", checked: false },
+      { char: "~", encoded: "%7E", label: "~", desc: "波浪号", checked: false },
     ];
 
     function renderManualUrlOptions() {
@@ -2024,6 +2701,207 @@
       const current = document.documentElement.dataset.theme;
       applyTheme(current === "dark" ? "light" : "dark");
     });
+
+    // ═══════════════════════════════════════════════════════
+    //  实战面板功能
+    // ═══════════════════════════════════════════════════════
+
+    // --- 属性数量篡改 ---
+    let countEditorOriginals = [];
+
+    function scanObjectCounts(payload) {
+      // 匹配 O:字节数:"类名":属性数:
+      // 精确记录每个属性计数在字符串中的起止位置
+      const regex = /O:(\d+):"([^"]+)":(\d+):/g;
+      const results = [];
+      let m;
+      while ((m = regex.exec(payload)) !== null) {
+        // propCountStart = m.index + m[0].length - 1 - m[3].length
+        // m[0] = O:N:"ClassName":PropCount:
+        // 最后一个 : 前面就是 PropCount 数字
+        const propCountEnd = m.index + m[0].length - 1; // : 之前
+        const propCountStart = propCountEnd - m[3].length;
+        results.push({
+          fullMatch: m[0],
+          byteCount: parseInt(m[1], 10),
+          className: m[2],
+          propCount: parseInt(m[3], 10),
+          propCountStart,
+          propCountEnd
+        });
+      }
+      return results;
+    }
+
+    function renderCountEditor() {
+      const payload = getOutputReal();
+      const container = $("#count-editor-list");
+      container.innerHTML = "";
+      if (!payload) {
+        container.innerHTML = '<p class="note">输出区为空，请先生成 Payload</p>';
+        countEditorOriginals = [];
+        return;
+      }
+      const objs = scanObjectCounts(payload);
+      if (objs.length === 0) {
+        container.innerHTML = '<p class="note">未找到 O:N:"类名": 格式的对象结构</p>';
+        countEditorOriginals = [];
+        return;
+      }
+      // 记录初始值
+      countEditorOriginals = objs.map(o => o.propCount);
+      objs.forEach((obj, idx) => {
+        const row = document.createElement("div");
+        row.className = "count-row";
+        row.innerHTML =
+          `<span class="count-class" title="O:${obj.byteCount}:&quot;${obj.className}&quot;:${obj.propCount}:">O:${obj.byteCount}:"${obj.className}"</span>` +
+          `<span class="count-arrow">→ 属性数</span>` +
+          `<input class="count-input" type="number" min="0" max="999" value="${obj.propCount}" data-idx="${idx}">` +
+          `<div style="display:flex;gap:4px;">` +
+          `<button class="count-btn" data-action="dec" data-idx="${idx}" title="-1">−</button>` +
+          `<button class="count-btn" data-action="inc" data-idx="${idx}" title="+1">+</button>` +
+          `<button class="count-btn" data-action="reset" data-idx="${idx}" title="重置为初始值" style="font-size:12px;width:auto;padding:0 6px;">↺</button>` +
+          `</div>`;
+        container.appendChild(row);
+      });
+
+      // 事件绑定
+      container.querySelectorAll('.count-btn').forEach(btn => {
+        btn.addEventListener("click", () => {
+          const idx = parseInt(btn.dataset.idx, 10);
+          const input = container.querySelector(`input[data-idx="${idx}"]`);
+          if (btn.dataset.action === "reset") {
+            input.value = countEditorOriginals[idx] ?? 0;
+            return;
+          }
+          const delta = btn.dataset.action === "inc" ? 1 : -1;
+          const val = Math.max(0, parseInt(input.value, 10) + delta);
+          input.value = val;
+        });
+      });
+    }
+
+    $("#count-editor-scan").addEventListener("click", renderCountEditor);
+
+    $("#count-editor-apply").addEventListener("click", () => {
+      const payload = getOutputReal();
+      if (!payload) { alert("输出区为空"); return; }
+      const inputs = $$('#count-editor-list input[data-idx]');
+      const objs = scanObjectCounts(payload);
+      // 用精确位置做替换，从后往前避免索引偏移
+      let newPayload = payload;
+      for (let i = objs.length - 1; i >= 0; i--) {
+        const input = inputs.find(el => parseInt(el.dataset.idx, 10) === i);
+        if (!input) continue;
+        const newPropCount = parseInt(input.value, 10) || 0;
+        const obj = objs[i];
+        // 直接用精确的字节位置替换
+        newPayload = newPayload.substring(0, obj.propCountStart) + String(newPropCount) + newPayload.substring(obj.propCountEnd);
+      }
+      setConstructOutput(newPayload);
+    });
+
+    // --- 字符串逃逸辅助 ---
+    $("#escape-calc").addEventListener("click", () => {
+      const source = $("#escape-source").value;
+      const find = $("#escape-find").value;
+      const replace = $("#escape-replace").value;
+      const target = $("#escape-target").value;
+      const box = $("#escape-diff-box");
+      const diff = $("#escape-diff");
+
+      if (!source || !find) { alert("请填写源串和查找内容"); return; }
+
+      const count = (source.split(find).length - 1);
+      if (count === 0) { alert(`源串中未找到 "${find}"`); return; }
+
+      const findByteLen = byteLen(find);
+      const replaceByteLen = byteLen(replace);
+      const diffPer = replaceByteLen - findByteLen; // 每次替换的字节差
+      const totalDiff = diffPer * count;             // 总字节差
+
+      let lines = [];
+      lines.push(`查找: "${find}" (${findByteLen} 字节/次)`);
+      lines.push(`替换: "${replace}" (${replaceByteLen} 字节/次)`);
+      lines.push(`匹配次数: ${count}`);
+      lines.push(`每次替换字节差: ${diffPer > 0 ? "+" : ""}${diffPer}`);
+      lines.push(`总字节差: ${totalDiff > 0 ? "+" : ""}${totalDiff}`);
+      lines.push("");
+
+      if (totalDiff < 0) {
+        lines.push(`⚠️ 字符串缩短了 ${Math.abs(totalDiff)} 字节`);
+        lines.push(`  → 需要额外填充 ${Math.abs(totalDiff)} 字节使 s:长度 匹配`);
+        lines.push(`  → 填充内容追加到 payload 末尾或指定位置`);
+      } else if (totalDiff > 0) {
+        lines.push(`⚠️ 字符串增长了 ${totalDiff} 字节`);
+        lines.push(`  → s:长度 会溢出，可以吃掉后续字节`);
+        lines.push(`  → 溢出长度 = ${totalDiff} 字节`);
+      } else {
+        lines.push(`✅ 字节差为 0，替换前后长度一致`);
+      }
+
+      // 生成替换后的结果
+      let result = source;
+      const resultParts = [];
+      let pos = 0;
+      let matchCount = 0;
+      while (pos < result.length) {
+        const idx = result.indexOf(find, pos);
+        if (idx < 0) { resultParts.push(result.slice(pos)); break; }
+        resultParts.push(result.slice(pos, idx));
+        resultParts.push(`<span class="diff-add">${replace}</span>`);
+        pos = idx + find.length;
+        matchCount++;
+      }
+      lines.push("");
+      lines.push(`替换后 Payload:`);
+      lines.push(resultParts.join(""));
+
+      if (target) {
+        lines.push("");
+        lines.push(`📌 插入位置 "${target}" 前`);
+        const insertPos = source.indexOf(target);
+        if (insertPos < 0) {
+          lines.push(`  ⚠️ 未在源串中找到 "${target}"`);
+        } else {
+          if (totalDiff < 0) {
+            const padding = "A".repeat(Math.abs(totalDiff));
+            lines.push(`  在 "${target}" 前插入填充: "${padding}" (${Math.abs(totalDiff)} 字节)`);
+            lines.push(`  修正后: ...${source.slice(0, insertPos)}<span class="diff-add">${padding}</span>${target}${source.slice(insertPos + target.length)}...`);
+          }
+        }
+      }
+
+      box.classList.remove("hidden");
+      diff.innerHTML = lines.join("\n");
+    });
+
+    // --- R:reference 插入 ---
+    $("#insert-ref").addEventListener("click", () => {
+      const payload = getOutputReal();
+      if (!payload) { alert("输出区为空"); return; }
+      const refVal = parseInt($("#ref-target").value, 10) || 1;
+      const pos = parseInt($("#ref-pos").value, 10) || 0;
+      const refStr = `R:${refVal};`;
+      let newPayload;
+      if (pos >= payload.length) {
+        newPayload = payload + refStr;
+      } else {
+        newPayload = payload.slice(0, pos) + refStr + payload.slice(pos);
+      }
+      const box = $("#ref-diff-box");
+      const diff = $("#ref-diff");
+      box.classList.remove("hidden");
+      diff.innerHTML =
+        `<span class="diff-del">${visibleNulls(payload)}</span>\n` +
+        `<span class="diff-arrow">↓ 在偏移 ${pos} 插入 ${refStr} ↓</span>\n` +
+        `<span class="diff-add">${visibleNulls(newPayload)}</span>`;
+      setConstructOutput(newPayload);
+    });
+
+    // 首次扫描数量
+    renderCountEditor();
   </script>
 </body>
+
 </html>
