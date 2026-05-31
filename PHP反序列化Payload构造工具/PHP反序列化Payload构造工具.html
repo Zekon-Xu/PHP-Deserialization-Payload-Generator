@@ -5,6 +5,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PHP反序列化Payload构造工具</title>
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23075e57'/%3E%3Cellipse cx='32' cy='31' rx='23' ry='14' fill='%2310b981' opacity='.22'/%3E%3Cpath d='M12 31h40M32 17c6 6 6 22 0 28M32 17c-6 6-6 22 0 28' fill='none' stroke='%23d1fae5' stroke-width='3' stroke-linecap='round'/%3E%3Ctext x='32' y='39' text-anchor='middle' font-family='Arial,sans-serif' font-size='16' font-weight='800' fill='%23ffffff'%3EPHP%3C/text%3E%3C/svg%3E">
   <style>
     :root {
       color-scheme: light;
@@ -862,6 +864,7 @@
     .quick-panel {
       display: grid;
       gap: 10px;
+      margin-top: 34px;
       padding: 14px;
       border: 1px solid var(--line);
       border-radius: 14px;
@@ -875,6 +878,13 @@
       color: var(--ink);
       font-size: 15px;
       font-weight: 760;
+    }
+
+    .quick-desc {
+      margin: -4px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
     }
 
     .quick-grid {
@@ -903,13 +913,13 @@
     }
 
     .oneclick-input {
-      min-height: 560px;
-      height: min(62vh, 700px);
+      min-height: 260px;
+      height: min(38vh, 360px);
     }
 
     #manual-input {
-      min-height: 320px;
-      height: min(46vh, 460px);
+      min-height: 220px;
+      height: min(34vh, 320px);
     }
 
     .exploit-section::before {
@@ -986,7 +996,7 @@
 
     .count-row {
       display: grid;
-      grid-template-columns: 1fr auto 100px auto;
+      grid-template-columns: minmax(140px, 1fr) auto 74px auto auto;
       gap: 10px;
       align-items: center;
       padding: 10px 12px;
@@ -1007,6 +1017,12 @@
     .count-arrow {
       color: var(--muted);
       font-size: 13px;
+    }
+
+    .count-before {
+      color: var(--muted);
+      font: 600 13px var(--mono);
+      white-space: nowrap;
     }
 
     .count-input {
@@ -1421,8 +1437,8 @@
                     <option value="bool">bool</option>
                     <option value="null">null</option>
                     <option value="empty_array">empty array</option>
-                    <option value="empty_object">empty object</option>
-                    <option value="stdclass">stdClass object</option>
+                    <option value="empty_object">empty named object</option>
+                    <option value="stdclass">stdClass 空对象</option>
                     <option value="object_class">empty named object</option>
                     <option value="array_raw">raw array fragment</option>
                     <option value="object_raw">raw object fragment</option>
@@ -1442,11 +1458,12 @@
                 <button class="btn secondary" id="load-demo-string" type="button">示例</button>
                 <button class="btn secondary" id="send-string-to-query" type="button">发送为URL查询新参数</button>
               </div>
-              <p class="note">raw array fragment 填连续的“键+值”已序列化片段；raw object fragment 可填
-                <code>类名|属性名片段+属性值片段</code>，不写类名时默认 User。
+              <p class="note">用于快速生成单个 PHP 序列化值；raw array fragment 填连续的“键+值”已序列化片段，raw object fragment 可填
+                <code>类名|属性名片段+属性值片段</code>，不写类名时默认 User。需要直接拼接攻击片段时可用“已序列化片段”。
               </p>
               <div class="quick-panel">
                 <h3 class="quick-title">常用基础值</h3>
+                <p class="quick-desc">点击后会填入类型和值，且立即覆盖输出。</p>
                 <div class="quick-grid">
                   <button class="quick-btn" type="button" data-single-demo="string:system">string: system</button>
                   <button class="quick-btn" type="button" data-single-demo="int:1">int: 1</button>
@@ -1454,10 +1471,10 @@
                   <button class="quick-btn" type="button" data-single-demo="bool:true">bool: true</button>
                   <button class="quick-btn" type="button" data-single-demo="null:">null</button>
                   <button class="quick-btn" type="button" data-single-demo="empty_array:">a:0:{}</button>
-                  <button class="quick-btn" type="button" data-single-demo="empty_object:stdClass">stdClass 空对象</button>
+                  <button class="quick-btn" type="button" data-single-demo="stdclass:">stdClass 空对象</button>
                   <button class="quick-btn" type="button" data-single-demo="reference:1">R:1;</button>
-                  <button class="quick-btn" type="button"
-                    data-single-demo="serialized:O:4:&quot;User&quot;:0:{}">已序列化片段</button>
+                  <button class="quick-btn" type="button" data-single-demo="serialized:O:4:&quot;User&quot;:0:{}">User
+                    空对象片段</button>
                 </div>
               </div>
             </div>
@@ -1469,9 +1486,10 @@
                 <button class="btn" id="build-array" type="button">生成数组</button>
                 <button class="btn secondary" id="send-array-to-query" type="button">发送为URL查询新参数</button>
               </div>
-              <p class="note">键支持 string/int；值支持 string/int/bool/null/raw。</p>
+              <p class="note">用于构造 PHP 数组序列化串；键支持 string/int，值支持基础类型、对象片段、数组片段和引用，适合拼函数参数、会话数组或对象外层包装。</p>
               <div class="quick-panel">
                 <h3 class="quick-title">数组结构快捷填充</h3>
+                <p class="quick-desc">用于快速替换上方数组行：登录键值、函数参数、Session、数字索引和嵌套片段都可一键装入后继续手改。</p>
                 <div class="quick-grid">
                   <button class="quick-btn" type="button" id="load-array-login">登录键值</button>
                   <button class="quick-btn" type="button" id="load-array-call">函数调用参数</button>
@@ -1494,12 +1512,13 @@
                 <button class="btn" id="build-object" type="button">生成对象</button>
                 <button class="btn secondary" id="send-to-query" type="button">发送为URL查询新参数</button>
               </div>
-              <p class="note">选择private或protected时，工具会自动按PHP序列化规则处理属性名；界面里只需要填写普通属性名。</p>
+              <p class="note">用于构造 PHP 对象序列化串；选择 private/protected 时工具会自动写入空字节属性名前缀，界面里只需要填写普通属性名。</p>
               <div class="quick-panel">
                 <h3 class="quick-title">对象结构快捷填充</h3>
+                <p class="quick-desc">用于快速替换上方对象属性行；public/private/protected 和 raw 嵌套片段都会按 PHP 序列化规则重新计算长度。</p>
                 <div class="quick-grid">
                   <button class="quick-btn" type="button" id="load-object-public">多 public 属性</button>
-                  <button class="quick-btn" type="button" id="load-object-visibility">private/protected</button>
+                  <button class="quick-btn" type="button" id="load-object-visibility">多可见性属性</button>
                   <button class="quick-btn" type="button" id="load-object-raw">raw 嵌套片段</button>
                 </div>
               </div>
@@ -1512,16 +1531,17 @@
               </label>
               <div class="actions">
                 <button class="btn secondary" id="parse-serialized" type="button">解析为对象</button>
-                <button class="btn secondary" id="copy-as-php-class" type="button">对象→拆分类</button>
                 <button class="btn secondary" id="pseudo-to-php" type="button">对象→类</button>
+                <button class="btn secondary" id="copy-as-php-class" type="button">对象→拆分类</button>
                 <button class="btn" id="fix-lengths" type="button">修正 s 长度</button>
                 <button class="btn secondary" id="decode-url-input" type="button">URL解码</button>
                 <button class="btn secondary" id="decode-base64-input" type="button">Base64解码</button>
                 <button class="btn secondary" id="send-manual-to-query" type="button">发送为URL查询新参数</button>
               </div>
               <p class="note">修正功能会扫描 <span class="warn">s:数字:"内容";</span> 和 <span class="warn">O:数字:"类名":</span> 的长度，按
-                UTF-8 字节数重新计算。</p>
-              <p class="note">先点「解析为对象」会把序列化串反向解析成对象式伪代码；随后可用「对象→拆分类」展开成多个 PHP class，或用「对象→类」生成可继续一键序列化的嵌套类写法。</p>
+                UTF-8 字节数重新计算；字符串逃逸闭合类 Payload 请优先使用输出区「闭合修正」循环选择闭合点。</p>
+              <p class="note">「对象→类」会自动反序列化当前序列化串，并把结果转换成可继续一键序列化的嵌套类写法；「对象→拆分类」会按粘贴区、修正后粘贴区、输出区依次尝试，并展开成多个 PHP class。
+              </p>
             </div>
 
             <div id="mode-oneclick" class="form mode-panel hidden">
@@ -1537,11 +1557,12 @@
                 <button class="btn" id="serialize-php-class" type="button">一键序列化</button>
                 <button class="btn secondary" id="copy-serialize-wrapper" type="button">复制 serialize(...)</button>
                 <button class="btn secondary" id="load-flat-demo" type="button">平面示例</button>
-                <button class="btn secondary" id="load-recursive-demo" type="button">递归示例</button>
+                <button class="btn secondary" id="load-recursive-demo" type="button">嵌套链示例</button>
                 <button class="btn secondary" id="send-oneclick-to-query" type="button">发送为URL查询新参数</button>
               </div>
-              <p class="note">支持解析 class 中的 public/protected/private 属性及其默认值，自动生成反序列化 Payload。</p>
-              <p class="note">一键会先按你粘贴的 PHP 类代码自动实例化成内部对象结构，再把这个实例做 serialize，适合从类定义快速得到 Payload。</p>
+              <p class="note">用于从 PHP class 代码快速得到 serialize 结果；支持 public/protected/private/var 属性、基础默认值、数组字面量和嵌套对象写法。
+              </p>
+              <p class="note">一键会先把粘贴的 PHP 类代码转成内部对象结构，再对这个实例做 serialize，适合把题目里的类定义快速变成可测试 Payload。</p>
               <label class="encode-option" style="margin-top:8px;">
                 <input type="checkbox" id="old-syntax-toggle" checked>
                 <span>旧语法兼容</span>
@@ -1559,13 +1580,13 @@
                     <span class="exploit-tag">可用于 CVE-2016-7124 一键绕过</span>
                     <span class="exploit-tag">PHP &lt; 5.6.25 / &lt; 7.0.10</span>
                   </div>
-                  <p class="note">扫描当前 Payload 中所有 <code>O:N:"类名":</code>，显示每个对象的属性计数并可单独修改。将属性计数改为大于实际属性数即可跳过
+                  <p class="note">扫描输出区 Payload 中所有 <code>O:N:"类名":</code>，显示每个对象修改前的属性计数并可单独改写。将属性计数改为大于实际属性数即可跳过
                     <code>__wakeup()</code>。
                   </p>
                   <div id="count-editor-list" class="repeat-list"></div>
                   <div class="actions" style="margin-top:10px;">
                     <button class="btn" id="count-editor-apply" type="button">应用修改</button>
-                    <button class="btn secondary" id="count-editor-scan" type="button">重新扫描</button>
+                    <button class="btn secondary" id="count-editor-scan" type="button">扫描输出区</button>
                     <button class="btn secondary" id="count-editor-to-query" type="button">发送为URL查询新参数</button>
                   </div>
                 </div>
@@ -1575,7 +1596,7 @@
                     <h3 class="exploit-title">字符串逃逸辅助</h3>
                     <span class="exploit-tag">str_replace / preg_replace 替换逃逸</span>
                   </div>
-                  <p class="note">输入源串和替换规则，自动计算替换后完整串、字节差值。</p>
+                  <p class="note">输入源串和替换规则，自动计算替换后完整串、字节差值；「直观对比」只读取本模块计算出的前后结果，不受输出区闭合修正循环影响。</p>
                   <label>
                     源序列化串
                     <textarea id="escape-source" spellcheck="false" placeholder='粘贴原始序列化串，或点击「套用输出区」'></textarea>
@@ -1684,6 +1705,8 @@
               <button class="mini-btn secondary" id="copy-output" type="button">复制</button>
               <button class="mini-btn secondary" id="copy-unserialize-wrapper" type="button">复制
                 unserialize(...)</button>
+              <button class="mini-btn secondary" id="closure-fix" type="button"
+                title="循环使用不同的 &quot;;} 闭合点解析字符串逃逸 Payload">闭合修正</button>
               <button class="mini-btn secondary" id="refresh-query-string" type="button">刷新查询串</button>
               <button class="mini-btn secondary" id="clear-output" type="button">清空</button>
             </div>
@@ -1711,7 +1734,8 @@
                   <button class="mini-btn" id="encode-selected-section" type="button">仅编码选中部分</button>
                 </div>
               </div>
-              <p class="note" style="margin-bottom:8px;">在输出区选中文本，点击「Add §」插入标记，标记之间的内容会被全量编/解码。支持多段选取。</p>
+              <p class="note" style="margin-bottom:8px;">在输出区选中文本，点击「Add §」插入标记，标记之间的内容会被全量编/解码。支持多段选取，真实换行可用下方
+                <code>\n → %0A</code> 手动处理。</p>
               <div class="encode-header" style="margin-top:12px;">
                 <span class="encode-title">勾选需要编/解码的字符</span>
                 <div class="actions">
@@ -1788,7 +1812,7 @@
                 <small>多 public 属性，适合基础对象链</small>
               </button>
               <button class="template-btn" type="button" data-template-kind="php" data-template-id="php-visibility">
-                私有/保护属性
+                多可见性属性
                 <small>private、protected、var 混合</small>
               </button>
               <button class="template-btn" type="button" data-template-kind="php" data-template-id="php-nested">
@@ -1796,8 +1820,8 @@
                 <small>User->Profile->Role 多层对象</small>
               </button>
               <button class="template-btn" type="button" data-template-kind="php" data-template-id="php-recursive">
-                递归引用形状
-                <small>父子节点与 self 字段占位</small>
+                节点对象树
+                <small>Node 与 NodeChild 父子占位</small>
               </button>
               <button class="template-btn" type="button" data-template-kind="php" data-template-id="php-array-mixed">
                 多类型数组属性
@@ -1851,7 +1875,7 @@
               </button>
               <button class="template-btn" type="button" data-template-kind="serialized"
                 data-template-id="ser-reference">
-                属性引用 R
+                字符串引用 R
                 <small>第二个属性引用第一个字符串</small>
               </button>
               <button class="template-btn" type="button" data-template-kind="serialized"
@@ -1870,8 +1894,8 @@
               </button>
               <button class="template-btn" type="button" data-template-kind="serialized"
                 data-template-id="ser-stdclass">
-                stdClass
-                <small>空对象与动态属性</small>
+                stdClass 标准实例
+                <small>name 与 uid 两个动态属性</small>
               </button>
               <button class="template-btn" type="button" data-template-kind="serialized"
                 data-template-id="ser-deep-array">
@@ -2144,7 +2168,8 @@
       if (type === "bool") return phpBool(value);
       if (type === "null") return "N;";
       if (type === "empty_array") return "a:0:{}";
-      if (type === "empty_object" || type === "stdclass" || type === "object_class") return phpEmptyObject(value);
+      if (type === "empty_object" || type === "object_class") return phpEmptyObject(value || "User");
+      if (type === "stdclass") return phpEmptyObject("stdClass");
       if (type === "array_raw") return phpArrayRaw(value);
       if (type === "object_raw") return phpObjectRaw(value);
       if (type === "reference") return phpReference(value, "R");
@@ -2226,10 +2251,18 @@
       construct: {},
       query: {}
     };
+    const outputVersions = {
+      construct: 0,
+      query: 0
+    };
     let activeOutput = "construct";
 
     function commitActiveOutput() {
-      outputs[activeOutput] = realNulls($("#output").value);
+      const next = realNulls($("#output").value);
+      if (outputs[activeOutput] !== next) {
+        outputs[activeOutput] = next;
+        outputVersions[activeOutput] += 1;
+      }
     }
 
     function renderOutput() {
@@ -2238,7 +2271,11 @@
     }
 
     function setOutput(value, target = activeOutput, displayOptions = {}) {
-      outputs[target] = String(value ?? "");
+      const next = String(value ?? "");
+      if (outputs[target] !== next) {
+        outputs[target] = next;
+        outputVersions[target] += 1;
+      }
       outputDisplay[target] = displayOptions || {};
       if (target === activeOutput) renderOutput();
     }
@@ -2256,7 +2293,7 @@
     function updateStats() {
       const visibleValue = $("#output").value;
       const value = realNulls(visibleValue);
-      $("#char-count").textContent = String(rawCharLen(value));
+      $("#char-count").textContent = String(rawCharLen(visibleValue));
       $("#byte-count").textContent = String(rawByteLen(value));
       $("#string-count").textContent = String((value.match(/s:\d+:"/g) || []).length);
     }
@@ -2382,7 +2419,7 @@
           <option value="bool">bool</option>
           <option value="null">null</option>
           <option value="empty_array">empty array</option>
-          <option value="empty_object">empty object</option>
+          <option value="empty_object">empty named object</option>
           <option value="reference">R:reference</option>
           <option value="soft_reference">r:object reference</option>
           <option value="serialized">已序列化片段</option>
@@ -2811,6 +2848,24 @@
           };
         })
         .sort((a, b) => a.trailingLength - b.trailingLength || b.end - a.end || a.patches.length - b.patches.length)[0];
+    }
+
+    function listSerializedRepairs(text) {
+      const source = realNulls(text);
+      return parseSerializedRepairValueAt(source, 0)
+        .map((candidate, index) => {
+          const trailingStart = skipSerializedSpace(source, candidate.end);
+          const fixed = applyTextPatches(source, candidate.patches || []);
+          return {
+            ...candidate,
+            fixed,
+            index,
+            trailingStart,
+            trailingLength: source.length - trailingStart,
+            trailing: source.slice(trailingStart)
+          };
+        })
+        .sort((a, b) => a.end - b.end || a.trailingLength - b.trailingLength || a.patches.length - b.patches.length);
     }
 
     function applyTextPatches(text, patches) {
@@ -3892,17 +3947,47 @@
         .replaceAll('"', '\\"')}"`;
     }
 
+    function phpLineCommentValue(value) {
+      return quotePhpCodeString(value).replaceAll("*/", "* /");
+    }
+
+    function makePhpIdentifier(value, fallback) {
+      const raw = String(value ?? "");
+      if (/^[A-Za-z_][A-Za-z0-9_]*$/.test(raw)) {
+        return { name: raw, changed: false };
+      }
+      let name = raw
+        .replace(/[^A-Za-z0-9_]/g, "_")
+        .replace(/_+/g, "_")
+        .replace(/^_+|_+$/g, "");
+      if (!name || /^[0-9]/.test(name)) name = `${fallback}_${name || "1"}`;
+      return { name, changed: true };
+    }
+
+    function makeUniquePhpIdentifier(base, used) {
+      let name = base;
+      let suffix = 2;
+      while (used.has(name)) {
+        name = `${base}_${suffix}`;
+        suffix += 1;
+      }
+      used.add(name);
+      return name;
+    }
+
     function getPhpPropInfo(prop, currentClass) {
       if (Object.prototype.hasOwnProperty.call(prop, "name")) {
         return {
           visibility: prop.visibility || "public",
           name: prop.name || "prop",
+          ownerClass: currentClass,
           value: prop.value
         };
       }
 
       let visibility = "public";
       let propName = "prop";
+      let ownerClass = currentClass;
       const keyNode = prop.key;
       if (keyNode?.type === "string") {
         const raw = keyNode.value;
@@ -3913,55 +3998,102 @@
         } else if (raw.startsWith("\0")) {
           visibility = "private";
           const classEnd = raw.indexOf("\0", 1);
-          if (classEnd > 0) propName = raw.slice(classEnd + 1);
+          if (classEnd > 0) {
+            ownerClass = raw.slice(1, classEnd) || currentClass;
+            propName = raw.slice(classEnd + 1);
+          }
         }
       }
 
       return {
         visibility,
         name: propName || "prop",
+        ownerClass,
         value: prop.value
       };
     }
 
-    function formatPhpArrayValue(node, nestedObjects, depth = 0) {
+    function formatPhpArrayValue(node, nestedObjects, depth = 0, options = {}) {
       if (!node.items || node.items.length === 0) return "[]";
       const items = node.items.map((item) => {
         const key = item.key?.type === "auto-index"
           ? null
-          : formatPhpValueForClass(item.key, nestedObjects, depth + 1);
-        const value = formatPhpValueForClass(item.value, nestedObjects, depth + 1);
+          : formatPhpValueForClass(item.key, nestedObjects, depth + 1, options);
+        const value = formatPhpValueForClass(item.value, nestedObjects, depth + 1, options);
         return key === null ? value : `${key} => ${value}`;
       });
       return `[${items.join(", ")}]`;
     }
 
-    function formatPhpValueForClass(node, nestedObjects, depth = 0) {
+    function formatPhpValueForClass(node, nestedObjects, depth = 0, options = {}) {
       if (!node) return "null";
       if (node.type === "string") return quotePhpCodeString(node.value);
       if (node.type === "int" || node.type === "float") return String(node.value);
       if (node.type === "bool") return node.value ? "true" : "false";
       if (node.type === "null") return "null";
       if (node.type === "reference") return `/* ${node.value ? `R:${node.value}` : "reference"} */ null`;
-      if (node.type === "array") return formatPhpArrayValue(node, nestedObjects, depth);
+      if (node.type === "array") return formatPhpArrayValue(node, nestedObjects, depth, options);
       if (node.type === "object") {
         nestedObjects.push(node);
-        return `new ${node.className}()`;
+        const className = options.ensureClassName
+          ? options.ensureClassName(node).name
+          : node.className;
+        return `new ${className}()`;
       }
       return quotePhpCodeString(node.value ?? "");
     }
 
-    function parsedObjectToPhpClass(node) {
+    function parsedObjectToPhpClass(node, options = {}) {
       if (!node || node.type !== "object") return null;
       const classes = [];
+      const safeIdentifiers = options.safeIdentifiers === true;
+      const classNames = new WeakMap();
+      const usedClasses = new Set();
+
+      function ensureClassName(objectNode) {
+        if (classNames.has(objectNode)) return classNames.get(objectNode);
+        const raw = objectNode.className || "GeneratedClass";
+        if (!safeIdentifiers) {
+          const info = { name: raw, raw, changed: false };
+          classNames.set(objectNode, info);
+          return info;
+        }
+        const normalized = makePhpIdentifier(raw, `GeneratedClass${usedClasses.size + 1}`);
+        const unique = makeUniquePhpIdentifier(normalized.name, usedClasses);
+        const info = {
+          name: unique,
+          raw,
+          changed: normalized.changed || unique !== normalized.name
+        };
+        classNames.set(objectNode, info);
+        return info;
+      }
 
       function appendClass(objectNode) {
         const nestedObjects = [];
-        const lines = [`class ${objectNode.className}{`];
-        (objectNode.props || []).forEach((prop) => {
+        const classInfo = ensureClassName(objectNode);
+        const lines = [`class ${classInfo.name}{`];
+        if (safeIdentifiers && classInfo.changed) {
+          lines.push(`    // 原类名: ${phpLineCommentValue(classInfo.raw)}`);
+        }
+        const usedProps = new Set();
+        (objectNode.props || []).forEach((prop, propIndex) => {
           const info = getPhpPropInfo(prop, objectNode.className);
-          const valueStr = formatPhpValueForClass(info.value, nestedObjects);
-          lines.push(`    ${info.visibility} $${info.name} = ${valueStr};`);
+          const propInfo = safeIdentifiers
+            ? makePhpIdentifier(info.name, `prop_${propIndex + 1}`)
+            : { name: info.name, changed: false };
+          const propName = safeIdentifiers
+            ? makeUniquePhpIdentifier(propInfo.name, usedProps)
+            : propInfo.name;
+          const valueStr = formatPhpValueForClass(info.value, nestedObjects, 0, { ensureClassName });
+          const comments = [];
+          if (safeIdentifiers && (propInfo.changed || propName !== propInfo.name)) {
+            comments.push(`原属性名: ${phpLineCommentValue(info.name)}`);
+          }
+          if (safeIdentifiers && info.visibility === "private" && info.ownerClass && info.ownerClass !== objectNode.className) {
+            comments.push(`原私有类: ${phpLineCommentValue(info.ownerClass)}`);
+          }
+          lines.push(`    ${info.visibility} $${propName} = ${valueStr};${comments.length ? ` // ${comments.join("；")}` : ""}`);
         });
         lines.push("}");
         classes.push(lines.join("\n"));
@@ -4032,15 +4164,142 @@
       }
     }
 
+    function parseObjectFromManualPayload() {
+      const text = $("#manual-input").value.trim();
+      if (!text) throw new Error("请输入序列化 Payload");
+      const parsed = parseSerializedRepairAware(text);
+      if (parsed.type !== "object") throw new Error("反序列化结果不是对象结构");
+      return parsed;
+    }
+
+    function parseObjectForManualConversion() {
+      const manualText = $("#manual-input").value.trim();
+      let manualError = "";
+      if (manualText) {
+        try {
+          return parseObjectFromManualPayload();
+        } catch (error) {
+          manualError = error.message;
+        }
+      }
+
+      try {
+        return parseObjectFromOutputText($("#output").value);
+      } catch (error) {
+        if (manualError) throw new Error(`${manualError}；输出区解析提示：${error.message}`);
+        throw error;
+      }
+    }
+
+    function parseObjectForSplitClass() {
+      const attempts = [];
+      const outputText = getOutputReal().trim();
+      const manualText = $("#manual-input").value.trim();
+      if (manualText) {
+        attempts.push({
+          label: "粘贴区",
+          parse: () => {
+            const parsed = parseSerializedRepairAware(manualText);
+            if (parsed.type !== "object") throw new Error("反序列化结果不是对象结构");
+            return parsed;
+          }
+        });
+        attempts.push({
+          label: "修正后粘贴区",
+          parse: () => {
+            const parsed = parseSerialized(fixSerializedLengths(manualText));
+            if (parsed.type !== "object") throw new Error("修正后结果不是对象结构");
+            return parsed;
+          }
+        });
+      }
+      if (outputText) {
+        attempts.push({
+          label: "输出区",
+          parse: () => parseObjectFromOutputText(outputText)
+        });
+      }
+
+      const errors = [];
+      for (const attempt of attempts) {
+        try {
+          return attempt.parse();
+        } catch (error) {
+          errors.push(`${attempt.label}: ${error.message}`);
+        }
+      }
+      throw new Error(errors.length ? errors.join("；") : "没有可转换的对象内容");
+    }
+
     function replaceCurrentOutput(value) {
       setOutput(value, activeOutput, { preserveNewlines: true });
       $("#output").focus();
     }
 
+    function phpClassFromClosureCandidate(candidate) {
+      const parsed = parseSerialized(candidate.fixed);
+      if (parsed.type !== "object") throw new Error("闭合点不是对象结构");
+      const classes = parsedObjectToPhpClass(parsed, { safeIdentifiers: true });
+      if (!classes) throw new Error("闭合点无法转换为 PHP class");
+      const header = [
+        `// 闭合修正 ${candidate.displayIndex}/${candidate.total}`,
+        `// 根对象结束于第 ${candidate.end} 个字符；尾随片段 ${candidate.trailingLength} 字符`,
+        candidate.trailing ? `// 尾随片段: ${phpLineCommentValue(candidate.trailing.slice(0, 80))}` : "// 无尾随片段"
+      ];
+      return header.concat(classes).join("\n");
+    }
+
+    function buildClosureFixCandidates(source) {
+      const seen = new Set();
+      const candidates = [];
+      listSerializedRepairs(source).forEach((candidate) => {
+        try {
+          const parsed = parseSerialized(candidate.fixed);
+          if (parsed.type !== "object") return;
+          const key = `${candidate.end}:${candidate.trailingStart}`;
+          if (seen.has(key)) return;
+          seen.add(key);
+          candidates.push(candidate);
+        } catch (error) { }
+      });
+      const total = candidates.length;
+      return candidates.map((candidate, index) => ({
+        ...candidate,
+        displayIndex: index + 1,
+        total
+      }));
+    }
+
+    function findClosureFixSource() {
+      const outputText = getOutputReal().trim();
+      const manualText = realNulls($("#manual-input").value).trim();
+      const candidates = [
+        { label: "输出区", value: outputText },
+        { label: "粘贴区", value: manualText }
+      ].filter((item) => item.value);
+
+      for (const item of candidates) {
+        const fixes = buildClosureFixCandidates(item.value);
+        if (fixes.length > 0) {
+          return { ...item, candidates: fixes };
+        }
+      }
+      return null;
+    }
+
+    let closureFixSession = null;
+
+    function resetClosureFixButton() {
+      const button = $("#closure-fix");
+      if (!button) return;
+      button.textContent = "闭合修正";
+      button.title = '循环使用不同的 ";} 闭合点解析字符串逃逸 Payload';
+    }
+
     $("#copy-as-php-class").addEventListener("click", () => {
       try {
-        const parsed = parseObjectFromOutputText($("#output").value);
-        const result = parsedObjectToPhpClass(parsed);
+        const parsed = parseObjectForSplitClass();
+        const result = parsedObjectToPhpClass(parsed, { safeIdentifiers: true });
         if (!result) {
           alert("只能将对象类型转换为PHP类代码");
           return;
@@ -4051,12 +4310,49 @@
       }
     });
 
+    $("#closure-fix").addEventListener("click", () => {
+      try {
+        const currentOutput = getOutputReal().trim();
+        const canReuseSession = closureFixSession &&
+          closureFixSession.candidates?.length > 0 &&
+          (currentOutput === closureFixSession.rendered || currentOutput === closureFixSession.source);
+
+        if (canReuseSession) {
+          closureFixSession.index = (closureFixSession.index + 1) % closureFixSession.candidates.length;
+        } else {
+          const found = findClosureFixSource();
+          if (!found) {
+            closureFixSession = null;
+            resetClosureFixButton();
+            alert("未找到可循环的闭合点，请先在输出区或粘贴区放入对象序列化 Payload。");
+            return;
+          }
+          closureFixSession = {
+            source: found.value,
+            label: found.label,
+            candidates: found.candidates,
+            index: 0,
+            rendered: ""
+          };
+        }
+
+        const current = closureFixSession.candidates[closureFixSession.index];
+        const rendered = phpClassFromClosureCandidate(current);
+        closureFixSession.rendered = rendered;
+        replaceCurrentOutput(rendered);
+        $("#closure-fix").textContent = `闭合修正 ${current.displayIndex}/${current.total}`;
+        $("#closure-fix").title = `来源：${closureFixSession.label}；再次点击切换到下一个 \";} 闭合点`;
+      } catch (error) {
+        alert(`闭合修正失败：${error.message}`);
+      }
+    });
+
     $("#pseudo-to-php").addEventListener("click", () => {
       try {
-        const parsed = parseObjectFromOutputText($("#output").value);
+        const parsed = parseObjectForManualConversion();
         const phpCode = pseudoToPhp(parsed);
         if (!phpCode) {
-          alert("无法解析输出区内容");
+          alert("无法解析对象内容");
           return;
         }
         replaceCurrentOutput(phpCode);
@@ -4126,6 +4422,7 @@
     // 手动URL编码
     const manualUrlChars = [
       { char: "\0", encoded: "%00", label: String.raw`\0`, desc: "空字节", checked: true },
+      { char: "\n", encoded: "%0A", label: String.raw`\n`, desc: "换行", checked: false },
       { char: " ", encoded: "%20", label: "Space", desc: "空格", checked: false },
       { char: "@", encoded: "%40", label: "@", desc: "At符号", checked: false },
       { char: "&", encoded: "%26", label: "&", desc: "和号", checked: false },
@@ -4378,7 +4675,7 @@
     // ═══════════════════════════════════════════════════════
 
     // --- 属性数量篡改 ---
-    let countEditorOriginals = [];
+    let countEditorSession = null;
 
     function scanObjectHeadersLoose(payload) {
       const text = realNulls(payload);
@@ -4440,31 +4737,57 @@
       return results.concat(looseHeaders.filter((item) => !seen.has(item.propCountStart)));
     }
 
-    function renderCountEditor() {
-      const payload = getOutputReal();
+    function cloneCountEditorObjects(objs) {
+      return objs.map((obj) => ({ ...obj }));
+    }
+
+    function createCountEditorSession(payload) {
+      const source = realNulls(payload);
+      const objs = scanObjectCounts(source);
+      return {
+        source,
+        outputName: activeOutput,
+        outputVersion: outputVersions[activeOutput],
+        objs: cloneCountEditorObjects(objs),
+        originalCounts: objs.map((obj) => obj.propCount),
+        currentCounts: objs.map((obj) => obj.propCount)
+      };
+    }
+
+    function renderCountEditor(options = {}) {
+      commitActiveOutput();
+      const shouldRescan = options.rescan ||
+        !countEditorSession ||
+        countEditorSession.outputName !== activeOutput ||
+        countEditorSession.outputVersion !== outputVersions[activeOutput];
+      if (shouldRescan) {
+        countEditorSession = createCountEditorSession(outputs[activeOutput]);
+      }
+      const session = countEditorSession;
       const container = $("#count-editor-list");
       container.innerHTML = "";
-      if (!payload) {
+      if (!session || !session.source) {
         container.innerHTML = '<p class="note">输出区为空，请先生成 Payload</p>';
-        countEditorOriginals = [];
+        countEditorSession = null;
         return;
       }
-      const objs = scanObjectCounts(payload);
+      const objs = session.objs;
       if (objs.length === 0) {
         container.innerHTML = '<p class="note">未找到 O:N:"类名": 格式的对象结构</p>';
-        countEditorOriginals = [];
+        countEditorSession = null;
         return;
       }
-      // 记录初始值
-      countEditorOriginals = objs.map(o => o.propCount);
       objs.forEach((obj, idx) => {
         const row = document.createElement("div");
         const classLabel = `O:${obj.byteCount}:"${obj.className}"`;
+        const originalCount = session.originalCounts[idx] ?? obj.propCount;
+        const currentCount = session.currentCounts[idx] ?? obj.propCount;
         row.className = "count-row";
         row.innerHTML =
-          `<span class="count-class" title="${escapeHtml(`${classLabel}:${obj.propCount}:`)}">${escapeHtml(classLabel)}</span>` +
-          `<span class="count-arrow">→ 属性数</span>` +
-          `<input class="count-input" type="number" min="0" max="999" value="${obj.propCount}" data-idx="${idx}">` +
+          `<span class="count-class" title="${escapeHtml(`${classLabel}:${originalCount}:`)}">${escapeHtml(classLabel)}</span>` +
+          `<span class="count-before">原 ${originalCount}</span>` +
+          `<span class="count-arrow">→</span>` +
+          `<input class="count-input" type="number" min="0" max="999" value="${currentCount}" data-idx="${idx}">` +
           `<div style="display:flex;gap:4px;">` +
           `<button class="count-btn" data-action="dec" data-idx="${idx}" title="-1">&minus;</button>` +
           `<button class="count-btn" data-action="inc" data-idx="${idx}" title="+1">+</button>` +
@@ -4474,39 +4797,61 @@
       });
 
       // 事件绑定
+      container.querySelectorAll('.count-input').forEach(input => {
+        input.addEventListener("input", () => {
+          const idx = parseInt(input.dataset.idx, 10);
+          const value = parseInt(input.value, 10);
+          session.currentCounts[idx] = Number.isNaN(value) ? 0 : Math.max(0, value);
+        });
+      });
+
       container.querySelectorAll('.count-btn').forEach(btn => {
         btn.addEventListener("click", () => {
           const idx = parseInt(btn.dataset.idx, 10);
           const input = container.querySelector(`input[data-idx="${idx}"]`);
           if (btn.dataset.action === "reset") {
-            input.value = countEditorOriginals[idx] ?? 0;
+            input.value = session.originalCounts[idx] ?? 0;
+            session.currentCounts[idx] = parseInt(input.value, 10) || 0;
             return;
           }
           const delta = btn.dataset.action === "inc" ? 1 : -1;
           const val = Math.max(0, parseInt(input.value, 10) + delta);
           input.value = val;
+          session.currentCounts[idx] = val;
         });
       });
     }
 
-    $("#count-editor-scan").addEventListener("click", renderCountEditor);
+    $("#count-editor-scan").addEventListener("click", () => renderCountEditor({ rescan: true }));
 
     $("#count-editor-apply").addEventListener("click", () => {
-      const payload = getOutputReal();
-      if (!payload) { alert("输出区为空"); return; }
+      commitActiveOutput();
+      if (
+        !countEditorSession ||
+        countEditorSession.outputName !== activeOutput ||
+        countEditorSession.outputVersion !== outputVersions[activeOutput]
+      ) {
+        renderCountEditor({ rescan: true });
+      }
+      const session = countEditorSession;
+      if (!session || !session.source) { alert("输出区为空"); return; }
       const inputs = $$('#count-editor-list input[data-idx]');
-      const objs = scanObjectCounts(payload);
-      // 用精确位置做替换，从后往前避免索引偏移
-      let newPayload = payload;
+      const objs = session.objs;
+      inputs.forEach((input) => {
+        const idx = parseInt(input.dataset.idx, 10);
+        const value = parseInt(input.value, 10);
+        session.currentCounts[idx] = Number.isNaN(value) ? 0 : Math.max(0, value);
+      });
+      // 应用时只基于本次扫描的源串和精确位置替换，不因故意错误的结果再次扫描。
+      let newPayload = session.source;
       for (let i = objs.length - 1; i >= 0; i--) {
-        const input = inputs.find(el => parseInt(el.dataset.idx, 10) === i);
-        if (!input) continue;
-        const newPropCount = parseInt(input.value, 10) || 0;
+        const newPropCount = session.currentCounts[i] ?? objs[i].propCount;
         const obj = objs[i];
-        // 直接用精确的字节位置替换
         newPayload = newPayload.substring(0, obj.propCountStart) + String(newPropCount) + newPayload.substring(obj.propCountEnd);
       }
       setConstructOutput(newPayload);
+      session.outputName = activeOutput;
+      session.outputVersion = outputVersions[activeOutput];
       renderCountEditor();
     });
 
@@ -4637,7 +4982,7 @@
 
     function toPhpClass(str) {
       try {
-        if (str === "") return "(空字符串：替换后没有内容可解析)";
+        if (str === "") return "(空字符串：替换后内容为空)";
         const parsed = parseSerializedRepairAware(str);
         const result = parsedObjectToPhpClass(parsed);
         if (!result) return "(解析失败)";
@@ -5082,14 +5427,12 @@
     // --- 发送为URL查询新参数 ---
     function sendToQueryParam(value) {
       if (!value) { alert("没有内容可发送"); return; }
-      addQueryParamRow("NeedEdit", visibleNulls(value));
+      addQueryParamRow("NeedEdit", value);
       if (activeOutput !== "query") switchOutput("query");
     }
 
     $("#count-editor-to-query").addEventListener("click", () => {
-      // 直接读构造输出区的 textarea 内容（最可靠）
-      const payload = $("#output").value;
-      sendToQueryParam(payload);
+      sendToQueryParam(getOutputReal());
     });
 
     $("#escape-to-query").addEventListener("click", () => {
