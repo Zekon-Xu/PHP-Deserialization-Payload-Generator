@@ -157,6 +157,12 @@
       color: #e5e7eb;
     }
 
+    [data-theme="dark"] .mini-select {
+      background: #1f2937;
+      border: 1px solid #374151;
+      color: #e5e7eb;
+    }
+
     [data-theme="dark"] #copy-as-php-class.btn {
       border-color: #a38932;
       background: linear-gradient(180deg, #2a2510 0%, #352e14 54%, #3d3518 100%);
@@ -165,6 +171,10 @@
 
     [data-theme="dark"] .btn.secondary:hover,
     [data-theme="dark"] .mini-btn.secondary:hover {
+      background: #374151;
+    }
+
+    [data-theme="dark"] .mini-select:hover {
       background: #374151;
     }
 
@@ -974,7 +984,7 @@
     }
 
     .dropdown {
-      position: relative;
+      position: static;
       display: inline-block;
     }
 
@@ -985,14 +995,16 @@
     }
 
     .dropdown-menu {
-      position: absolute;
-      top: calc(100% + 2px);
-      right: 0;
+      position: fixed;
+      top: auto;
+      left: auto;
+      right: auto;
+      bottom: auto;
       background: #fff;
       border: 1px solid #e2e8f0;
       border-radius: 8px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, .18);
-      z-index: 100;
+      z-index: 9999;
       min-width: 150px;
       padding: 4px;
       overflow: hidden;
@@ -4583,7 +4595,7 @@
         : [
           `// 切换闭合点预览 ${candidate.displayIndex}/${candidate.total}`,
           `// 根对象结束于第 ${candidate.end} 个字符；尾随片段 ${candidate.trailingLength} 字符`,
-          candidate.trailing ? `// 尾随片段:\n${trailing}` : "// 无尾随片段"
+          candidate.trailing ? `// 尾随片段:\n// ${trailing}` : "// 无尾随片段"
         ];
       const text = header.concat(classes).join("\n");
       return {
@@ -4867,6 +4879,7 @@
     $("#send-output-dropdown .dropdown-toggle").addEventListener("click", (e) => {
       e.stopPropagation();
       $("#send-output-dropdown .dropdown-menu").classList.toggle("hidden");
+
     });
 
     document.addEventListener("click", () => {
