@@ -344,16 +344,29 @@
     .topbar {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
       gap: 16px;
       min-height: 88px;
+      position: relative;
     }
 
     .brand {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 14px;
       min-width: 0;
+      text-align: center;
+    }
+
+    .header-actions {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transform: translateY(-50%);
     }
 
     .brand-mark {
@@ -871,7 +884,7 @@
     }
 
     .quick-btn {
-      min-height: 42px;
+      min-height: 46px;
       border: 1px solid var(--line);
       border-radius: 12px;
       background: rgba(255, 255, 255, 0.86);
@@ -892,6 +905,11 @@
     .oneclick-input {
       min-height: 560px;
       height: min(62vh, 700px);
+    }
+
+    #manual-input {
+      min-height: 320px;
+      height: min(46vh, 460px);
     }
 
     .exploit-section::before {
@@ -1245,13 +1263,20 @@
 
     @media (max-width: 1120px) {
       .topbar {
-        align-items: flex-start;
+        align-items: center;
         flex-direction: column;
         padding: 16px 0;
       }
 
       .brand {
-        align-items: flex-start;
+        align-items: center;
+      }
+
+      .header-actions {
+        position: static;
+        transform: none;
+        flex-wrap: wrap;
+        justify-content: center;
       }
 
       .grid {
@@ -1360,8 +1385,10 @@
           <p class="subtitle">快速构造、修正和编码PHP序列化Payload</p>
         </div>
       </div>
-      <div class="badge">本地离线工具 · 自动计算字符串字节长度</div>
-      <button class="theme-toggle" id="theme-toggle" type="button" title="切换暗色模式">&#127769;</button>
+      <div class="header-actions">
+        <div class="badge">本地离线工具 · 自动计算字符串字节长度</div>
+        <button class="theme-toggle" id="theme-toggle" type="button" title="切换暗色模式">&#127769;</button>
+      </div>
     </div>
   </header>
 
@@ -1449,6 +1476,9 @@
                   <button class="quick-btn" type="button" id="load-array-login">登录键值</button>
                   <button class="quick-btn" type="button" id="load-array-call">函数调用参数</button>
                   <button class="quick-btn" type="button" id="load-array-mixed">混合类型数组</button>
+                  <button class="quick-btn" type="button" id="load-array-session">会话信息数组</button>
+                  <button class="quick-btn" type="button" id="load-array-numeric">数字索引列表</button>
+                  <button class="quick-btn" type="button" id="load-array-nested">嵌套片段数组</button>
                 </div>
               </div>
             </div>
@@ -1481,24 +1511,17 @@
                 <textarea id="manual-input" spellcheck="false">O:4:"User":1:{s:4:"name";s:5:"admin";}</textarea>
               </label>
               <div class="actions">
+                <button class="btn secondary" id="parse-serialized" type="button">解析为对象</button>
+                <button class="btn secondary" id="copy-as-php-class" type="button">对象→拆分类</button>
+                <button class="btn secondary" id="pseudo-to-php" type="button">对象→类</button>
                 <button class="btn" id="fix-lengths" type="button">修正 s 长度</button>
-                <button class="btn secondary" id="parse-serialized" type="button">反向解析</button>
-                <button class="btn secondary" id="copy-as-php-class" type="button">伪代码→PHP类拆分解析</button>
-                <button class="btn secondary" id="pseudo-to-php" type="button">伪代码→PHP修正</button>
                 <button class="btn secondary" id="decode-url-input" type="button">URL解码</button>
                 <button class="btn secondary" id="decode-base64-input" type="button">Base64解码</button>
                 <button class="btn secondary" id="send-manual-to-query" type="button">发送为URL查询新参数</button>
               </div>
               <p class="note">修正功能会扫描 <span class="warn">s:数字:"内容";</span> 和 <span class="warn">O:数字:"类名":</span> 的长度，按
                 UTF-8 字节数重新计算。</p>
-              <div class="quick-panel">
-                <h3 class="quick-title">修正常用样例</h3>
-                <div class="quick-grid">
-                  <button class="quick-btn" type="button" id="load-manual-newline">含换行字符串</button>
-                  <button class="quick-btn" type="button" id="load-manual-escape">字符串逃逸闭合</button>
-                  <button class="quick-btn" type="button" id="load-manual-private">私有属性长度</button>
-                </div>
-              </div>
+              <p class="note">先点「解析为对象」会把序列化串反向解析成对象式伪代码；随后可用「对象→拆分类」展开成多个 PHP class，或用「对象→类」生成可继续一键序列化的嵌套类写法。</p>
             </div>
 
             <div id="mode-oneclick" class="form mode-panel hidden">
@@ -1518,6 +1541,7 @@
                 <button class="btn secondary" id="send-oneclick-to-query" type="button">发送为URL查询新参数</button>
               </div>
               <p class="note">支持解析 class 中的 public/protected/private 属性及其默认值，自动生成反序列化 Payload。</p>
+              <p class="note">一键会先按你粘贴的 PHP 类代码自动实例化成内部对象结构，再把这个实例做 serialize，适合从类定义快速得到 Payload。</p>
               <label class="encode-option" style="margin-top:8px;">
                 <input type="checkbox" id="old-syntax-toggle" checked>
                 <span>旧语法兼容</span>
@@ -1769,7 +1793,7 @@
               </button>
               <button class="template-btn" type="button" data-template-kind="php" data-template-id="php-nested">
                 嵌套对象链
-                <small>A->B->C 多层对象</small>
+                <small>User->Profile->Role 多层对象</small>
               </button>
               <button class="template-btn" type="button" data-template-kind="php" data-template-id="php-recursive">
                 递归引用形状
@@ -1781,15 +1805,15 @@
               </button>
               <button class="template-btn" type="button" data-template-kind="php" data-template-id="php-destruct">
                 __destruct 场景
-                <small>文件名、函数名、参数字段</small>
+                <small>文件名、写入内容、追加开关</small>
               </button>
               <button class="template-btn" type="button" data-template-kind="php" data-template-id="php-wakeup">
                 __wakeup 场景
                 <small>配合属性数量篡改测试</small>
               </button>
               <button class="template-btn" type="button" data-template-kind="php" data-template-id="php-tostring">
-                __toString 场景
-                <small>字符串上下文触发链</small>
+                Reader 字段场景
+                <small>Reader 文件字段与输出前缀</small>
               </button>
             </div>
           </div>
@@ -1827,8 +1851,8 @@
               </button>
               <button class="template-btn" type="button" data-template-kind="serialized"
                 data-template-id="ser-reference">
-                R 引用链
-                <small>两个属性指向同一字符串</small>
+                属性引用 R
+                <small>第二个属性引用第一个字符串</small>
               </button>
               <button class="template-btn" type="button" data-template-kind="serialized"
                 data-template-id="ser-wakeup-bypass">
@@ -1842,7 +1866,7 @@
               <button class="template-btn" type="button" data-template-kind="serialized"
                 data-template-id="ser-escape-close">
                 字符串逃逸闭合
-                <small>";}FAKE_FLAG"; 场景</small>
+                <small>闭合属性后追加伪造片段</small>
               </button>
               <button class="template-btn" type="button" data-template-kind="serialized"
                 data-template-id="ser-stdclass">
@@ -2051,6 +2075,11 @@
       return `i:${Number.isNaN(num) ? 0 : num};`;
     }
 
+    function normalizeArrayIntKey(value) {
+      const digits = String(value ?? "").replace(/[^0-9]/g, "");
+      return digits || "0";
+    }
+
     function phpFloat(value) {
       const num = Number.parseFloat(value);
       if (!Number.isFinite(num)) return "d:0;";
@@ -2155,6 +2184,25 @@
         .replaceAll("\r", "\\r")
         .replaceAll("\n", newlineToken)
         .replaceAll("\t", "\\t");
+    }
+
+    function visibleIndexToRawIndex(visibleValue, visibleIndex) {
+      const text = String(visibleValue ?? "");
+      let rawIndex = 0;
+      let pos = 0;
+      while (pos < visibleIndex && pos < text.length) {
+        if (text[pos] === "\\") {
+          const token = parsePhpEscapeAt(text, pos);
+          const tokenVisibleEnd = Math.min(token.end, visibleIndex);
+          rawIndex += tokenVisibleEnd === token.end ? token.value.length : tokenVisibleEnd - pos;
+          pos = tokenVisibleEnd;
+          continue;
+        }
+        const codePoint = text.codePointAt(pos);
+        rawIndex += codePoint > 0xFFFF ? 2 : 1;
+        pos += codePoint > 0xFFFF ? 2 : 1;
+      }
+      return rawIndex;
     }
 
     function realNulls(value) {
@@ -2344,6 +2392,25 @@
         <button class="mini-btn secondary" data-action="remove" type="button">X</button>
       `;
       row.querySelector('[data-action="remove"]').addEventListener("click", () => row.remove());
+      if (!showScope) {
+        const keyType = row.querySelector('[data-field="key-type"]');
+        const keyInput = row.querySelector('[data-field="key"]');
+        const syncIntKey = () => {
+          if (keyType.value !== "int") {
+            keyInput.placeholder = "键";
+            keyInput.removeAttribute("inputmode");
+            return;
+          }
+          keyInput.placeholder = "0";
+          keyInput.inputMode = "numeric";
+          keyInput.value = normalizeArrayIntKey(keyInput.value);
+        };
+        keyType.addEventListener("change", syncIntKey);
+        keyInput.addEventListener("input", () => {
+          if (keyType.value === "int") keyInput.value = normalizeArrayIntKey(keyInput.value);
+        });
+        syncIntKey();
+      }
       return row;
     }
 
@@ -2361,7 +2428,7 @@
         }
         const keyType = row.querySelector('[data-field="key-type"]').value;
         return {
-          key: keyType === "int" ? phpInt(key) : phpString(key),
+          key: keyType === "int" ? phpInt(normalizeArrayIntKey(key)) : phpString(key),
           value: phpValue(valueType, value)
         };
       });
@@ -3092,7 +3159,7 @@
       return str.split("&").map(pair => {
         const eq = pair.indexOf("=");
         if (eq < 0) return encodeURIComponent(pair);
-        return encodeURIComponent(pair.substring(0, eq + 1)) + encodeURIComponent(pair.substring(eq + 1));
+        return pair.substring(0, eq + 1) + encodeURIComponent(pair.substring(eq + 1));
       }).join("&");
     }
 
@@ -3201,7 +3268,11 @@
       rows.forEach((item) => {
         const row = makeValueControls(item.key || "key", isObject);
         if (isObject && item.scope) row.querySelector('[data-field="scope"]').value = item.scope;
-        if (!isObject && item.keyType) row.querySelector('[data-field="key-type"]').value = item.keyType;
+        if (!isObject && item.keyType) {
+          const keyType = row.querySelector('[data-field="key-type"]');
+          keyType.value = item.keyType;
+          keyType.dispatchEvent(new Event("change"));
+        }
         row.querySelector('[data-field="value-type"]').value = item.valueType || "string";
         row.querySelector('[data-field="value"]').value = item.value ?? "";
         container.appendChild(row);
@@ -3233,6 +3304,35 @@
         { key: "score", keyType: "string", valueType: "float", value: "3.14" },
         { key: "enabled", keyType: "string", valueType: "bool", value: "true" },
         { key: "meta", keyType: "string", valueType: "serialized", value: 'a:1:{s:3:"cmd";s:6:"whoami";}' }
+      ], false);
+      buildArray();
+    });
+
+    $("#load-array-session").addEventListener("click", () => {
+      fillRows($("#array-items"), [
+        { key: "uid", keyType: "string", valueType: "int", value: "1001" },
+        { key: "role", keyType: "string", valueType: "string", value: "admin" },
+        { key: "token", keyType: "string", valueType: "string", value: "NeedEdit" },
+        { key: "expire", keyType: "string", valueType: "int", value: "1893456000" }
+      ], false);
+      buildArray();
+    });
+
+    $("#load-array-numeric").addEventListener("click", () => {
+      fillRows($("#array-items"), [
+        { key: "0", keyType: "int", valueType: "string", value: "read" },
+        { key: "1", keyType: "int", valueType: "string", value: "write" },
+        { key: "2", keyType: "int", valueType: "string", value: "debug" },
+        { key: "3", keyType: "int", valueType: "null", value: "" }
+      ], false);
+      buildArray();
+    });
+
+    $("#load-array-nested").addEventListener("click", () => {
+      fillRows($("#array-items"), [
+        { key: "user", keyType: "string", valueType: "serialized", value: 'O:4:"User":1:{s:4:"name";s:5:"admin";}' },
+        { key: "args", keyType: "string", valueType: "serialized", value: 'a:2:{i:0;s:6:"system";i:1;s:2:"id";}' },
+        { key: "ok", keyType: "string", valueType: "bool", value: "true" }
       ], false);
       buildArray();
     });
@@ -4110,10 +4210,14 @@
         alert("请先在输出区选中要编码的文本");
         return;
       }
-      const value = getOutputReal();
-      const before = value.substring(0, start);
-      const selected = value.substring(start, end);
-      const after = value.substring(end);
+      commitActiveOutput();
+      const visibleValue = output.value;
+      const value = outputs[activeOutput] || "";
+      const rawStart = visibleIndexToRawIndex(visibleValue, start);
+      const rawEnd = visibleIndexToRawIndex(visibleValue, end);
+      const before = value.substring(0, rawStart);
+      const selected = value.substring(rawStart, rawEnd);
+      const after = value.substring(rawEnd);
       // 用 § 包裹选中内容
       const newValue = before + SECTION_MARK + selected + SECTION_MARK + after;
       setOutput(newValue);
@@ -4207,14 +4311,14 @@
 }`,
       "ser-object-basic": `O:4:"User":1:{s:4:"name";s:5:"admin";}`,
       "ser-array-assoc": `a:2:{s:4:"user";s:5:"admin";s:4:"pass";s:6:"123456";}`,
-      "ser-private": `O:4:"User":1:{s:10:"\\0User\\0cmd";s:6:"whoami";}`,
+      "ser-private": `O:4:"User":1:{s:9:"\\0User\\0cmd";s:6:"whoami";}`,
       "ser-protected": `O:4:"User":1:{s:6:"\\0*\\0cmd";s:2:"id";}`,
       "ser-nested-object": `O:4:"User":2:{s:7:"profile";O:7:"Profile":2:{s:4:"role";s:5:"admin";s:5:"level";i:10;}s:3:"cmd";s:6:"whoami";}`,
       "ser-array-object": `a:2:{s:4:"user";O:4:"User":2:{s:4:"name";s:5:"admin";s:3:"uid";i:1;}s:4:"args";a:2:{i:0;s:6:"system";i:1;s:6:"whoami";}}`,
       "ser-reference": `O:4:"User":2:{s:3:"cmd";s:6:"whoami";s:5:"again";R:2;}`,
       "ser-wakeup-bypass": `O:12:"WakeupBypass":3:{s:3:"cmd";s:6:"whoami";s:5:"token";s:8:"NeedEdit";}`,
       "ser-newline": "O:4:\"Note\":1:{s:4:\"text\";s:11:\"hello\nworld\";}",
-      "ser-escape-close": `O:4:"Demo":3:{s:1:"a";s:5:"Hello";s:1:"b";s:3:"CTF";s:3:"key";s:20:"GET_FLAG";}FAKE_FLAG";}`,
+      "ser-escape-close": `O:4:"Demo":3:{s:1:"a";s:5:"Hello";s:1:"b";s:3:"CTF";s:3:"key";s:20:"GET_FLAG";}s:4:"fake";s:9:"FAKE_FLAG";}`,
       "ser-stdclass": `O:8:"stdClass":2:{s:4:"name";s:5:"admin";s:3:"uid";i:1;}`,
       "ser-deep-array": `a:2:{s:4:"meta";a:2:{s:4:"user";s:5:"admin";s:5:"flags";a:3:{i:0;s:4:"read";i:1;s:5:"write";i:2;s:5:"debug";}}s:4:"call";a:2:{i:0;s:6:"system";i:1;s:2:"id";}}`
     };
@@ -4231,6 +4335,7 @@
         const payload = realNulls(value);
         $("#manual-input").value = visibleNulls(payload);
         setConstructOutput(payload);
+        activateMode("manual");
       });
     });
 
@@ -4275,14 +4380,44 @@
     // --- 属性数量篡改 ---
     let countEditorOriginals = [];
 
+    function scanObjectHeadersLoose(payload) {
+      const text = realNulls(payload);
+      const results = [];
+      let pos = 0;
+      let guard = 0;
+      while (pos < text.length && guard < 1000) {
+        guard += 1;
+        const start = text.indexOf("O:", pos);
+        if (start < 0) break;
+        try {
+          const info = readSerializedObjectHeaderAt(text, start);
+          results.push({
+            fullMatch: text.slice(info.start, info.headerEnd),
+            byteCount: info.classLen,
+            className: info.className,
+            propCount: info.propCount,
+            propCountStart: info.propCountStart,
+            propCountEnd: info.propCountEnd
+          });
+          pos = Math.max(info.headerEnd, start + 2);
+        } catch (error) {
+          pos = start + 2;
+        }
+      }
+      return results;
+    }
+
     function scanObjectCounts(payload) {
       const text = realNulls(payload);
+      const looseHeaders = scanObjectHeadersLoose(text);
       const repaired = chooseSerializedRepair(text);
       if (repaired && repaired.objects.length > 0) {
-        return repaired.objects.map((item) => ({
+        const repairedObjects = repaired.objects.map((item) => ({
           ...item,
           fullMatch: item.fullMatch || `O:${item.byteCount}:"${item.className}":${item.propCount}:`
         }));
+        const seen = new Set(repairedObjects.map((item) => item.propCountStart));
+        return repairedObjects.concat(looseHeaders.filter((item) => !seen.has(item.propCountStart)));
       }
 
       const results = [];
@@ -4299,9 +4434,10 @@
           });
         });
       } catch (error) {
-        return [];
+        return looseHeaders;
       }
-      return results;
+      const seen = new Set(results.map((item) => item.propCountStart));
+      return results.concat(looseHeaders.filter((item) => !seen.has(item.propCountStart)));
     }
 
     function renderCountEditor() {
@@ -4371,6 +4507,7 @@
         newPayload = newPayload.substring(0, obj.propCountStart) + String(newPropCount) + newPayload.substring(obj.propCountEnd);
       }
       setConstructOutput(newPayload);
+      renderCountEditor();
     });
 
     // --- 字符串逃逸辅助 ---
@@ -4500,6 +4637,7 @@
 
     function toPhpClass(str) {
       try {
+        if (str === "") return "(空字符串：替换后没有内容可解析)";
         const parsed = parseSerializedRepairAware(str);
         const result = parsedObjectToPhpClass(parsed);
         if (!result) return "(解析失败)";
@@ -4510,11 +4648,13 @@
     }
 
     $("#escape-compare").addEventListener("click", () => {
-      const beforeStr = (escapeLastBefore || $("#escape-source").value).trim();
-      const afterStr = (escapeLastAfter || "").trim();
+      const hasCalculated = escapeLastBefore !== "" || escapeLastAfter !== "";
+      const beforeStr = hasCalculated ? escapeLastBefore : $("#escape-source").value;
+      const afterStr = hasCalculated ? escapeLastAfter : "";
       const box = $("#escape-compare-box");
 
-      if (!beforeStr || !afterStr) { alert("请先点击「计算逃逸」生成替换结果"); return; }
+      if (!hasCalculated && !beforeStr) { alert("请先填写源串，或点击「计算逃逸」生成替换结果"); return; }
+      if (!hasCalculated) { alert("请先点击「计算逃逸」生成替换结果"); return; }
 
       box.classList.remove("hidden");
       $("#escape-compare-before").textContent = toPhpClass(beforeStr);
