@@ -95,6 +95,12 @@
       color: #9ca3af;
     }
 
+    [data-theme="dark"] .grammar-note {
+      background: rgba(245, 158, 11, 0.08);
+      border-color: rgba(245, 158, 11, 0.32);
+      color: #cbd5e1;
+    }
+
     [data-theme="dark"] .theme-toggle {
       background: #1f2937;
       border-color: #374151;
@@ -111,6 +117,16 @@
       background: #1f2937;
       border: 1px solid #374151;
       color: #e5e7eb;
+    }
+
+    [data-theme="dark"] .output-rich {
+      background: #1f2937;
+      border-color: #374151;
+      color: #e5e7eb;
+    }
+
+    [data-theme="dark"] .output-rich .closure-tail {
+      color: #f87171;
     }
 
     [data-theme="dark"] input:focus,
@@ -139,6 +155,12 @@
       background: #1f2937;
       border: 1px solid #374151;
       color: #e5e7eb;
+    }
+
+    [data-theme="dark"] #copy-as-php-class.btn {
+      border-color: #a38932;
+      background: linear-gradient(180deg, #2a2510 0%, #352e14 54%, #3d3518 100%);
+      color: #f0d87a;
     }
 
     [data-theme="dark"] .btn.secondary:hover,
@@ -444,7 +466,7 @@
     }
 
     .grid.mode-exploit-active {
-      grid-template-columns: minmax(800px, 1.48fr) minmax(470px, 0.76fr);
+      grid-template-columns: minmax(760px, 1.1fr) minmax(520px, 1fr);
       align-items: start;
     }
 
@@ -613,12 +635,36 @@
       white-space: nowrap;
     }
 
+    .mini-select {
+      height: 36px;
+      min-width: 104px;
+      border-radius: 12px;
+      padding: 0 8px;
+      font: 700 12px var(--sans);
+      color: #334155;
+      background: rgba(255, 255, 255, 0.92);
+    }
+
     .btn.secondary,
     .mini-btn.secondary {
       border-color: #cbd5e1;
       background: rgba(255, 255, 255, 0.92);
       color: #334155;
       box-shadow: 0 6px 14px rgba(36, 48, 65, 0.06);
+    }
+
+    #send-manual-to-output.btn {
+      border-color: #f9a8d4;
+      background: linear-gradient(180deg, #fff7fb 0%, #ffe4ef 54%, #ffcfe3 100%);
+      color: #9d174d;
+      box-shadow: 0 8px 18px rgba(219, 39, 119, 0.14);
+    }
+
+    #copy-as-php-class.btn {
+      border-color: #d4a843;
+      background: linear-gradient(180deg, #fef9e7 0%, #fdf2c5 54%, #f7e398 100%);
+      color: #7c6a1e;
+      box-shadow: 0 8px 18px rgba(180, 140, 40, 0.14);
     }
 
     .btn:hover,
@@ -715,6 +761,68 @@
       gap: 8px;
     }
 
+    .output-head {
+      display: grid;
+      grid-template-columns: 1fr;
+      align-items: stretch;
+      gap: 12px;
+    }
+
+    .output-head-main {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .output-actions {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 7px;
+      align-items: center;
+      width: 100%;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: thin;
+    }
+
+    .output-actions .mini-btn {
+      flex: 0 0 auto;
+      min-width: 44px;
+      height: 34px;
+      padding-inline: 9px;
+      font-size: 12px;
+    }
+
+    .output-actions #copy-unserialize-wrapper {
+      min-width: 118px;
+    }
+
+    .output-actions #closure-fix {
+      min-width: 126px;
+    }
+
+    .output-actions #closure-length-fix {
+      min-width: 142px;
+    }
+
+    .output-tail-select {
+      flex: 0 0 104px;
+      width: 104px;
+      min-width: 104px;
+      height: 34px;
+      font-size: 12px;
+    }
+
+    .output-send-select {
+      flex: 0 0 118px;
+      width: 118px;
+      min-width: 118px;
+      height: 34px;
+      font-size: 12px;
+    }
+
     .grid {
       align-items: stretch;
     }
@@ -799,6 +907,23 @@
       color: #15212e;
     }
 
+    .output-rich {
+      margin: 0;
+      padding: 12px 14px;
+      border: 1px solid #b7c8d8;
+      border-radius: 12px;
+      overflow: auto;
+      font: 16px var(--mono);
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .output-rich .closure-tail {
+      color: var(--danger);
+      font-weight: 850;
+    }
+
     .stats {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -833,12 +958,80 @@
       line-height: 1.65;
     }
 
+    .grammar-note {
+      padding: 10px 12px;
+      border: 1px solid rgba(245, 158, 11, 0.28);
+      border-radius: 10px;
+      background: rgba(245, 158, 11, 0.07);
+    }
+
     .warn {
       color: var(--warn);
     }
 
     .hidden {
       display: none !important;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 2px);
+      right: 0;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .18);
+      z-index: 100;
+      min-width: 150px;
+      padding: 4px;
+      overflow: hidden;
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      padding: 8px 14px;
+      border: none;
+      background: none;
+      text-align: left;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      color: #334155;
+      border-radius: 6px;
+      transition: background .15s, color .15s;
+    }
+
+    .dropdown-item:hover {
+      background: #f0fdf4;
+      color: #16a34a;
+    }
+
+    [data-theme="dark"] .dropdown-menu {
+      background: #1e293b;
+      border-color: #334155;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .4);
+    }
+
+    [data-theme="dark"] .dropdown-item {
+      color: #e2e8f0;
+    }
+
+    [data-theme="dark"] .dropdown-item:hover {
+      background: #1a2e1a;
+      color: #4ade80;
     }
 
     .exploit-section {
@@ -1365,7 +1558,8 @@
       }
 
       .actions .btn,
-      .actions .mini-btn {
+      .actions .mini-btn,
+      .actions .mini-select {
         flex: 1 1 auto;
       }
 
@@ -1398,7 +1592,7 @@
           alt="PHP" aria-hidden="true">
         <div>
           <h1>PHP反序列化Payload构造工具</h1>
-          <p class="subtitle">快速构造、修正和编码PHP序列化Payload</p>
+          <p class="subtitle">快速构造、解析修复和编码PHP序列化Payload</p>
         </div>
       </div>
       <div class="header-actions">
@@ -1418,8 +1612,8 @@
               <button class="tab active" data-mode="string" type="button">基础值</button>
               <button class="tab" data-mode="array" type="button">数组</button>
               <button class="tab" data-mode="object" type="button">对象</button>
-              <button class="tab" data-mode="manual" type="button">修正</button>
-              <button class="tab" data-mode="oneclick" type="button">一键</button>
+              <button class="tab" data-mode="manual" type="button">解析修复</button>
+              <button class="tab" data-mode="oneclick" type="button">类序列化</button>
               <button class="tab" data-mode="exploit" type="button">实战</button>
             </div>
           </div>
@@ -1489,7 +1683,7 @@
               <p class="note">用于构造 PHP 数组序列化串；键支持 string/int，值支持基础类型、对象片段、数组片段和引用，适合拼函数参数、会话数组或对象外层包装。</p>
               <div class="quick-panel">
                 <h3 class="quick-title">数组结构快捷填充</h3>
-                <p class="quick-desc">用于快速替换上方数组行：登录键值、函数参数、Session、数字索引和嵌套片段都可一键装入后继续手改。</p>
+                <p class="quick-desc">用于快速替换上方数组行：登录键值、函数参数、Session、数字索引和嵌套片段都可快速装入后继续手改。</p>
                 <div class="quick-grid">
                   <button class="quick-btn" type="button" id="load-array-login">登录键值</button>
                   <button class="quick-btn" type="button" id="load-array-call">函数调用参数</button>
@@ -1533,15 +1727,22 @@
                 <button class="btn secondary" id="parse-serialized" type="button">解析为对象</button>
                 <button class="btn secondary" id="pseudo-to-php" type="button">对象→类</button>
                 <button class="btn secondary" id="copy-as-php-class" type="button">对象→拆分类</button>
-                <button class="btn" id="fix-lengths" type="button">修正 s 长度</button>
+                <button class="btn" id="fix-lengths" type="button">重算 s/O 长度</button>
                 <button class="btn secondary" id="decode-url-input" type="button">URL解码</button>
                 <button class="btn secondary" id="decode-base64-input" type="button">Base64解码</button>
                 <button class="btn secondary" id="send-manual-to-query" type="button">发送为URL查询新参数</button>
+                <button class="btn secondary" id="send-manual-to-output" type="button">原样送入输出区</button>
               </div>
-              <p class="note">修正功能会扫描 <span class="warn">s:数字:"内容";</span> 和 <span class="warn">O:数字:"类名":</span> 的长度，按
-                UTF-8 字节数重新计算；字符串逃逸闭合类 Payload 请优先使用输出区「闭合修正」循环选择闭合点。</p>
-              <p class="note">「对象→类」会自动反序列化当前序列化串，并把结果转换成可继续一键序列化的嵌套类写法；「对象→拆分类」会按粘贴区、修正后粘贴区、输出区依次尝试，并展开成多个 PHP class。
+              <p class="note">「重算 s/O 长度」适合完整、未逃逸的序列化串，会按 UTF-8 字节数重算
+                <span class="warn">s:数字:"内容";</span> 和 <span class="warn">O:数字:"类名":</span> 的长度；如果是
+                <span class="warn">str_replace / preg_replace</span> 造成的字符串逃逸，请先在输出区用「切换闭合点预览」查看当前 s 值下 PHP
+                会解析到的闭合点，再用「修改s值切换闭合点」生成可复制的回写串。
               </p>
+              <p class="note">「对象→类」会自动反序列化当前序列化串，并把结果转换成可继续类序列化的嵌套类写法；「对象→拆分类」会按粘贴区、重算后粘贴区、输出区依次尝试，并展开成多个 PHP class。
+              </p>
+              <p class="note grammar-note"><span class="warn">语法提示：</span>「解析为对象」和「对象→类」偏向按序列化结构解析，不会严格校验 PHP class
+                代码语法；例如字符串逃逸时，属性名可能包含 PHP 属性命名里不能直接书写的字符。想在构造区生成带属性名清理备注的 class，请用「对象→拆分类」；想得到最符合 PHP 语法校验前提的闭合链和 s
+                值，建议先点击「原样送入输出区」，再用输出区的「切换闭合点预览」查看 class，并用「修改s值切换闭合点」生成序列化串。</p>
             </div>
 
             <div id="mode-oneclick" class="form mode-panel hidden">
@@ -1554,15 +1755,16 @@
 }</textarea>
               </label>
               <div class="actions">
-                <button class="btn" id="serialize-php-class" type="button">一键序列化</button>
+                <button class="btn" id="serialize-php-class" type="button">序列化类代码</button>
                 <button class="btn secondary" id="copy-serialize-wrapper" type="button">复制 serialize(...)</button>
                 <button class="btn secondary" id="load-flat-demo" type="button">平面示例</button>
                 <button class="btn secondary" id="load-recursive-demo" type="button">嵌套链示例</button>
                 <button class="btn secondary" id="send-oneclick-to-query" type="button">发送为URL查询新参数</button>
               </div>
-              <p class="note">用于从 PHP class 代码快速得到 serialize 结果；支持 public/protected/private/var 属性、基础默认值、数组字面量和嵌套对象写法。
+              <p class="note">用于从 PHP Class 代码（也可以是一个 Object 代码，本工具兼容）快速得到 serialize 结果；支持 public/protected/private/var
+                属性、基础默认值、数组字面量和嵌套对象写法。
               </p>
-              <p class="note">一键会先把粘贴的 PHP 类代码转成内部对象结构，再对这个实例做 serialize，适合把题目里的类定义快速变成可测试 Payload。</p>
+              <p class="note">类序列化会先把粘贴的 PHP 类代码转成内部对象结构，再对这个实例做 serialize，适合把题目里的类定义快速变成可测试 Payload。</p>
               <label class="encode-option" style="margin-top:8px;">
                 <input type="checkbox" id="old-syntax-toggle" checked>
                 <span>旧语法兼容</span>
@@ -1577,7 +1779,7 @@
                 <div class="exploit-section">
                   <div class="exploit-header">
                     <h3 class="exploit-title">属性数量篡改</h3>
-                    <span class="exploit-tag">可用于 CVE-2016-7124 一键绕过</span>
+                    <span class="exploit-tag">可用于 CVE-2016-7124 旧语法绕过</span>
                     <span class="exploit-tag">PHP &lt; 5.6.25 / &lt; 7.0.10</span>
                   </div>
                   <p class="note">扫描输出区 Payload 中所有 <code>O:N:"类名":</code>，显示每个对象修改前的属性计数并可单独改写。将属性计数改为大于实际属性数即可跳过
@@ -1596,7 +1798,7 @@
                     <h3 class="exploit-title">字符串逃逸辅助</h3>
                     <span class="exploit-tag">str_replace / preg_replace 替换逃逸</span>
                   </div>
-                  <p class="note">输入源串和替换规则，自动计算替换后完整串、字节差值；「直观对比」只读取本模块计算出的前后结果，不受输出区闭合修正循环影响。</p>
+                  <p class="note">输入源串和替换规则，自动计算替换后完整串、字节差值；「直观对比」只读取本模块计算出的前后结果，不受输出区切换闭合点预览影响。</p>
                   <label>
                     源序列化串
                     <textarea id="escape-source" spellcheck="false" placeholder='粘贴原始序列化串，或点击「套用输出区」'></textarea>
@@ -1695,24 +1897,41 @@
 
       <div class="right-stack">
         <div class="panel">
-          <div class="panel-head">
-            <h2 class="panel-title">输出区</h2>
-            <div class="output-tabs" role="tablist" aria-label="输出类型">
-              <button class="output-tab active" data-output-target="construct" type="button">构造输出</button>
-              <button class="output-tab" data-output-target="query" type="button">查询串输出</button>
+          <div class="panel-head output-head">
+            <div class="output-head-main">
+              <h2 class="panel-title">输出区</h2>
+              <div class="output-tabs" role="tablist" aria-label="输出类型">
+                <button class="output-tab active" data-output-target="construct" type="button">构造输出</button>
+                <button class="output-tab" data-output-target="query" type="button">查询串输出</button>
+              </div>
             </div>
-            <div class="actions">
+            <div class="output-actions">
               <button class="mini-btn secondary" id="copy-output" type="button">复制</button>
               <button class="mini-btn secondary" id="copy-unserialize-wrapper" type="button">复制
                 unserialize(...)</button>
               <button class="mini-btn secondary" id="closure-fix" type="button"
-                title="循环使用不同的 &quot;;} 闭合点解析字符串逃逸 Payload">闭合修正</button>
+                title="按当前 s 值循环切换不同的 &quot;;} 闭合点，预览 PHP 会解析出的对象">切换闭合点预览</button>
+              <button class="mini-btn secondary" id="closure-length-fix" type="button"
+                title="修改字符串 s 长度来切换 &quot;;} 闭合点，并写回序列化串">修改s值切换闭合点</button>
+              <select class="mini-select output-tail-select" id="closure-tail-mode" title="修改s值切换闭合点后的尾随字符串处理方式">
+                <option value="keep">尾随保留</option>
+                <option value="comment">尾随注释</option>
+                <option value="php-html">尾随转文本</option>
+              </select>
               <button class="mini-btn secondary" id="refresh-query-string" type="button">刷新查询串</button>
+              <div class="dropdown" id="send-output-dropdown">
+                <button class="mini-btn secondary dropdown-toggle" type="button">送回构造区 ▾</button>
+                <div class="dropdown-menu hidden">
+                  <button class="dropdown-item" id="send-output-to-manual" type="button">送回解析修复</button>
+                  <button class="dropdown-item" id="send-output-to-class" type="button">送回类序列化</button>
+                </div>
+              </div>
               <button class="mini-btn secondary" id="clear-output" type="button">清空</button>
             </div>
           </div>
           <div class="panel-body output-box">
             <textarea id="output" class="payload" spellcheck="false"></textarea>
+            <pre id="output-rich" class="payload output-rich hidden" tabindex="0"></pre>
             <div class="codec-bar">
               <div class="codec-toggle" role="group" aria-label="编解码模式">
                 <button class="codec-mode active" data-codec-mode="encode" type="button">编码</button>
@@ -1735,7 +1954,8 @@
                 </div>
               </div>
               <p class="note" style="margin-bottom:8px;">在输出区选中文本，点击「Add §」插入标记，标记之间的内容会被全量编/解码。支持多段选取，真实换行可用下方
-                <code>\n → %0A</code> 手动处理。</p>
+                <code>\n → %0A</code> 手动处理。
+              </p>
               <div class="encode-header" style="margin-top:12px;">
                 <span class="encode-title">勾选需要编/解码的字符</span>
                 <div class="actions">
@@ -1890,7 +2110,7 @@
               <button class="template-btn" type="button" data-template-kind="serialized"
                 data-template-id="ser-escape-close">
                 字符串逃逸闭合
-                <small>闭合属性后追加伪造片段</small>
+                <small>bb→ccc 长度漂移</small>
               </button>
               <button class="template-btn" type="button" data-template-kind="serialized"
                 data-template-id="ser-stdclass">
@@ -2211,6 +2431,16 @@
         .replaceAll("\t", "\\t");
     }
 
+    function outputToVisible(value, options = {}) {
+      if (options.rawDisplay) return String(value ?? "");
+      return visibleNulls(value, options);
+    }
+
+    function visibleToOutput(value, options = {}) {
+      if (options.rawDisplay) return String(value ?? "");
+      return realNulls(value);
+    }
+
     function visibleIndexToRawIndex(visibleValue, visibleIndex) {
       const text = String(visibleValue ?? "");
       let rawIndex = 0;
@@ -2258,15 +2488,40 @@
     let activeOutput = "construct";
 
     function commitActiveOutput() {
-      const next = realNulls($("#output").value);
+      if (!$("#output-rich").classList.contains("hidden")) return;
+      const displayOptions = outputDisplay[activeOutput] || {};
+      const next = visibleToOutput($("#output").value, displayOptions);
       if (outputs[activeOutput] !== next) {
         outputs[activeOutput] = next;
         outputVersions[activeOutput] += 1;
       }
     }
 
+    function renderClosureRichOutput(visibleValue, displayOptions) {
+      const marker = outputToVisible(displayOptions.closureTailMarker || "", displayOptions);
+      if (!marker || !visibleValue.includes(marker)) return escapeHtml(visibleValue);
+      const start = visibleValue.indexOf(marker);
+      const end = start + marker.length;
+      return escapeHtml(visibleValue.slice(0, start)) +
+        `<span class="closure-tail">${escapeHtml(visibleValue.slice(start, end))}</span>` +
+        escapeHtml(visibleValue.slice(end));
+    }
+
     function renderOutput() {
-      $("#output").value = visibleNulls(outputs[activeOutput] || "", outputDisplay[activeOutput]);
+      const displayOptions = outputDisplay[activeOutput] || {};
+      const visibleValue = outputToVisible(outputs[activeOutput] || "", displayOptions);
+      const output = $("#output");
+      const richOutput = $("#output-rich");
+      output.value = visibleValue;
+      if (displayOptions.closureTailMarker) {
+        richOutput.innerHTML = renderClosureRichOutput(visibleValue, displayOptions);
+        richOutput.classList.remove("hidden");
+        output.classList.add("hidden");
+      } else {
+        richOutput.innerHTML = "";
+        richOutput.classList.add("hidden");
+        output.classList.remove("hidden");
+      }
       updateStats();
     }
 
@@ -2291,8 +2546,9 @@
     }
 
     function updateStats() {
+      const displayOptions = outputDisplay[activeOutput] || {};
       const visibleValue = $("#output").value;
-      const value = realNulls(visibleValue);
+      const value = visibleToOutput(visibleValue, displayOptions);
       $("#char-count").textContent = String(rawCharLen(visibleValue));
       $("#byte-count").textContent = String(rawByteLen(value));
       $("#string-count").textContent = String((value.match(/s:\d+:"/g) || []).length);
@@ -2635,6 +2891,10 @@
       };
     }
 
+    function tagRepairPatches(patches, role) {
+      return (patches || []).map((patch) => ({ ...patch, role }));
+    }
+
     function limitRepairStates(states) {
       return states
         .sort((a, b) => b.end - a.end || a.patches.length - b.patches.length)
@@ -2693,14 +2953,14 @@
       return uniqueByEnd(candidates);
     }
 
-    function parseSerializedRepairValueAt(text, startPos) {
+    function parseSerializedRepairValueAt(text, startPos, patchRole = "string-value") {
       const start = skipSerializedSpace(text, startPos);
       const type = text[start];
 
       if (type === "s") {
         return readSerializedStringRepairCandidates(text, start, ";").map((info) => ({
           end: info.end,
-          patches: info.patches,
+          patches: tagRepairPatches(info.patches, patchRole),
           objects: [],
           info
         }));
@@ -2732,7 +2992,8 @@
         for (let index = 0; index < count * 2; index += 1) {
           const nextStates = [];
           states.forEach((state) => {
-            parseSerializedRepairValueAt(text, state.end).forEach((candidate) => {
+            const role = index % 2 === 0 ? "array-key" : "string-value";
+            parseSerializedRepairValueAt(text, state.end, role).forEach((candidate) => {
               nextStates.push(mergeRepairState(state, candidate));
             });
           });
@@ -2792,7 +3053,8 @@
             patches: [{
               start: classLenStart,
               end: classLenEnd,
-              value: String(rawByteLen(className))
+              value: String(rawByteLen(className)),
+              role: "class-name"
             }],
             objects: [objectInfo]
           }];
@@ -2804,7 +3066,7 @@
                 readSerializedStringRepairCandidates(text, state.end, ";").forEach((key) => {
                   afterKey.push({
                     end: key.end,
-                    patches: state.patches.concat(key.patches || []),
+                    patches: state.patches.concat(tagRepairPatches(key.patches, "property-key")),
                     objects: state.objects
                   });
                 });
@@ -2816,7 +3078,7 @@
 
             const afterValue = [];
             states.forEach((state) => {
-              parseSerializedRepairValueAt(text, state.end).forEach((candidate) => {
+              parseSerializedRepairValueAt(text, state.end, "string-value").forEach((candidate) => {
                 afterValue.push(mergeRepairState(state, candidate));
               });
             });
@@ -2860,12 +3122,70 @@
             ...candidate,
             fixed,
             index,
+            source,
             trailingStart,
             trailingLength: source.length - trailingStart,
             trailing: source.slice(trailingStart)
           };
         })
         .sort((a, b) => a.end - b.end || a.trailingLength - b.trailingLength || a.patches.length - b.patches.length);
+    }
+
+    function hasPhpStringClosureSignature(text, end) {
+      const source = String(text ?? "");
+      const closeBrace = end - 1;
+      return source[closeBrace - 2] === '"' &&
+        source[closeBrace - 1] === ";" &&
+        source[closeBrace] === "}";
+    }
+
+    function patchChangesSource(source, patch) {
+      return String(source ?? "").slice(patch.start, patch.end) !== String(patch.value ?? "");
+    }
+
+    function hasOnlyStringValueClosureChanges(candidate) {
+      return (candidate.patches || []).every((patch) => {
+        return !patchChangesSource(candidate.source, patch) || patch.role === "string-value";
+      });
+    }
+
+    function strictClosureCandidateFromText(text) {
+      const source = realNulls(text).trim();
+      try {
+        const parsed = parseSerialized(source, { allowTrailing: false });
+        if (parsed.type !== "object") return null;
+        const chain = collectObjectClosureChain(parsed);
+        return {
+          kind: "strict-chain",
+          source,
+          fixed: source,
+          index: 0,
+          end: source.length,
+          trailingStart: source.length,
+          trailingLength: 0,
+          trailing: "",
+          patches: [],
+          closureChain: chain
+        };
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function collectObjectClosureChain(node, chain = []) {
+      if (!node) return chain;
+      if (node.type === "array") {
+        (node.items || []).forEach((item) => {
+          collectObjectClosureChain(item.key, chain);
+          collectObjectClosureChain(item.value, chain);
+        });
+        return chain;
+      }
+      if (node.type === "object") {
+        (node.props || []).forEach((prop) => collectObjectClosureChain(prop.value, chain));
+        chain.push(node.className || "stdClass");
+      }
+      return chain;
     }
 
     function applyTextPatches(text, patches) {
@@ -2887,32 +3207,42 @@
       return result;
     }
 
+    function collectSerializedLengthPatches(text) {
+      const patches = [];
+      const end = skipSerializedValueAt(text, 0, (node) => {
+        if (node.type === "string") {
+          patches.push({
+            start: node.byteLenStart,
+            end: node.byteLenEnd,
+            value: String(rawByteLen(node.displayValue))
+          });
+        }
+        if (node.type === "object") {
+          patches.push({
+            start: node.classLenStart,
+            end: node.classLenEnd,
+            value: String(rawByteLen(node.classDisplayName))
+          });
+        }
+      });
+      const trailingStart = skipSerializedSpace(text, end);
+      if (trailingStart < text.length) throw new Error(`后面还有未解析内容（位置 ${trailingStart + 1}）`);
+      return patches;
+    }
+
     function fixSerializedLengths(input) {
       const text = realNulls(input);
-      const patches = [];
       try {
-        const repair = chooseSerializedRepair(text);
-        if (repair && repair.patches.length > 0) {
-          return applyTextPatches(text, repair.patches);
-        }
-        skipSerializedValueAt(text, 0, (node) => {
-          if (node.type === "string") {
-            patches.push({
-              start: node.byteLenStart,
-              end: node.byteLenEnd,
-              value: String(rawByteLen(node.displayValue))
-            });
+        return applyTextPatches(text, collectSerializedLengthPatches(text));
+      } catch (strictError) {
+        try {
+          const repair = chooseSerializedRepair(text);
+          if (repair && repair.patches.length > 0) {
+            const fixed = applyTextPatches(text, repair.patches);
+            parseSerialized(fixed, { allowTrailing: false });
+            return fixed;
           }
-          if (node.type === "object") {
-            patches.push({
-              start: node.classLenStart,
-              end: node.classLenEnd,
-              value: String(rawByteLen(node.classDisplayName))
-            });
-          }
-        });
-        return applyTextPatches(text, patches);
-      } catch (error) {
+        } catch (repairError) { }
         return fallbackFixSerializedLengths(text);
       }
     }
@@ -3439,7 +3769,7 @@
       buildObject();
     });
 
-    // 一键序列化：支持 class、对象字面量、嵌套对象、嵌套数组
+    // 类序列化：支持 class、对象字面量、嵌套对象、嵌套数组
     class PhpLiteralParser {
       constructor(input, options = {}) {
         this.text = String(input ?? "");
@@ -3931,7 +4261,7 @@
     $("#parse-serialized").addEventListener("click", () => {
       try {
         const parsed = parseSerializedRepairAware($("#manual-input").value);
-        setConstructOutput(formatSerializedValue(parsed, 0, { realNewlines: true }), { preserveNewlines: true });
+        setConstructOutput(formatSerializedValue(parsed), { preserveNewlines: true, rawDisplay: true });
       } catch (error) {
         alert(`反向解析失败：${error.message}`);
       }
@@ -4205,10 +4535,10 @@
           }
         });
         attempts.push({
-          label: "修正后粘贴区",
+          label: "重算后粘贴区",
           parse: () => {
             const parsed = parseSerialized(fixSerializedLengths(manualText));
-            if (parsed.type !== "object") throw new Error("修正后结果不是对象结构");
+            if (parsed.type !== "object") throw new Error("重算后结果不是对象结构");
             return parsed;
           }
         });
@@ -4231,8 +4561,8 @@
       throw new Error(errors.length ? errors.join("；") : "没有可转换的对象内容");
     }
 
-    function replaceCurrentOutput(value) {
-      setOutput(value, activeOutput, { preserveNewlines: true });
+    function replaceCurrentOutput(value, displayOptions = {}) {
+      setOutput(value, activeOutput, { preserveNewlines: true, ...displayOptions });
       $("#output").focus();
     }
 
@@ -4241,19 +4571,65 @@
       if (parsed.type !== "object") throw new Error("闭合点不是对象结构");
       const classes = parsedObjectToPhpClass(parsed, { safeIdentifiers: true });
       if (!classes) throw new Error("闭合点无法转换为 PHP class");
-      const header = [
-        `// 闭合修正 ${candidate.displayIndex}/${candidate.total}`,
-        `// 根对象结束于第 ${candidate.end} 个字符；尾随片段 ${candidate.trailingLength} 字符`,
-        candidate.trailing ? `// 尾随片段: ${phpLineCommentValue(candidate.trailing.slice(0, 80))}` : "// 无尾随片段"
-      ];
-      return header.concat(classes).join("\n");
+      const trailing = candidate.trailing ? candidate.trailing.slice(0, 120) : "";
+      const isStrictChain = candidate.kind === "strict-chain";
+      const chain = candidate.closureChain?.length ? candidate.closureChain.join(" -> ") : "无法推导";
+      const header = isStrictChain
+        ? [
+          `// PHP 严格解析闭合链 ${candidate.displayIndex}/${candidate.total}`,
+          `// 闭合顺序：${chain}`,
+          "// 无尾随片段"
+        ]
+        : [
+          `// 切换闭合点预览 ${candidate.displayIndex}/${candidate.total}`,
+          `// 根对象结束于第 ${candidate.end} 个字符；尾随片段 ${candidate.trailingLength} 字符`,
+          candidate.trailing ? `// 尾随片段:\n${trailing}` : "// 无尾随片段"
+        ];
+      const text = header.concat(classes).join("\n");
+      return {
+        text,
+        tailMarker: trailing
+      };
+    }
+
+    function splitClosureFixedPayload(candidate) {
+      const parsed = parseSerialized(candidate.fixed);
+      if (parsed.type !== "object") throw new Error("闭合点不是对象结构");
+      const trailing = parsed.trailing || "";
+      return {
+        root: trailing ? candidate.fixed.slice(0, candidate.fixed.length - trailing.length) : candidate.fixed,
+        trailing
+      };
+    }
+
+    function formatClosureTrailing(trailing, mode) {
+      if (!trailing) return "";
+      if (mode === "comment") return `/*${trailing.replaceAll("*/", "* /")}*/`;
+      if (mode === "php-html") return `?>${trailing}<?php `;
+      return trailing;
+    }
+
+    function fixedPayloadFromClosureCandidate(candidate, tailMode) {
+      const parts = splitClosureFixedPayload(candidate);
+      const tail = formatClosureTrailing(parts.trailing, tailMode);
+      return {
+        text: parts.root + tail,
+        tailMarker: tail
+      };
     }
 
     function buildClosureFixCandidates(source) {
+      const text = realNulls(source).trim();
+      const strictCandidate = strictClosureCandidateFromText(text);
+      if (strictCandidate) {
+        return [{ ...strictCandidate, displayIndex: 1, total: 1 }];
+      }
       const seen = new Set();
       const candidates = [];
-      listSerializedRepairs(source).forEach((candidate) => {
+      listSerializedRepairs(text).forEach((candidate) => {
         try {
+          if (!hasPhpStringClosureSignature(candidate.source, candidate.end)) return;
+          if (!hasOnlyStringValueClosureChanges(candidate)) return;
           const parsed = parseSerialized(candidate.fixed);
           if (parsed.type !== "object") return;
           const key = `${candidate.end}:${candidate.trailingStart}`;
@@ -4270,13 +4646,23 @@
       }));
     }
 
+    let closureFixSession = null;
+    let closureLengthFixSession = null;
+
     function findClosureFixSource() {
-      const outputText = getOutputReal().trim();
+      const outputText = getOutputReal();
+      const outputSource = outputText.trim();
       const manualText = realNulls($("#manual-input").value).trim();
       const candidates = [
-        { label: "输出区", value: outputText },
+        closureFixSession?.source && outputText === closureFixSession.rendered
+          ? { label: `${closureFixSession.label}原始串`, value: closureFixSession.source }
+          : null,
+        closureLengthFixSession?.source && outputText === closureLengthFixSession.rendered
+          ? { label: `${closureLengthFixSession.label}原始串`, value: closureLengthFixSession.source }
+          : null,
+        { label: "输出区", value: outputSource },
         { label: "粘贴区", value: manualText }
-      ].filter((item) => item.value);
+      ].filter((item) => item?.value);
 
       for (const item of candidates) {
         const fixes = buildClosureFixCandidates(item.value);
@@ -4287,13 +4673,18 @@
       return null;
     }
 
-    let closureFixSession = null;
-
     function resetClosureFixButton() {
       const button = $("#closure-fix");
       if (!button) return;
-      button.textContent = "闭合修正";
-      button.title = '循环使用不同的 ";} 闭合点解析字符串逃逸 Payload';
+      button.textContent = "切换闭合点预览";
+      button.title = '按当前 s 值循环切换不同的 ";} 闭合点，预览 PHP 会解析出的对象';
+    }
+
+    function resetClosureLengthFixButton() {
+      const button = $("#closure-length-fix");
+      if (!button) return;
+      button.textContent = "修改s值切换闭合点";
+      button.title = '修改字符串 s 长度来切换 ";} 闭合点，并写回序列化串';
     }
 
     $("#copy-as-php-class").addEventListener("click", () => {
@@ -4304,7 +4695,7 @@
           alert("只能将对象类型转换为PHP类代码");
           return;
         }
-        replaceCurrentOutput(result.join("\n\n"));
+        replaceCurrentOutput(result.join("\n\n"), { rawDisplay: true });
       } catch (error) {
         alert(`转换失败：${error.message}`);
       }
@@ -4312,10 +4703,10 @@
 
     $("#closure-fix").addEventListener("click", () => {
       try {
-        const currentOutput = getOutputReal().trim();
+        const currentOutput = getOutputReal();
         const canReuseSession = closureFixSession &&
           closureFixSession.candidates?.length > 0 &&
-          (currentOutput === closureFixSession.rendered || currentOutput === closureFixSession.source);
+          (currentOutput === closureFixSession.rendered || currentOutput.trim() === closureFixSession.source);
 
         if (canReuseSession) {
           closureFixSession.index = (closureFixSession.index + 1) % closureFixSession.candidates.length;
@@ -4338,13 +4729,61 @@
 
         const current = closureFixSession.candidates[closureFixSession.index];
         const rendered = phpClassFromClosureCandidate(current);
-        closureFixSession.rendered = rendered;
-        replaceCurrentOutput(rendered);
-        $("#closure-fix").textContent = `闭合修正 ${current.displayIndex}/${current.total}`;
+        closureFixSession.rendered = rendered.text;
+        replaceCurrentOutput(rendered.text, { closureTailMarker: rendered.tailMarker, rawDisplay: true });
+        $("#closure-fix").textContent = `闭合点预览 ${current.displayIndex}/${current.total}`;
         $("#closure-fix").title = `来源：${closureFixSession.label}；再次点击切换到下一个 \";} 闭合点`;
       } catch (error) {
-        alert(`闭合修正失败：${error.message}`);
+        alert(`切换闭合点预览失败：${error.message}`);
       }
+    });
+
+    $("#closure-length-fix").addEventListener("click", () => {
+      try {
+        const currentOutput = getOutputReal();
+        const canReuseSession = closureLengthFixSession &&
+          closureLengthFixSession.candidates?.length > 0 &&
+          (currentOutput === closureLengthFixSession.rendered || currentOutput.trim() === closureLengthFixSession.source);
+
+        if (canReuseSession) {
+          closureLengthFixSession.index = (closureLengthFixSession.index + 1) % closureLengthFixSession.candidates.length;
+        } else {
+          const found = findClosureFixSource();
+          if (!found) {
+            closureLengthFixSession = null;
+            resetClosureLengthFixButton();
+            alert("未找到可通过 s 值切换的闭合点，请先在输出区或粘贴区放入对象序列化 Payload。");
+            return;
+          }
+          closureLengthFixSession = {
+            source: found.value,
+            label: found.label,
+            candidates: found.candidates,
+            index: 0,
+            rendered: ""
+          };
+        }
+
+        const current = closureLengthFixSession.candidates[closureLengthFixSession.index];
+        const rendered = fixedPayloadFromClosureCandidate(current, $("#closure-tail-mode").value);
+        closureLengthFixSession.rendered = rendered.text;
+        replaceCurrentOutput(rendered.text, { closureTailMarker: rendered.tailMarker });
+        $("#closure-length-fix").textContent = `改s切闭合 ${current.displayIndex}/${current.total}`;
+        $("#closure-length-fix").title = `来源：${closureLengthFixSession.label}；尾随：${$("#closure-tail-mode").selectedOptions[0]?.textContent || "原样保留"}；再次点击修改 s 值切换到下一个 \";} 闭合点`;
+      } catch (error) {
+        alert(`修改s值切换闭合点失败：${error.message}`);
+      }
+    });
+
+    $("#closure-tail-mode").addEventListener("change", () => {
+      if (!closureLengthFixSession?.candidates?.length) return;
+      const currentOutput = getOutputReal();
+      if (currentOutput !== closureLengthFixSession.rendered) return;
+      const current = closureLengthFixSession.candidates[closureLengthFixSession.index];
+      const rendered = fixedPayloadFromClosureCandidate(current, $("#closure-tail-mode").value);
+      closureLengthFixSession.rendered = rendered.text;
+      replaceCurrentOutput(rendered.text, { closureTailMarker: rendered.tailMarker });
+      $("#closure-length-fix").title = `来源：${closureLengthFixSession.label}；尾随：${$("#closure-tail-mode").selectedOptions[0]?.textContent || "原样保留"}；再次点击修改 s 值切换到下一个 \";} 闭合点`;
     });
 
     $("#pseudo-to-php").addEventListener("click", () => {
@@ -4355,7 +4794,7 @@
           alert("无法解析对象内容");
           return;
         }
-        replaceCurrentOutput(phpCode);
+        replaceCurrentOutput(phpCode, { rawDisplay: true });
       } catch (error) {
         alert(`转换失败：${error.message}`);
       }
@@ -4383,6 +4822,10 @@
       if (activeOutput !== "query") switchOutput("query");
     });
 
+    $("#send-manual-to-output").addEventListener("click", () => {
+      setConstructOutput($("#manual-input").value, { rawDisplay: true });
+    });
+
     $("#copy-output").addEventListener("click", async () => {
       await copyText(getOutputReal(), "#output");
     });
@@ -4395,6 +4838,39 @@
       }
       const wrapped = `unserialize('${output.replace(/'/g, "\\'")}')`;
       await copyText(wrapped, "#output");
+    });
+
+    $("#send-output-to-manual").addEventListener("click", () => {
+      const output = getOutputReal();
+      if (!output) {
+        alert("输出区为空，请先生成或粘贴内容");
+        return;
+      }
+      $("#send-output-dropdown .dropdown-menu").classList.add("hidden");
+      $("#manual-input").value = visibleNulls(output);
+      activateMode("manual");
+      $("#manual-input").focus();
+    });
+
+    $("#send-output-to-class").addEventListener("click", () => {
+      const output = getOutputReal();
+      if (!output) {
+        alert("输出区为空，请先生成或粘贴内容");
+        return;
+      }
+      $("#send-output-dropdown .dropdown-menu").classList.add("hidden");
+      $("#php-class-input").value = output;
+      activateMode("oneclick");
+      $("#php-class-input").focus();
+    });
+
+    $("#send-output-dropdown .dropdown-toggle").addEventListener("click", (e) => {
+      e.stopPropagation();
+      $("#send-output-dropdown .dropdown-menu").classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", () => {
+      $("#send-output-dropdown .dropdown-menu").classList.add("hidden");
     });
 
     $("#clear-output").addEventListener("click", () => setOutput("", activeOutput));
@@ -4615,7 +5091,7 @@
       "ser-reference": `O:4:"User":2:{s:3:"cmd";s:6:"whoami";s:5:"again";R:2;}`,
       "ser-wakeup-bypass": `O:12:"WakeupBypass":3:{s:3:"cmd";s:6:"whoami";s:5:"token";s:8:"NeedEdit";}`,
       "ser-newline": "O:4:\"Note\":1:{s:4:\"text\";s:11:\"hello\nworld\";}",
-      "ser-escape-close": `O:4:"Demo":3:{s:1:"a";s:5:"Hello";s:1:"b";s:3:"CTF";s:3:"key";s:20:"GET_FLAG";}s:4:"fake";s:9:"FAKE_FLAG";}`,
+      "ser-escape-close": `O:1:"A":2:{s:4:"name";s:78:"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc";s:4:"pass";s:5:"admin";}";s:4:"pass";s:6:"123456";}`,
       "ser-stdclass": `O:8:"stdClass":2:{s:4:"name";s:5:"admin";s:3:"uid";i:1;}`,
       "ser-deep-array": `a:2:{s:4:"meta";a:2:{s:4:"user";s:5:"admin";s:5:"flags";a:3:{i:0;s:4:"read";i:1;s:5:"write";i:2;s:5:"debug";}}s:4:"call";a:2:{i:0;s:6:"system";i:1;s:2:"id";}}`
     };
